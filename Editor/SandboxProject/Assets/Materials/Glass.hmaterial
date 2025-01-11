@@ -1,0 +1,14 @@
+Material:
+  AlbedoColor: [1, 1, 1, 1]
+  Emission: 0
+  IOR: 1.52999997
+  UseNormalMap: false
+  Metalness: 0
+  Roughness: 0
+  Specular: 1
+  Transmission: 1
+  AlbedoMap: 0
+  NormalMap: 0
+  MetalnessMap: 0
+  RoughnessMap: 0
+  MaterialFlags: 10

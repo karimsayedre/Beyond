@@ -1,0 +1,56 @@
+Language: Cpp
+
+# Use tabs for indentation
+UseTab: ForIndentation
+IndentWidth: 4
+TabWidth: 4
+ContinuationIndentWidth: 8
+SortIncludes: false
+# Column limit for wrapping lines
+ColumnLimit: 200
+
+# Spaces around operators
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceInEmptyParentheses: false
+SpaceAfterCStyleCast: false
+SpaceBeforeSquareBrackets: false
+SpaceAfterTemplateKeyword: false
+SpaceAfterLogicalNot: false
+
+# Aligning and breaking
+AlignOperands: false
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignTrailingComments: true
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+BreakBeforeBraces: Allman
+BreakBeforeBinaryOperators: None
+
+# Handling of custom HLSL attributes and pragmas
+AttributeMacros: [unroll, branch, flatten]
+IndentPPDirectives: None
+ReflowComments: false
+
+# Indentation settings
+NamespaceIndentation: None
+IndentCaseLabels: true
+IndentGotoLabels: false
+# IndentSwitchCaseLabels: true
+
+# Other stylistic choices
+AlwaysBreakTemplateDeclarations: Yes
+ConstructorInitializerIndentWidth: 4
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: true
+
+# Add an additional indent for `case` statements in a switch
+IndentCaseBlocks: true
+
+# Ensure that HLSL vector and matrix types are formatted correctly
+PointerBindsToType: true
+DerivePointerAlignment: true

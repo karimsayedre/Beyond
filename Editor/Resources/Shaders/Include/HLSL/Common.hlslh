@@ -1,0 +1,91 @@
+#pragma once
+#include <Common.slh>
+
+float3 RotateVectorAboutY(float angle, float3 vec)
+{
+	angle = radians(angle);
+	float3x3 rotationMatrix = {float3(cos(angle), 0.0, sin(angle)), float3(0.0, 1.0, 0.0), float3(-sin(angle), 0.0, cos(angle))};
+	return mul(rotationMatrix, vec); // TODO: IS THIS CORRECT???????????????????????????????????????????
+}
+
+float Convert_sRGB_FromLinear(float theLinearValue)
+{
+	return theLinearValue <= 0.0031308f ? theLinearValue * 12.92f : pow(theLinearValue, 1.0f / 2.4f) * 1.055f - 0.055f;
+}
+
+float3 ToLinear(float3 sRGB)
+{
+	bool3 cutoff = (sRGB < 0.04045f);
+	float3 higher = pow((sRGB + 0.055) / 1.055, 2.4);
+	float3 lower = sRGB / 12.92;
+
+	return lerp(higher, lower, (float3)cutoff); // TODO: IS THIS CORRECT???????????????????????????????????????????
+}
+
+float3 LessThan(float3 f, float value)
+{
+	return float3((f.x < value) ? 1.f : 0.f, (f.y < value) ? 1.f : 0.f, (f.z < value) ? 1.f : 0.f);
+}
+
+float3 LinearToSRGB(float3 rgb)
+{
+	// rgb = clamp(rgb, 0.f, 1.f);
+	return lerp(pow(rgb * 1.055f, 1.f / 2.4f) - 0.055f, rgb * 12.92f, LessThan(rgb, 0.0031308f));
+}
+
+float3 UnpackNormal(float2 packedNormal)
+{
+	float2 xy = mad(packedNormal, 2.0, -1.0);
+	float z = 1.0 - saturate(dot(xy, xy));
+	// Fast approximate square root
+	z = asfloat(0x5f3759df - (asuint(z) >> 1));
+	return float3(xy, z);
+}
+
+float CalculateLOD(float rayDistance, float coneWidth, float2 textureSize)
+{
+	// Calculate the cone aperture (spread angle)
+	float coneAperture = atan(coneWidth / 2.0);
+
+	// Calculate the cone footprint at the hit point
+	float coneFootprint = 2.0 * rayDistance * tan(coneAperture);
+
+	// Calculate the texture space derivative
+	float2 texSpaceDerivative = coneFootprint / textureSize;
+
+	// Calculate the LOD using the maximum of the texture space derivatives
+	float lod = log2(max(texSpaceDerivative.x, texSpaceDerivative.y));
+
+	// Apply a scale factor to make the LOD more sensitive
+	float lodScale = 1.5;
+	lod *= lodScale;
+
+	return max(0, lod); // Ensure LOD is non-negative
+}
+
+// Usage example
+float SampleTextureWithRayCone(Texture2D tex, float rayDistance, float coneWidth)
+{
+	float2 textureSize;
+	tex.GetDimensions(textureSize.x, textureSize.y);
+
+	return CalculateLOD(rayDistance, coneWidth, textureSize);
+}
+
+float Pow2(float value)
+{
+	return value * value;
+}
+
+float Luminance(float3 color)
+{
+	return dot(color.rgb, float3(0.2125f, 0.7154f, 0.0721f));
+}
+
+template<typename T>
+void swap(inout T a, inout T b)
+{
+	T temp = a;
+	a = b;
+	b = temp;
+}

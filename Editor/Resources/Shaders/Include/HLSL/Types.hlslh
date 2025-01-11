@@ -1,0 +1,40 @@
+#pragma once
+
+#if (USE_HALF_FLOAT_PRECISION != 0)
+    #if 1 // old fp16 approach (<SM6.2)
+        typedef min16float      lpfloat;
+        typedef min16float2     lpfloat2;
+        typedef min16float3     lpfloat3;
+        typedef min16float4     lpfloat4;
+        typedef min16float3x3   lpfloat3x3;
+    #else // new fp16 approach (requires SM6.2 and -enable-16bit-types) - WARNING: perf degradation noticed on some HW, while the old (min16float) path is mostly at least a minor perf gain so this is more useful for quality testing
+        typedef float16_t       lpfloat;
+        typedef float16_t2      lpfloat2;
+        typedef float16_t3      lpfloat3;
+        typedef float16_t4      lpfloat4;
+        typedef float16_t3x3    lpfloat3x3;
+    #endif
+#else
+    typedef float           lpfloat;
+    typedef float2          lpfloat2;
+    typedef float3          lpfloat3;
+    typedef float4          lpfloat4;
+    typedef float3x3        lpfloat3x3;
+#endif
+
+
+struct DDGIPackedPayload
+{                                  // Byte Offset        Data Format
+    float  hitT;                   // 0                  HitT
+    float3 worldPosition;          // 4               X: World Position X
+                                   // 8               Y: World Position Y
+                                   // 12              Z: World Position Z
+    uint4  packed0;                // 16              X: 16: Albedo R          16: Albedo G
+                                   //                 Y: 16: Albedo B          16: Normal X
+                                   //                 Z: 16: Normal Y          16: Normal Z
+                                   //                 W: 16: Metallic          16: Roughness
+    uint3  packed1;                // 32              X: 16: ShadingNormal X   16: ShadingNormal Y
+                                   //                 Y: 16: ShadingNormal Z   16: Opacity
+                                   //                 Z: 16: Hit Kind          16: Unused
+                                   // 44
+};

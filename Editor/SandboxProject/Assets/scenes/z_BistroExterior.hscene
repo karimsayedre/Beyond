@@ -1,0 +1,371 @@
+Scene: ""
+Entities:
+  - Entity: 2143608321399101581
+    TagComponent:
+      Tag: Sky Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SkyLightComponent:
+      EnvironmentMap: 0
+      Intensity: 5
+      Lod: 1
+      DynamicSky: true
+      TurbidityAzimuthInclination: [2.31999993, 5.1420002, 1.52999997]
+  - Entity: 6040838675230410392
+    TagComponent:
+      Tag: Camera
+    Parent: 17754733419460451366
+    Children:
+      []
+    PrefabComponent:
+      Prefab: 13363237840358869142
+      Entity: 10499318103166740538
+    TransformComponent:
+      Position: [0, 0.787638187, 0]
+      Rotation: [0, 1.63912773e-07, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 60.0000038
+        PerspectiveNear: 0.100000001
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+  - Entity: 7393962522609651008
+    TagComponent:
+      Tag: DDGI Volume
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 5.08127594, -0.978247166]
+      Rotation: [0, 0, 0]
+      Scale: [1.37908757, 0.712190449, 1]
+    DDGIVolumeComponent:
+      Enable: true
+      Index: 0
+      RngSeed: 0
+      InsertPerfMarkers: true
+      ProbeRelocationEnabled: true
+      ProbeClassificationEnabled: true
+      ProbeVariabilityEnabled: true
+      InfiniteScrollingEnabled: false
+      ProbeSpacing: [0.300000012, 0.300000012, 0.300000012]
+      ProbeCounts: [22, 22, 22]
+      ProbeNumRays: 256
+      ProbeNumIrradianceTexels: 8
+      ProbeNumDistanceTexels: 16
+      ProbeHysteresis: 0.970000029
+      ProbeMaxRayDistance: 10
+      ProbeNormalBias: 0.0199999996
+      ProbeViewBias: 0.100000001
+      ProbeIrradianceThreshold: 0.200000003
+      ProbeBrightnessThreshold: 1
+      ProbeVariabilityThreshold: 0
+      ProbeMinFrontfaceDistance: 0.100000001
+      ProbeDistanceExponent: 50
+      ProbeIrradianceEncodingGamma: 5
+      ProbeRandomRayBackfaceThreshold: 0.100000001
+      ProbeFixedRayBackfaceThreshold: 0.25
+  - Entity: 11735482693442307414
+    TagComponent:
+      Tag: BistroExterior
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 7213906716013574718
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
+        17: 0
+        18: 0
+        19: 0
+        20: 0
+        21: 0
+        22: 0
+        23: 0
+        24: 0
+        25: 0
+        26: 0
+        27: 0
+        28: 0
+        29: 0
+        30: 0
+        31: 0
+        32: 0
+        33: 0
+        34: 0
+        35: 0
+        36: 0
+        37: 0
+        38: 0
+        39: 0
+        40: 0
+        41: 0
+        42: 0
+        43: 0
+        44: 0
+        45: 0
+        46: 0
+        47: 0
+        48: 0
+        49: 0
+        50: 0
+        51: 0
+        52: 0
+        53: 0
+        54: 0
+        55: 0
+        56: 0
+        57: 0
+        58: 0
+        59: 0
+        60: 0
+        61: 0
+        62: 0
+        63: 0
+        64: 0
+        65: 0
+        66: 0
+        67: 0
+        68: 0
+        69: 0
+        70: 0
+        71: 0
+        72: 0
+        73: 0
+        74: 0
+        75: 0
+        76: 0
+        77: 0
+        78: 0
+        79: 0
+        80: 0
+        81: 0
+        82: 0
+        83: 0
+        84: 0
+        85: 0
+        86: 0
+        87: 0
+        88: 0
+        89: 0
+        90: 0
+        91: 0
+        92: 0
+        93: 0
+        94: 0
+        95: 0
+        96: 0
+        97: 0
+        98: 0
+        99: 0
+        100: 0
+        101: 0
+        102: 0
+        103: 0
+        104: 0
+        105: 0
+        106: 0
+        107: 0
+        108: 0
+        109: 0
+        110: 0
+        111: 0
+        112: 0
+        113: 0
+        114: 0
+        115: 0
+        116: 0
+        117: 0
+        118: 0
+        119: 0
+        120: 0
+        121: 0
+        122: 0
+        123: 0
+        124: 0
+        125: 0
+        126: 0
+        127: 0
+        128: 0
+        129: 0
+        130: 0
+        131: 0
+      Visible: true
+  - Entity: 13477505942137297681
+    TagComponent:
+      Tag: Sphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [6.65976715, 0.723970354, -0.272750378]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 14924744775604793321
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+    SphereColliderComponent:
+      Radius: 0.5
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 13882838760121718506
+    TagComponent:
+      Tag: Directional Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-2.12498593, 2.96443272, 0.188531801]
+      Rotation: [2.62637138, 0, -0.315904588]
+      Scale: [1, 1, 1]
+    DirectionalLightComponent:
+      Intensity: 86.5999985
+      Radiance: [1, 0.67270422, 0.262096763]
+      SourceSize: 6.69999981
+      SoftShadows: true
+      CastShadows: true
+      ShadowAmount: 1
+  - Entity: 14113145725093618211
+    TagComponent:
+      Tag: Sphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [7.83021593, 1.22749066, 1.12612891]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 14924744775604793321
+      MaterialTable:
+        0: 8987586188804361884
+      Visible: true
+    SphereColliderComponent:
+      Radius: 0.5
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 14268751408297094773
+    TagComponent:
+      Tag: Sphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [4.41345119, 0.723970354, -0.272750378]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 14924744775604793321
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+    SphereColliderComponent:
+      Radius: 0.5
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 17754733419460451366
+    TagComponent:
+      Tag: Player
+    Parent: 0
+    Children:
+      - Handle: 6040838675230410392
+    PrefabComponent:
+      Prefab: 15644984880458673382
+      Entity: 3912134598091010927
+    TransformComponent:
+      Position: [4.84976101, 1.38370681, 2.53372455]
+      Rotation: [0, -1.40094519, 0]
+      Scale: [1, 1, 1]
+    ScriptComponent:
+      ClassHandle: 1703576679
+      Name: Sandbox.FirstPersonController
+      StoredFields:
+        - ID: 442613449
+          Name: MovementSpeed
+          Type: Float
+          Data: 3
+        - ID: 944303073
+          Name: GamepadSensitivity
+          Type: Float
+          Data: 3
+        - ID: 4167077733
+          Name: MouseSensitivity
+          Type: Float
+          Data: 0.100000001
+        - ID: 1479820618
+          Name: JumpPower
+          Type: Float
+          Data: 5
+        - ID: 603041627
+          Name: ShootingCooldown
+          Type: Float
+          Data: 0.150000006
+        - ID: 692094311
+          Name: FootstepVolume
+          Type: Float
+          Data: 0.219999999
+        - ID: 280898344
+          Name: ProjectilePrefab
+          Type: Prefab
+          Data: 5349322122580055698
+        - ID: 3559253847
+          Name: m_CameraEntity
+          Type: Entity
+          Data: 6040838675230410392
+    CharacterControllerComponent:
+      Layer: 0
+      DisableGravity: false
+      SlopeLimit: 0
+      StepOffset: 0
+    CapsuleColliderComponent:
+      Radius: 0.5
+      HalfHeight: 0.5
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+    AudioListenerComponent:
+      Active: true
+      ConeInnerAngle: 6.28318501
+      ConeOuterAngle: 6.28318501
+      ConeOuterGain: 0
+SceneAudio:
+  MasterReverb:
+    Pre-delay: 50
+    Room size: 0.49999994
+    Damping: 0.5
+    Width: 1

@@ -1,0 +1,33 @@
+#pragma once
+
+#include <Raytracing/Vertex.hlslh>
+
+template<uint Flags>
+bool AnyHitRayQuery(inout RayQuery<Flags> rayQuery, inout uint seed, bool transmission = false)
+{
+	// Get hit attributes
+	float2 attrib = rayQuery.CandidateTriangleBarycentrics();
+	float3 barycentrics = float3(1.0f - attrib.x - attrib.y, attrib.x, attrib.y);
+	ObjDesc objResource = objDescs[rayQuery.CandidateInstanceIndex()];
+	Material material = materials[objResource.MaterialIndex];
+
+	// Compute interpolated UV
+	float2 uv = LoadInterpolatedVertexUVs(objResource, rayQuery.CandidatePrimitiveIndex(), barycentrics);
+
+	// Fetch the texture color
+	float4 color = material.AlbedoColor;
+	// if (BEY_TEXURE_IS_TRANSPARENT(material.AlbedoTexIndex))
+	{
+		color *= GetTex2D(material.AlbedoTexIndex).SampleLevel(GetBilinearWrapSampler(), uv, 0.0);
+	}
+
+	float alpha = color.a - (transmission ? material.Transmission : 0.0f);
+
+	// Test alpha for transparency
+	if (alpha < RandomFloat(seed))
+	{
+		// Continue traversal to find the next hit
+		return false;
+	}
+	return true;
+}

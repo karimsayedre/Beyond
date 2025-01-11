@@ -1,0 +1,67 @@
+#pragma once
+
+#include <Buffers.hlslh>
+#include <HostDevice.hlslh>
+
+#define VK_BINDING(x, y) [[vk::binding(x, y)]]
+#define VK_PUSH_CONST [[vk::push_constant]]
+
+VK_BINDING(1, 2) SamplerState Samplers[3];
+
+SamplerState GetBilinearWrapSampler()
+{
+	return Samplers[0];
+}
+SamplerState GetPointClampSampler()
+{
+	return Samplers[1];
+}
+SamplerState GetAnisoWrapSampler()
+{
+	return Samplers[2];
+}
+
+VK_BINDING(0, 4) Texture2D bls_MaterialTextures[];
+
+VK_BINDING(0, 0) TextureCube u_SkyboxTexture;
+VK_BINDING(0, 1) TextureCube u_EnvRadianceTex;
+VK_BINDING(1, 1) TextureCube u_EnvIrradianceTex;
+VK_BINDING(8, 2) Texture2D u_BRDFLUTTexture;
+
+[[vk::binding(9, 2)]] RWTexture2D<float4> DebugImage;
+
+VK_BINDING(0, 3) RWTexture2D<float4> o_AlbedoColor;
+VK_BINDING(1, 3) RWTexture2D<float4> o_MetalnessRoughness;
+VK_BINDING(2, 3) RWTexture2D<float4> o_ViewNormalsLuminance;
+VK_BINDING(3, 3) RWTexture2D<float4> o_Image;
+VK_BINDING(4, 3) RWTexture2D<float4> io_AccumulatedColor;
+VK_BINDING(5, 3) RWTexture2D<float4> io_PrevWorldPositions;
+VK_BINDING(6, 3) RWTexture2D<float4> o_PrimaryHitT;
+
+// Buffer Definitions
+VK_BINDING(7, 3) StructuredBuffer<ObjDesc> objDescs : register(t5);
+VK_BINDING(7, 2) StructuredBuffer<Material> materials : register(t6);
+
+VK_BINDING(8, 3) RaytracingAccelerationStructure TLAS;
+
+Texture2D<float4> GetTex2D(uint index)
+{
+	return bls_MaterialTextures[NonUniformResourceIndex(index)];
+}
+float4 SampleTex2D(uint index, float2 texCoord)
+{
+	return bls_MaterialTextures[NonUniformResourceIndex(index)].Sample(GetAnisoWrapSampler(), texCoord, 0.0);
+}
+float4 SampleTex2DLevel(uint index, float2 texCoord, float lod)
+{
+	return bls_MaterialTextures[NonUniformResourceIndex(index)].SampleLevel(GetBilinearWrapSampler(), texCoord, lod);
+}
+
+struct RaytracingPushConst
+{
+	uint FrameIndex;
+	uint PathtracingFrameIndex;
+	bool EnableRussianRoulette;
+	// uint PrevPositionImageIndex;
+	// uint CurrentPositionImageIndex;
+};

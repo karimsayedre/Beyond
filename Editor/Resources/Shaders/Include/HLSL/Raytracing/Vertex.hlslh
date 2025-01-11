@@ -1,0 +1,171 @@
+#pragma once
+#include "HostDevice.hlslh"
+
+[[vk::binding(0, 5)]] ByteAddressBuffer ByteAddrBuffer[] : register(t7, space3);
+
+/**
+ * Load a triangle's vertex data (all: position, normal, tangent, uv0).
+ */
+void LoadVertices(ObjDesc geometry, uint primitiveID, out Vertex vertices[3])
+{
+	// Calculate index offset once
+	uint indexOffset = (geometry.FirstIndex + 3 * primitiveID) * 4;
+
+	// Load all indices at once
+	uint3 triangleIndex = ByteAddrBuffer[NonUniformResourceIndex(geometry.IndexBufferIndex)].Load3(indexOffset) + geometry.FirstVertex;
+
+	// Precalculate the vertex buffer index
+	uint vbIndex = NonUniformResourceIndex(geometry.VertexBufferIndex);
+
+	// Process each vertex
+	[unroll] for (uint i = 0; i < 3; i++)
+	{
+		// Calculate base address for the vertex
+		uint baseAddress = triangleIndex[i] * 56; // 14 floats * 4 bytes
+
+		// Load vertex data
+		vertices[i].Position = asfloat(ByteAddrBuffer[vbIndex].Load3(baseAddress));
+		vertices[i].Normal = asfloat(ByteAddrBuffer[vbIndex].Load3(baseAddress + 12));
+		vertices[i].Tangent = asfloat(ByteAddrBuffer[vbIndex].Load3(baseAddress + 24));
+		vertices[i].Binormal = asfloat(ByteAddrBuffer[vbIndex].Load3(baseAddress + 36));
+		vertices[i].TexCoord = asfloat(ByteAddrBuffer[vbIndex].Load2(baseAddress + 48));
+	}
+}
+
+
+/**
+ * Load a triangle's vertex data (all: uv).
+ */
+void LoadVerticesNormals(ObjDesc geometry, uint primitiveID, out float3 normals[3])
+{
+	// Calculate index offset once
+	uint indexOffset = (geometry.FirstIndex + 3 * primitiveID) * 4;
+
+	// Load all indices at once
+	uint3 triangleIndex = ByteAddrBuffer[NonUniformResourceIndex(geometry.IndexBufferIndex)].Load3(indexOffset) + geometry.FirstVertex;
+
+	// Precalculate the vertex buffer index
+	uint vbIndex = NonUniformResourceIndex(geometry.VertexBufferIndex);
+
+	// Load UVs for all three vertices
+	[unroll] for (uint i = 0; i < 3; i++)
+	{
+		// Calculate address for UVs directly
+		uint address = triangleIndex[i] * 56 + 12; // 14 floats * 4 bytes per vertex, UVs start at offset 12
+
+		// Load the texture coordinates
+		normals[i] = asfloat(ByteAddrBuffer[vbIndex].Load3(address));
+	}
+}
+
+/**
+ * Load a triangle's vertex data (all: uv).
+ */
+void LoadVerticesUvs(ObjDesc geometry, uint primitiveID, out float2 uvs[3])
+{
+	// Calculate index offset once
+	uint indexOffset = (geometry.FirstIndex + 3 * primitiveID) * 4;
+
+	// Load all indices at once
+	uint3 triangleIndex = ByteAddrBuffer[NonUniformResourceIndex(geometry.IndexBufferIndex)].Load3(indexOffset) + geometry.FirstVertex;
+
+	// Precalculate the vertex buffer index
+	uint vbIndex = NonUniformResourceIndex(geometry.VertexBufferIndex);
+
+	// Load UVs for all three vertices
+	[unroll] for (uint i = 0; i < 3; i++)
+	{
+		// Calculate address for UVs directly
+		uint address = triangleIndex[i] * 56 + 48; // 14 floats * 4 bytes per vertex, UVs start at offset 48
+
+		// Load the texture coordinates
+		uvs[i] = asfloat(ByteAddrBuffer[vbIndex].Load2(address));
+	}
+}
+
+/**
+ * Return interpolated vertex attributes (all).
+ */
+Vertex InterpolateVertex(Vertex vertices[3], float3 barycentrics)
+{
+	Vertex v;
+
+	// Unroll the loop and directly compute the interpolated values
+	v.Position = mad(vertices[0].Position, barycentrics.x, mad(vertices[1].Position, barycentrics.y, vertices[2].Position * barycentrics.z));
+
+	v.Normal = (vertices[0].Normal * barycentrics.x + (vertices[1].Normal * barycentrics.y) + (vertices[2].Normal * barycentrics.z));
+
+	v.Tangent = mad(vertices[0].Tangent.xyz, barycentrics.x, mad(vertices[1].Tangent.xyz, barycentrics.y, vertices[2].Tangent.xyz * barycentrics.z));
+
+	v.Binormal = mad(vertices[0].Binormal, barycentrics.x, mad(vertices[1].Binormal, barycentrics.y, vertices[2].Binormal * barycentrics.z));
+
+	v.TexCoord = mad(vertices[0].TexCoord, barycentrics.x, mad(vertices[1].TexCoord, barycentrics.y, vertices[2].TexCoord * barycentrics.z));
+
+	// Normalize vectors
+	v.Normal = normalize(v.Normal);
+	v.Tangent.xyz = normalize(v.Tangent.xyz);
+	v.Binormal = normalize(v.Binormal);
+
+	// Flip V coordinate
+	v.TexCoord.y = 1.0 - v.TexCoord.y;
+
+	return v;
+}
+
+/**
+ * Return interpolated vertex attributes (uvs).
+ */
+float2 InterpolateUvs(float2 uvs[3], float3 barycentrics)
+{
+	// Interpolate the vertex attributes
+	float2 interploatedUVs = 0.0f;
+	[unroll(3)] for (uint i = 0; i < 3; i++)
+	{
+		interploatedUVs += uvs[i] * barycentrics[i];
+	}
+
+	interploatedUVs.y = 1.0 - interploatedUVs.y;
+
+	return interploatedUVs;
+}
+
+/**
+ * Return interpolated vertex attributes (normals).
+ */
+float3 InterpolateNormals(float3 normals[3], float3 barycentrics)
+{
+	// Interpolate the vertex attributes
+	float3 interploatedNormals = 0.0f;
+	[unroll(3)] for (uint i = 0; i < 3; i++)
+	{
+		interploatedNormals += normals[i] * barycentrics[i];
+	}
+	return interploatedNormals;
+}
+
+Vertex LoadInterpolatedVertex(ObjDesc objResource, uint primitiveIndex, float3 barycentrics)
+{
+	// Vertex of the triangle
+	Vertex vertices[3];
+	LoadVertices(objResource, primitiveIndex, vertices);
+
+	return InterpolateVertex(vertices, barycentrics);
+}
+
+float2 LoadInterpolatedVertexUVs(ObjDesc objResource, uint primitiveIndex, float3 barycentrics)
+{
+	// Vertex of the triangle
+	float2 uvs[3];
+	LoadVerticesUvs(objResource, primitiveIndex, uvs);
+
+	return InterpolateUvs(uvs, barycentrics);
+}
+
+float3 LoadInterpolatedVertexNormals(ObjDesc objResource, uint primitiveIndex, float3 barycentrics)
+{
+	// Vertex of the triangle
+	float3 normals[3];
+	LoadVerticesNormals(objResource, primitiveIndex, normals);
+
+	return InterpolateNormals(normals, barycentrics);
+}

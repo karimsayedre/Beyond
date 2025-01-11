@@ -1,0 +1,18 @@
+#pragma once
+
+#define BIT(x) (1 << x)
+
+#ifdef __HLSL__
+    #define __GLOBAL static const
+#elif defined(__GLSL__)
+    #define __GLOBAL const
+#endif
+
+__GLOBAL float PI = 3.1415926535897932385f;
+__GLOBAL float TwoPI = 2 * PI;
+
+__GLOBAL float OneOverPI = 0.3183098861837f;  // 1/PI
+
+__GLOBAL float Epsilon = 0.00001;
+
+#define BEY_TEXURE_IS_TRANSPARENT(texIndex) (texIndex > 4 && (texIndex & 0x80000000) != 0) // Last bit of the texture index is set to 1 if the texture is transparent

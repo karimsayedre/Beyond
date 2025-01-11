@@ -1,0 +1,58 @@
+#pragma once 
+
+float2 NormalizeDerivative(float2 derivative, float2 texCoordScale) {
+    return derivative * texCoordScale;
+}
+
+void BarycentricWorldDerivatives(float3 A1, float3 A2, out float3 du_dx, out float3 dv_dx) {
+    float3 Nt = cross(A1, A2);
+    float NtDotNt = dot(Nt, Nt);
+    Nt = Nt / NtDotNt;  // Normalize Nt
+    du_dx = cross(A2, Nt);
+    dv_dx = cross(Nt, A1);
+}
+
+float3x3 WorldScreenDerivatives(float4x4 WorldToTargetMatrix, float4x4 TargetToWorldMatrix, float4 x) {
+    float wMx = dot(WorldToTargetMatrix[3], x);
+    float3x3 dx_dxt = (float3x3)TargetToWorldMatrix;
+    dx_dxt[0] -= x.x * TargetToWorldMatrix[3].xyz;
+    dx_dxt[1] -= x.y * TargetToWorldMatrix[3].xyz;
+    dx_dxt[2] -= x.z * TargetToWorldMatrix[3].xyz;
+    return dx_dxt;
+} 
+
+float2 DepthGradient(float4 x, float3 n, float4x4 TargetToWorldMatrix) {
+    float4 n4 = float4(n, 0);
+    n4.w = -dot(n4.xyz, x.xyz); 
+    n4 = mul(n4, TargetToWorldMatrix);
+    n4.z = max(abs(n4.z), 0.0001) * sign(n4.z);
+    return n4.xy/ -n4.z;
+} 
+
+float2x2 BarycentricDerivatives(
+    float4 x, float3 n, float3 x0, float3 x1, float3 x2, 
+    float4x4 WorldToTargetMatrix, float4x4 TargetToWorldMatrix) {
+    // Derivatives of barycentric coordinates with respect to  
+    // world-space coordinates (Section 5.2.3).  
+    float3 du_dx, dv_dx;  
+    BarycentricWorldDerivatives(x1 - x0, x2 - x0, du_dx, dv_dx);  
+    
+    // Partial derivatives of world-space coordinates with respect  
+    // to screen-space coordinates (Section 5.2.4). (Only the  
+    // relevant 3x3 part is considered.)  
+    float3x3 dx_dxt = WorldScreenDerivatives(WorldToTargetMatrix,  
+        TargetToWorldMatrix, x);  
+    
+    // Partial derivatives of barycentric coordinates with respect  
+    // to screen-space coordinates.  
+    float3 du_dxt = du_dx.x * dx_dxt[0] + du_dx.y * dx_dxt[1] + du_dx.z * dx_dxt[2];  
+    float3 dv_dxt = dv_dx.x * dx_dxt[0] + dv_dx.y * dx_dxt[1] + dv_dx.z * dx_dxt[2]; 
+    
+    // Derivatives of barycentric coordinates with respect to  
+    // screen-space x and y coordinates (Section 5.2.5).  
+    float2 ddepth_dXY = DepthGradient(x, n, TargetToWorldMatrix);  
+    float wMx = dot(WorldToTargetMatrix[3], x);  
+    float2 du_dXY = (du_dxt.xy + du_dxt.z * ddepth_dXY) * wMx;  
+    float2 dv_dXY = (dv_dxt.xy + dv_dxt.z * ddepth_dXY) * wMx;  
+    return float2x2(du_dXY, dv_dXY);
+} 

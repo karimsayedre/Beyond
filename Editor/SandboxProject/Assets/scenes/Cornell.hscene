@@ -1,0 +1,598 @@
+Scene: ""
+Entities:
+  - Entity: 77851759306599410
+    TagComponent:
+      Tag: transform5
+    Parent: 14290621670187193375
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 2410717826755132072
+    TagComponent:
+      Tag: bunny
+    Parent: 0
+    Children:
+      - Handle: 15333907207145005091
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 2506313944935975030
+    TagComponent:
+      Tag: bunny
+    Parent: 0
+    Children:
+      - Handle: 10684684840911833006
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 2516369089658315131
+    TagComponent:
+      Tag: Bottle
+    Parent: 0
+    Children:
+      - Handle: 12255358111764658021
+    TransformComponent:
+      Position: [0.43206501, -0.222238779, 2.88295507]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 3142826579285157350
+    TagComponent:
+      Tag: lucy
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.827813625, -1.21844399, 1.62625682]
+      Rotation: [0, 1.55334306, 0]
+      Scale: [0.00145287975, 0.00145287975, 0.00113623741]
+    StaticMeshComponent:
+      AssetID: 13514103858636311561
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 1261383900868470224
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 3403220726203031831
+    TagComponent:
+      Tag: cornell
+    Parent: 0
+    Children:
+      - Handle: 7708187639471483203
+    TransformComponent:
+      Position: [0, -3.06305408, 0]
+      Rotation: [0, 0, 0]
+      Scale: [3.05999994, 3.05999994, 3.05999994]
+  - Entity: 4901979979610773594
+    TagComponent:
+      Tag: transform10
+    Parent: 8129543546427270277
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 5241647379649019287
+    TagComponent:
+      Tag: transform8
+    Parent: 15014545835467939599
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 5651737298991043209
+    TagComponent:
+      Tag: cornell
+    Parent: 7708187639471483203
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 17026428149618823067
+      SubmeshIndex: 1
+      MaterialTable:
+        0: 0
+      Visible: true
+    RigidBodyComponent:
+      BodyType: 0
+      LayerID: 0
+      EnableDynamicTypeChange: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsTrigger: false
+      CollisionDetection: 0
+      InitialLinearVelocity: [0, 0, 0]
+      InitialAngularVelocity: [0, 0, 0]
+      MaxLinearVelocity: 500
+      MaxAngularVelocity: 50
+      LockedAxes: 0
+    MeshColliderComponent:
+      ColliderHandle: 5534090462181477195
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 6151203729242867256
+    TagComponent:
+      Tag: Lighting
+    Parent: 0
+    Children:
+      - Handle: 16189048305669213946
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 7289518715293022213
+    TagComponent:
+      Tag: transform3
+    Parent: 16778105117056511502
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 7708187639471483203
+    TagComponent:
+      Tag: cornell
+    Parent: 3403220726203031831
+    Children:
+      - Handle: 16679927148269971972
+      - Handle: 5651737298991043209
+      - Handle: 17736245086053658813
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.57079613, -0, 0]
+      Scale: [1, 0.99999994, 0.99999994]
+  - Entity: 8530080748653296802
+    TagComponent:
+      Tag: transform4
+    Parent: 16302752083944209717
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 9010891156897511670
+    TagComponent:
+      Tag: Directional Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-7.27691685e-08, 1.8584646, -1.0028851e-07]
+      Rotation: [-1.27160001, 0.37894997, -2.99902534]
+      Scale: [1, 0.999998748, 0.999998569]
+    DirectionalLightComponent:
+      Intensity: 0
+      Radiance: [0.764478743, 0.739913523, 0.510636389]
+      SourceSize: 0.5
+      SoftShadows: true
+      CastShadows: true
+      ShadowAmount: 1
+  - Entity: 9575974614089622499
+    TagComponent:
+      Tag: Sphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.15616703, -0.874298513, -0.416959047]
+      Rotation: [0, 0, 0]
+      Scale: [1.25582552, 0.627993166, 1.5069958]
+    StaticMeshComponent:
+      AssetID: 14924744775604793321
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+    SphereColliderComponent:
+      Radius: 0.5
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 10222427340003697817
+    TagComponent:
+      Tag: Sphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.24963033, -0.866577804, 1.32302368]
+      Rotation: [0, 0, 0]
+      Scale: [0.462000012, 0.462000012, 0.462000012]
+    StaticMeshComponent:
+      AssetID: 14924744775604793321
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+    SphereColliderComponent:
+      Radius: 0.5
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 10684684840911833006
+    TagComponent:
+      Tag: mesh
+    Parent: 2506313944935975030
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.19584632, -3.08670449, 1.19403291]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 4052066754632556295
+      SubmeshIndex: 0
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+  - Entity: 12255358111764658021
+    TagComponent:
+      Tag: Bottle
+    Parent: 2516369089658315131
+    Children:
+      []
+    TransformComponent:
+      Position: [0.0895916224, -1.0016979, -2.50053501]
+      Rotation: [-0.0640656203, 0, 0]
+      Scale: [2.61000013, 2.61000013, 2.61000013]
+    MeshComponent:
+      AssetID: 3699100251643739110
+      SubmeshIndex: 0
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+    RigidBodyComponent:
+      BodyType: 0
+      LayerID: 0
+      EnableDynamicTypeChange: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsTrigger: false
+      CollisionDetection: 0
+      InitialLinearVelocity: [0, 0, 0]
+      InitialAngularVelocity: [0, 0, 0]
+      MaxLinearVelocity: 500
+      MaxAngularVelocity: 50
+      LockedAxes: 0
+    MeshColliderComponent:
+      ColliderHandle: 10948629081278663243
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 12435971386086354116
+    TagComponent:
+      Tag: transform9
+    Parent: 15637097572785082548
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 13259527633592436384
+    TagComponent:
+      Tag: Sound Sphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.412180901, 1.69326925, -6.69890594]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    ScriptComponent:
+      ClassHandle: 351365716
+      Name: AudioDemo.OneShotTrigger
+    RigidBodyComponent:
+      BodyType: 0
+      LayerID: 0
+      EnableDynamicTypeChange: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsTrigger: true
+      CollisionDetection: 0
+      InitialLinearVelocity: [0, 0, 0]
+      InitialAngularVelocity: [0, 0, 0]
+      MaxLinearVelocity: 500
+      MaxAngularVelocity: 50
+      LockedAxes: 0
+    SphereColliderComponent:
+      Radius: 1
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+    AudioComponent:
+      StartEvent: ""
+      StartCommandID: 0
+      PlayOnAwake: false
+      StopIfEntityDestroyed: true
+      VolumeMultiplier: 2
+      PitchMultiplier: 0.560000002
+      AutoDestroy: false
+  - Entity: 13351118100167555034
+    TagComponent:
+      Tag: transform2
+    Parent: 6911023890176044272
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 13526942242123525663
+    TagComponent:
+      Tag: transform6
+    Parent: 7596321282966362520
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 14429119642028135617
+    TagComponent:
+      Tag: transform1
+    Parent: 4268072469362295047
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 14480412389877587174
+    TagComponent:
+      Tag: transform7
+    Parent: 2807820902406054761
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 15333907207145005091
+    TagComponent:
+      Tag: mesh
+    Parent: 2410717826755132072
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.901985347, -3.07076359, 1.09052658]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 17437196776715727753
+      SubmeshIndex: 0
+      MaterialTable:
+        0: 761861143196698806
+      Visible: true
+  - Entity: 15621221142380919336
+    TagComponent:
+      Tag: Hemisphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [2.02519488, -0.618796349, 0.576119483]
+      Rotation: [3.14159274, 0.102584451, 3.14159274]
+      Scale: [0.349999994, 0.350000024, 0.47730422]
+    StaticMeshComponent:
+      AssetID: 18156555171054506689
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+  - Entity: 15662199145974365620
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [2.22855592, -0.643351018, -0.388372988]
+      Rotation: [1.9418081, 0, -1.65015149]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 0
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 10687596211201198748
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 16189048305669213946
+    TagComponent:
+      Tag: Sky Light
+    Parent: 6151203729242867256
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SkyLightComponent:
+      EnvironmentMap: 0
+      Intensity: 1
+      Lod: 1
+      DynamicSky: true
+      TurbidityAzimuthInclination: [2.31999993, 5.1420002, 1.52999997]
+  - Entity: 16499517935498498296
+    TagComponent:
+      Tag: Spot Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [3.60716513e-07, 3.02590942, 0]
+      Rotation: [1.57079637, 0, 1.57079637]
+      Scale: [1, 1, 1]
+    SpotLightComponent:
+      Radiance: [1, 1, 1]
+      Angle: 180
+      AngleAttenuation: 19.0400009
+      CastShadows: false
+      SoftShadows: false
+      Falloff: 0
+      Intensity: 6
+      Range: 8.80000019
+      SourceSize: 99.5
+  - Entity: 16679927148269971972
+    TagComponent:
+      Tag: cornell
+    Parent: 7708187639471483203
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 17026428149618823067
+      SubmeshIndex: 0
+      MaterialTable:
+        0: 0
+      Visible: true
+    RigidBodyComponent:
+      BodyType: 0
+      LayerID: 0
+      EnableDynamicTypeChange: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsTrigger: false
+      CollisionDetection: 0
+      InitialLinearVelocity: [0, 0, 0]
+      InitialAngularVelocity: [0, 0, 0]
+      MaxLinearVelocity: 500
+      MaxAngularVelocity: 50
+      LockedAxes: 0
+    MeshColliderComponent:
+      ColliderHandle: 4334378291598149964
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 17481586356505471464
+    TagComponent:
+      Tag: Tumbler_03
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.197163001, -1.21412289, 1.39420772]
+      Rotation: [0, 0, 0]
+      Scale: [5.11999989, 5.11999989, 5.11999989]
+    StaticMeshComponent:
+      AssetID: 16497380876707455890
+      MaterialTable:
+        0: 4632926086905324461
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 14178714524175384183
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 17736245086053658813
+    TagComponent:
+      Tag: cornell
+    Parent: 7708187639471483203
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 17026428149618823067
+      SubmeshIndex: 2
+      MaterialTable:
+        0: 0
+      Visible: true
+    RigidBodyComponent:
+      BodyType: 0
+      LayerID: 0
+      EnableDynamicTypeChange: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsTrigger: false
+      CollisionDetection: 0
+      InitialLinearVelocity: [0, 0, 0]
+      InitialAngularVelocity: [0, 0, 0]
+      MaxLinearVelocity: 500
+      MaxAngularVelocity: 50
+      LockedAxes: 0
+    MeshColliderComponent:
+      ColliderHandle: 3494413951431537321
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 17749280437870376389
+    TagComponent:
+      Tag: DDGI Volume
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    DDGIVolumeComponent:
+      Enable: true
+      Index: 0
+      RngSeed: 0
+      InsertPerfMarkers: true
+      ProbeRelocationEnabled: true
+      ProbeClassificationEnabled: true
+      ProbeVariabilityEnabled: false
+      InfiniteScrollingEnabled: false
+      ProbeSpacing: [0.300000012, 0.300000012, 0.300000012]
+      ProbeCounts: [9, 9, 9]
+      ProbeNumRays: 256
+      ProbeNumIrradianceTexels: 8
+      ProbeNumDistanceTexels: 16
+      ProbeHysteresis: 0.970000029
+      ProbeMaxRayDistance: 10
+      ProbeNormalBias: 0.0199999996
+      ProbeViewBias: 0.100000001
+      ProbeIrradianceThreshold: 0.200000003
+      ProbeBrightnessThreshold: 1
+      ProbeVariabilityThreshold: 0
+      ProbeMinFrontfaceDistance: 0.100000001
+      ProbeDistanceExponent: 50
+      ProbeIrradianceEncodingGamma: 5
+      ProbeRandomRayBackfaceThreshold: 0.100000001
+      ProbeFixedRayBackfaceThreshold: 0.25
+SceneAudio:
+  MasterReverb:
+    Pre-delay: 44
+    Room size: 0.49999994
+    Damping: 0.5
+    Width: 1

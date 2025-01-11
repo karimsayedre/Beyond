@@ -1,0 +1,136 @@
+#pragma once
+
+// Helper function to pack a float3 into r11g11b10 format.
+uint PackR11G11B10(float3 value)
+{
+	uint r = uint(saturate(value.r) * 2047.0f);
+	uint g = uint(saturate(value.g) * 2047.0f) << 11;
+	uint b = uint(saturate(value.b) * 1023.0f) << 22;
+	return r | g | b;
+}
+
+// Helper function to unpack a float3 from r11g11b10 format.
+float3 UnpackR11G11B10(uint packedValue)
+{
+	float3 value;
+	value.r = float(packedValue & 2047) / 2047.0f;
+	value.g = float((packedValue >> 11) & 2047) / 2047.0f;
+	value.b = float((packedValue >> 22) & 1023) / 1023.0f;
+	return value;
+}
+
+float UnpackScalar(uint packedValue, int bitOffset, int bitCount)
+{
+	uint mask = (1u << bitCount) - 1;
+	return float((packedValue >> bitOffset) & mask) / float(mask);
+}
+
+float UnpackUint(uint packedValue, int bitOffset, int bitCount)
+{
+	uint mask = (1u << bitCount) - 1;
+	return uint((packedValue >> bitOffset) & mask);
+}
+
+uint PackScalars(float value1, float value2, float value3, uint depth)
+{
+	uint v1 = uint(saturate(value1) * 255.0f);
+	uint v2 = uint(saturate(value2) * 255.0f) << 8;
+	uint v3 = uint(saturate(value3) * 255.0f) << 16;
+	uint v4 = (depth & 0xFF) << 24; // Take the lower 8 bits of the depth
+	return v1 | v2 | v3 | v4;
+}
+
+float Unpack8BitToFloat(uint packedValue)
+{
+	return (packedValue & 0xFF) / 255.0f;
+}
+
+uint PackHalf2(float val1, float val2)
+{
+	uint2 packed = f32tof16(float2(val1, val2));
+	return (packed.y << 16) | packed.x;
+}
+
+float2 UnpackHalf2(uint packedVal)
+{
+	uint2 unpacked;
+	unpacked.x = packedVal & 0xFFFF;
+	unpacked.y = (packedVal >> 16) & 0xFFFF;
+	return f16tof32(unpacked);
+}
+
+float2 EncodeOctahedral(float3 n)
+{
+	n /= (abs(n.x) + abs(n.y) + abs(n.z));
+	float2 octNormal = (n.z >= 0.0f) ? n.xy : (1.0f - abs(n.yx)) * (step(0.0f, n.xy) * 2.0f - 1.0f);
+	return octNormal * 0.5f + 0.5f;
+}
+
+float3 DecodeOctahedral(float2 f)
+{
+	f = f * 2.0f - 1.0f;
+	float3 n = float3(f.x, f.y, 1.0f - abs(f.x) - abs(f.y));
+	float t = saturate(-n.z);
+	n.xy += n.z >= 0.0f ? 0.0f : select(n.xy >= 0.0f, -t, t);
+	return normalize(n);
+}
+
+float2 OctWrap(float2 v)
+{
+	return (1.0 - abs(v.yx)) * select(v.xy >= 0.0, 1.0, -1.0);
+}
+
+uint PackNormal(float3 n)
+{
+	// Compute scale (length) of the normal
+	float scale = length(n);
+
+	// Normalize the vector
+	n = (scale > 0.0) ? n / scale : float3(1.0, 0.0, 0.0);
+
+	// Project the sphere onto the octahedron, and then onto the xy plane
+	float2 p = n.xy / (abs(n.x) + abs(n.y) + abs(n.z));
+	p = (n.z <= 0.0) ? OctWrap(p) : p;
+
+	// Convert to [0,1] range
+	p = p * 0.5 + 0.5;
+
+	// Pack components into 10 bits each
+	uint packedNormal = (uint(p.x * 1023.0) & 0x3FF) | ((uint(p.y * 1023.0) & 0x3FF) << 10);
+
+	// Pack scale into remaining 12 bits
+	// We'll use a custom encoding for the scale to maintain precision for small values
+	float encodedScale = (scale < 1.0) ? (scale * 0.5) : (1.0 - 0.5 / scale);
+	packedNormal |= (uint(saturate(encodedScale) * 4095.0) & 0xFFF) << 20;
+
+	return packedNormal;
+}
+
+float3 UnpackNormal(uint packedNormal)
+{
+	// Unpack xy components
+	float2 p;
+	p.x = float(packedNormal & 0x3FF) / 1023.0;
+	p.y = float((packedNormal >> 10) & 0x3FF) / 1023.0;
+
+	// Unpack scale
+	float encodedScale = float((packedNormal >> 20) & 0xFFF) / 4095.0;
+	float scale = (encodedScale < 0.5) ? (encodedScale * 2.0) : (1.0 / (2.0 - 2.0 * encodedScale));
+
+	// Convert back to [-1,1] range
+	p = p * 2.0 - 1.0;
+
+	// Reconstruct z component
+	float3 n = float3(p.xy, 1.0 - abs(p.x) - abs(p.y));
+	float t = saturate(-n.z);
+	n.xy += (n.z < 0.0) ? select((n.xy >= 0.0), -t, t) : 0.0;
+
+	// Normalize and apply scale
+	return normalize(n) * scale;
+}
+
+uint PackFloatTo8Bit(float value)
+{
+	// Clamp the value to [0, 1], scale to [0, 255], and cast to uint
+	return (uint)(saturate(value) * 255.0f + 0.5f); // Adding 0.5 for rounding
+}

@@ -1,0 +1,25 @@
+Material:
+  AlbedoColor: [0, 1, 0.840707779, 1]
+  Emission: 30
+  IOR: 1
+  Specular: 0
+  SpecularColor: [1, 1, 1]
+  Transmission: 0
+  AttenuationColor: [1, 1, 1]
+  AttenuationDistance: 1
+  Thickness: 1
+  Clearcoat: 0
+  ClearcoatRoughness: 0
+  Iridescence: 0
+  IridescenceIor: 1.5
+  IridescenceThickness: 0
+  SheenColor: [0, 0, 0]
+  SheenRoughness: 0
+  UseNormalMap: false
+  Metalness: 0
+  Roughness: 0.400000006
+  AlbedoMap: 0
+  NormalMap: 0
+  MetalnessMap: 0
+  RoughnessMap: 0
+  MaterialFlags: 2

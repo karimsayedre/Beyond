@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Revision History &#8212; Compressonator Compressonator - latest build documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contact and Support" href="support/contact.html" />
+    <link rel="prev" title="Analysis" href="analysis/index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="revision-history">
+<h1>Revision History<a class="headerlink" href="#revision-history" title="Permalink to this headline">¶</a></h1>
+<p>For the latest documentation, please refer to:  <a class="reference external" href="http://compressonator.readthedocs.io/en/latest/">http://compressonator.readthedocs.io/en/latest/</a></p>
+<section id="v4-4">
+<h2>V4.4<a class="headerlink" href="#v4-4" title="Permalink to this headline">¶</a></h2>
+<p>July 2023</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><p>SIMD Support in BC1 Encoding</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Added new code paths for SSE4, AVX2, and AVX-512 encoding in Compressonator Core that are automatically chosen based on CPU support</p></li>
+<li><p>New functions added to the core interface to allow users to manually enable/disable SIMD instructions if desired: <strong>EnableSSE4()</strong>, <strong>EnableAVX2()</strong>, <strong>EnableAVX512()</strong>, and <strong>DisableSIMD()</strong></p></li>
+<li><p>Another new function was added to allow users to query the SIMD instruction set extensions currently being used in Compressonator Core: <strong>GetEnabledSIMDExtension()</strong></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Mipmap Generation Updates</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>New option called “FilterGamma” added to Compressonator CLI which allows users to apply gamma correction to mipmap levels after generation</p></li>
+<li><p>Mipmap generation behaviour has been modified to only stop once all dimensions of the mipmap level are equal to or below the minimum size specified</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Miscellaneous Changes</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The default location of build artifacts has changed from <em>build</em> to <em>build/bin</em>, and build scripts have been moved to <em>build</em></p></li>
+<li><p>A new CMake project for building only the SDK in various configurations has been created under the <em>build/sdk</em> folder</p></li>
+<li><p>The regular CMake build now requires three environment variables to be set that point to external dependency installations: <strong>OPENCV_DIR</strong>, <strong>QT_DIR</strong>, and <strong>VULKAN_DIR</strong> (more details can be found in the build section of the docs)</p></li>
+<li><p>16-bit PNG support added to Compressonator Framework</p></li>
+<li><p>Removed implicit channel swizzling from all codec buffer classes, ensuring more consistent behaviour</p></li>
+<li><p>Renamed CMP_TestCore project to CMP_UnitTests and expanded the suite of unit tests</p></li>
+<li><p>Fixed compilation errors for BC6H core shader</p></li>
+<li><p>Dependency on DirectX 9 and DirectX 10 DLL files has been replaced with the use of DirectXTex</p></li>
+<li><p>Silent option in Compressonator CLI properly disables all output other than fatal errors.</p></li>
+<li><p>Edited documentation to fix typo for “GenGPUMipMaps” option</p></li>
+<li><p>Improved BC7 codec performance by keeping initialization data in memory rather than freeing it after each call to CMP_ConvertTexture</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>Compressing RG8 format images to BC5 results in black data in the output red channel</p></li>
+<li><p>Potential buffer overflow in RG8 Codec Buffer class when converting RG8 data to BC5</p></li>
+<li><p>Swizzling is not supported in all variations of the codec buffer classes</p></li>
+</ul>
+</section>
+<section id="v4-3">
+<h2>V4.3<a class="headerlink" href="#v4-3" title="Permalink to this headline">¶</a></h2>
+<p>January 2023</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><p>Brotli-G</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>New lossless compression format CMP_FORMAT_BROTLIG that can compress all types of data, not just textures</p></li>
+<li><p>Command line support via CompressonatorCLI as format “BRLG”</p></li>
+<li><p>Encoding is done using the CPU and decoding can be done by either the CPU or GPU</p></li>
+<li><p>New Compressonator file format for compressed Brotli-G data, “.brlg”</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Mipmap Updates</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Generating mipmaps in the GUI app will process every selected image, rather than stop after the first one</p></li>
+<li><p>Fixed crash when trying to generate mipmaps for a file with existing mipmaps</p></li>
+<li><p>Fixed crash when attempting to generate mipmaps for greyscale images through the GUI app</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Compressed to Compressed Format Transcoding</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Supports BCn to BCn conversions</p></li>
+<li><p>Works by using a temporary uncompressed format as an intermediate: compressed input → uncompressed → compressed output</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>RGBA1010102 Format Support</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Added new format: CMP_FORMAT_RGBA_1010102 which is a variation of the existing CMP_FORMAT_2101010 format</p></li>
+<li><p>Added ability to load DDS files in the new format</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Option to Use Original File Names when Compressing</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Changed default behaviour of CompressonatorCLI so that it no longer “mangles” names, meaning it no longer adds extra text to the end of destination file names to identify the source file extension and destination format.</p></li>
+<li><p>When processing batches of files CompressonatorCLI will use the source file names as the destination, unless multiple sources share the same file name. In that case, it will mangle the file names of the repeated files.</p></li>
+<li><p>Added the flag “-UseMangledFileNames” for CompressonatorCLI that will revert back to the previous behaviour of mangled destination file names.</p></li>
+<li><p>A new application setting was added to CompressonatorGUI, “Use Original File Names”, which will use the source’s file name as the destination’s file name for the first destination per source. This is enabled by default.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>BC6H Codec Improvements</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Better handling of edge cases like infinity and NaN values in the input data</p></li>
+<li><p>BC6H_SF preserves negative numbers through compression and decompression</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Mesh Optimization</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Saved results can no longer contain invalid GLTF data when the input lacks some properties, like animations</p></li>
+<li><p>Fixed handling of file paths so that paths with drive letters specified in them work as expected</p></li>
+<li><p>Improved error messages and error handling</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>GUI Compression Consistency Improvement</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Changes made to the three main processing buttons: the button in the top bar, the button in the property view, and the right-click context menu. Their behaviour is now more consistent regardless of program state.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Miscellaneous Changes/Improvements</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>CMP_FORMAT_RGBA_32F is recognized as a valid format for compression</p></li>
+<li><p>Fixed BC4 compression with R8 input</p></li>
+<li><p>Various small improvements in how CompressonatorCLI handles files and folders, especially in batch processing</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>Transcoding decreases image quality.</p></li>
+<li><p>R8 images are currently loaded into the red channel of a 4 channel ARGB_8888 image. This does not affect the results of any compressions, but the GUI will continue to show ARGB_8888 instead of R_8.</p></li>
+<li><p>The GPU_HW encoding option produces corrupted results on some machines when encoding to BC4_S or BC5_S. There is also an issue with generating and compressing mipmaps using the GPU_HW option that results in the lower mipmap levels being completely blank on some machines.</p></li>
+<li><p>Brotli-G encoding might sometimes result in compressed files that are slightly larger than the source file, particularly for well compressed sources. This is a limitation similar to ZIP compression, where small files or well compressed images might not be able to be compressed very well.</p></li>
+<li><p>Brotli-G encoding treats all source files as merely binary data, so it will not be able to create mipmaps or do any other extra processing to images during encoding.</p></li>
+</ul>
+</section>
+<section id="v4-2">
+<h2>V4.2<a class="headerlink" href="#v4-2" title="Permalink to this headline">¶</a></h2>
+<p>July 2021</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><p>BC1 Quality Improvements</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Added new refine steps to improve quality of images with mixed low and high-frequency content.</p></li>
+<li><p>Boosted encoding performance by 2x with improved quality for smooth texture-mapped surfaces.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>BC7 HLSL Improvements</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bug fixes and improved overall quality of the shader.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>GUI Update</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Added “Refine Steps” settings for BC1 image processing</p></li>
+<li><p>Removed “Use Alpha” and “No Alpha” setting for BC1, Just set a threshold above 0 to enable BC1 punch through ranges</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>SDK Updates</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Removed framework.h file, replaced with compressonator.h</p></li>
+<li><p>Added new kernel setting options for BCn codecs in CMP_Framework</p></li>
+<li><p>New single header shader files added for CPU-GPU common API’s and type definitions</p></li>
+<li><p>Added FidelityFX types to common_defs.h to support programming FidelityFX shaders with CMP type definitions</p></li>
+<li><p>Improved CompressonatorLib BC1 performance and quality</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>CMake Build Updates</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Added options to select build of external libs, SDK libs and applications</p></li>
+<li><p>Build updated for CLI on Mac OS</p></li>
+<li><p>OpenCV 4 supported</p></li>
+<li><p>Improved compiler standard revision detection and extensions</p></li>
+<li><p>Visual Studio 2019 support</p></li>
+<li><p>Qt 5.15 support</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>BC1 set to high-quality settings or with refinement steps take longer time to process than prior versions, adjust quality-settings lower if better performance is required</p></li>
+<li><p>Fixed quality issues for BC7 HLSL for images with alpha content, the processing time is longer than the previous release</p></li>
+<li><p>Global Setting of Refine Steps is only valid for BC1, it will not work for any other format settings.</p></li>
+</ul>
+</section>
+<section id="v4-1">
+<h2>V4.1<a class="headerlink" href="#v4-1" title="Permalink to this headline">¶</a></h2>
+<p>November 2020</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><p>SNORM Support</p>
+<blockquote>
+<div><p><a class="reference external" href="gui_tool/user_guide/texturecompression.html#compressing-signed-channel-images">Signed channel support for BC4 and BC5</a></p>
+</div></blockquote>
+</li>
+<li><p>GPU Encoding</p>
+<blockquote>
+<div><p><a class="reference external" href="gui_tool/user_guide/applicationoptions.html?#encode-with">GPU Based Compression</a></p>
+</div></blockquote>
+</li>
+<li><p>Mip Map Generation</p>
+<blockquote>
+<div><p><a class="reference external" href="gui_tool/user_guide/userguide.html#mip-map-filter-support-using-either-gpu-or-cpu">MIP Map Filter Support Using either GPU or CPU</a></p>
+<p><a class="reference external" href="gui_tool/user_guide/userguide.html#gpu-based-compression-and-mip-map-generation">GPU Based MIP Map generation</a></p>
+</div></blockquote>
+</li>
+<li><p>Image View</p>
+<blockquote>
+<div><p><a class="reference external" href="gui_tool/user_guide/imageview.html#psnr-display-feature-for-gui-image-views">PSNR Display Feature for GUI Image Views</a></p>
+</div></blockquote>
+</li>
+<li><p>Test Analysis</p>
+<blockquote>
+<div><p><a class="reference external" href="command_line_tool/commandline.html#csv-file-update-to-support-automation">CSV File Update to Support Automation</a></p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="gui_tool/user_guide/imageview.html?#adding-additional-image-formats">KTX2 File Support</a></p>
+<blockquote>
+<div><p>A KTX version 2 plugin has been added to the SDK, that supports saving and loading multichannel images, BCn, ETCn, and ASTC codecs.</p>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>When using GPU encoding, all source image width and height must be divisible by 4.</p></li>
+<li><p>GPU HW based encoding feature is only available on the Windows platform. Encoding is set only for BCn codecs and quality is limited when compared to CPU encoding.</p></li>
+<li><p>BC6H is not supported  with GPU HW based encoding.</p></li>
+<li><p>KTX2 file formats for ATIn and DXT5 swizzled formats are not supported.</p></li>
+<li><p>ATI1n, ATI2n processed images save as BC4 and BC5 formats.</p></li>
+<li><p>Transcoding to ARGB_16F, ARGB_32F, and ARGB_8888 image formats is supported, all other channel formats have various data issues and have been removed until a fix is available.</p></li>
+<li><p>Viewing glTF and OBJ models using Vulkan(TM) rendering shows blank views.</p></li>
+<li><p>PSNR and Image diff analysis for mismatched channel source and destination types (F16, F32, HalfFloat, and 8bit) needs improvement.</p></li>
+<li><p>BC6H for OpenCL is not available in this release.</p></li>
+<li><p>If user-requested MIP Map level generation for GPU texture sizes in the GUI and CLI applications are invalid, they will automatically be adjusted to the lowest settable limits.</p></li>
+<li><p>Limited CubeMap support.</p></li>
+</ul>
+</section>
+<section id="v4-0">
+<h2>V4.0<a class="headerlink" href="#v4-0" title="Permalink to this headline">¶</a></h2>
+<p>May 2020</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><p><a class="reference external" href="developer_sdk/cmp_core/index.html#cmp-core">CMP_Core GPU encoding support</a></p>
+<blockquote>
+<div><p>Supports GPU based encoding with OpenCL and DX11</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="analysis/index.html#analysis-views">Analysis Views</a></p>
+<blockquote>
+<div><p>(Beta Feature) Displays performance data for GPU and CPU based BC1 to BC7 encoders</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="command_line_tool/commandline.html#test-analysis-logging-features-and-file-filters">CLI Analysis Log File</a></p>
+<blockquote>
+<div><p>The “process_results.txt” logging includes GPU performance analysis data. csv file format is also available.</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="developer_sdk/cmp_core/index.html#quality-settings">Using Codec Quality Settings</a></p>
+<blockquote>
+<div><p>Quality settings are available for BC1, BC2 and BC3 encoders.</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="gui_tool/user_guide/ProjectExplorer.html#setting-global-quality-settings">Setting Global Quality Settings</a></p>
+<blockquote>
+<div><p>Users can override all individual destination compression settings, using a globally set value before processing.</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="gui_tool/user_guide/TextureCompression.html#using-the-make-compatible-feature">Make Compatible Feature</a></p>
+<blockquote>
+<div><p>Compressonator SDK performs auto conversions of FP16 to byte and byte to FP16 formats when encoding textures with GPU or CPU encoders, a pre-conversion of the source data is performed, into a temporary buffer which is then sent for processing, once the processing is completed the buffer is removed.</p>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>GPU based encoding feature is only available on the Windows platform.</p></li>
+<li><p>When using GPU Encoding, all source image width and height must be divisible by 4.</p></li>
+<li><p>BC1, BC2 and BC3 DXC Performance is slow for quality setting &gt; 0.6</p></li>
+<li><p>CMP_Core for BC1,BC2,BC3,BC4,BC5 is fully functional on both OpenCL and DX11.</p></li>
+<li><p>CMP_Core BC7 has limited support on OpenCL, in a few cases encoding images causes GPU and CLI application to become unresponsive.</p></li>
+<li><p>CMP_Core BC6 for OpenCL is not completed.</p></li>
+<li><p>BC6 &amp; BC7 on DX11 uses DirectX Tex shaders, CMP_Core version will be available soon.</p></li>
+<li><p>GPU shaders for OpenCL and DX11 are compiled at runtime when encoding a texture for the first time, all subsequent runs use compiled shaders.</p></li>
+<li><p>KPerf(ms) and MTx/s are not measured for Compressonator SDK CPU encoding, only measured for CMP_Core SDK HPC-CPU and GPU encoding.</p></li>
+<li><p>KPerf(ms) and MTx/s measurements do not match across DXC and OCL pipelines.</p></li>
+<li><p>If user-requested MIP Map level generation for GPU texture sizes in the GUI and CLI applications are invalid, they will automatically be adjusted to the lowest settable limits.</p></li>
+<li><p>See v3.2 list for additional issues and limitations.</p></li>
+</ul>
+</section>
+<section id="v3-2">
+<h2>V3.2<a class="headerlink" href="#v3-2" title="Permalink to this headline">¶</a></h2>
+<p>December 2019</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><p><a class="reference external" href="developer_sdk/index.html">New Libraries</a></p>
+<blockquote>
+<div><p>Several new libraries are now provided with the SDK.</p>
+<p><a class="reference external" href="developer_sdk/cmp_core/index.html">Compressonator Core</a>
+Provides block level API access to updated performance and quality driven BCn codecs.</p>
+<p><a class="reference external" href="developer_sdk/cmp_framework/index.html">Compressonator Framework</a>
+Includes Compressonator core with interfaces for multi-threading, mipmap generation, file access of images and HPC pipeline interfaces. (SPMD &amp; GPU support is not enabled in this release)</p>
+<p><a class="reference external" href="developer_sdk/cmp_compressonator/index.html">Compressonator SDK</a>
+Has been updated to support Cube Maps, MIP Map generation. External link requirement for Open EXR has been removed.</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#cube-maps">Cube Map Support</a></p>
+<blockquote>
+<div><p>This release previews cube map support for images that are limited to RGBA_8888 format and RGBA_F16. Support for other formats will be provided in the next major update.</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference external" href="analysis/index.html#analysis-views">Analysis Views</a></p>
+<blockquote>
+<div><p>A analysis table view and results output are provided for users to view test analysis results for Performance, PSNR and SSIM analysis during and after processing of image textures.</p>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>HPC BC7 codec on Linux platforms shows block artifacts.</p></li>
+<li><p>HDR Cube maps (Format ARGB_16F) files have issues in the GUI view, only the first frame and MIP Level is displayed.</p></li>
+<li><p>Cube map only supports a limited set of texture types (RGBA_8888 and RGBA_F16), additional format will be added in future release.</p></li>
+<li><p>Cube maps with .KTX as destination format is not supported.</p></li>
+<li><p>When transcoding signed floats with BC6H HPC on unsigned RGBA_8888 data the images will appear distorted.</p></li>
+<li><p>CreateCodecBuffer (nCodecBufferType) case needs to create new codec buffers for CBT_RGBA8888, CBT_BGRA8888 and CBT_ARGB8888. The fix has been patched in this release.</p></li>
+<li><p>In GUI, ATI2N decode with CPU is swizzled. Decode views with GPU_OpenGL, GPU_DirectX and GPU_Vulkan are correct.</p></li>
+<li><p>MSE calculations are based on RGB channels only, alpha channel is not included. New MSE calculations based on MipSet data format for RGBA channels will be used in next release.</p></li>
+</ul>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>BC5 codec uses ATI2N_XY (Red &amp; Green) channel format  if you prefer Green &amp; Red for BC5 please use ATI2N format for encoding.</p></li>
+<li><p>In GUI, BC4 decode views using CPU is gray scaled based on Red channel. Next release will only use Red channel views to match GPU views.</p></li>
+</ul>
+</section>
+<section id="v3-1">
+<h2>V3.1<a class="headerlink" href="#v3-1" title="Permalink to this headline">¶</a></h2>
+<p>November 2018</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><p><strong>Fresh New Installers:</strong></p>
+<blockquote>
+<div><p>When installing to Windows with V3.1 release, you will notice that there are several separate new installers: SDK, GUI and CLI, which when all used result in the following file structure under \Program Files\Compressonator 3.1</p>
+<blockquote>
+<div><p><img alt="image126" src="_images/image126.png" /></p>
+</div></blockquote>
+<p>The bin and license folders are created when the user installed GUI or CLI. When the SDK is installed,  an examples folder is created which contains sample application source code demonstrating the use of the Compressonator SDK.  These samples use the header files from the include folder and require linking with the prebuilt sample Compressonator library provided in the lib folder. Users can also build the Compressonator library using the source code from GPUOpen.
+Each of these installs will not remove prior v3.0 or older installations. The user should uninstall manually using the control panel “add remove programs”.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Texture Compression</strong></p>
+<blockquote>
+<div><p><strong>BC6H:</strong> The quality of images varies slightly when processed with a CPU based encoder and decompressed by GPU compared to decompression by CPU, especially when generating MIP map levels with progressively lower resolution images. Our latest release compensates for these differences to reduce the errors that causes blocking artifacts and luminance changes.</p>
+<p><a class="reference external" href="gui_tool/user_guide/TextureCompression.html#etc2">ETC2_RGBA</a> and <a class="reference external" href="gui_tool/user_guide/TextureCompression.html#etc2">ETC2_RGBA1</a>  is added to Compressonator SDK, that controls the degree of transparency of images for ETC2 blocks.</p>
+</div></blockquote>
+</li>
+<li><p><strong>CLI Options</strong></p>
+<blockquote>
+<div><p><a class="reference external" href="command_line_tool/commandline.html#test-analysis-logging-features-and-file-filters">Process Source and Destination Folders:</a></p>
+<p>The new CLI adds support for processing image files from a folder, without the need to specify a file name. Using a file filter, specific files types can also be selected for compression as needed.</p>
+<p><a class="reference external" href="command_line_tool/commandline.html#test-analysis-logging-features-and-file-filters">CLI Analysis Log File:</a></p>
+<p>CLI will generate an output “process_results.txt” when -log is added to the compression command line options, users can change the default log file using the command -logfile, the log captures details of the source and destination files along with statistical data on performance and quality.</p>
+</div></blockquote>
+</li>
+<li><p><strong>3D Model</strong></p>
+<blockquote>
+<div><p><strong>Model Mesh Compression:</strong> Additional support for gltf 2.0 compression extensions (KHR_draco_mesh_compression) is added to <a class="reference external" href="command_line_tool/commandline.html#mesh-compression">CLI</a> and <a class="reference external" href="gui_tool/user_guide/3DModelCompression.html#d-mesh-optimization-and-or-mesh-compression">GUI</a></p>
+<p><strong>Selectable 3D Model Viewers:</strong> Support for the Vulkan Viewer code introduced in 3.0 can now be set in GUI application settings, this is an alpha version and not expected  to work for all glTF models, feature for this viewer compared to DX12 has been limited.</p>
+<p><strong>3D Model Image Diff Viewer, Auto and Manual View:</strong> This feature allows the user to select a manual override of the automated difference view of two rendered models. The Auto View switches render frames at a predetermined rate after two render cycles of each model view, the Manual View allows the users to manually switch view using the keyboards space bar.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Image Viewer</strong>.</p>
+<blockquote>
+<div><p><strong>Save View as:</strong> Users can capture viewed images to file using context menu “Save View as” to either DDS, BMP or EXR files</p>
+<p><strong>Save Block as:</strong> Users can now save any block to file using “Save Source Block … as” where … is the current cursor location translated to a block position.</p>
+<p><strong>Copy to Windows Clipboard:</strong> Users can capture images to Windows Clipboard, using keyboard keys Ctrl C (captures displayed image), Alt C (captures original source image).</p>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>After uninstalling the SDK or CLI, Windows short cuts for the tools folder references are not removed. When selecting them in the start menu Windows will prompt for removal.</p></li>
+<li><p>Vulkan Model Viewer, the code is a preview alpha version, it may cause GUI instability with various models!</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="v3-0">
+<h2>V3.0<a class="headerlink" href="#v3-0" title="Permalink to this headline">¶</a></h2>
+<p>April 2018</p>
+<p>V3.0 release will expand Compressonator assets processing from 2D to 3D.
+Please refer to Getting Started document (Section “Getting Started on 3D
+Mesh Processing”) if you wish to have a quick start on V3.0.</p>
+<p><strong>Features</strong></p>
+<p><a class="reference external" href="#_Optimizing_Mesh">3D Mesh Optimization</a></p>
+<ul class="simple">
+<li><p>Optimize mesh (.obj model and .bin file from .glTF model) using
+vertex cache optimization, overdraw reduction and mesh simplification
+using level of details.</p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#Analyzing_Mesh">Analyzing Mesh</a> : Provide ACMR (Average Cache
+Miss Ratio) and ATVR (Average Transformed Vertices Ratio) statistic
+from mesh optimization to analyze mesh optimization only.</p></li>
+</ul>
+<p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#Optimizing_Mesh">3D Mesh Compression</a></p>
+<ul>
+<li><p>Compress mesh (support only .obj model) using Draco library.</p>
+<blockquote>
+<div><p><a class="reference external" href="#_Image_View_switch">Image View switch between Original and
+Processed</a></p>
+</div></blockquote>
+</li>
+<li><p>Original Image View and Processed Image View (Compressed Image View
+or Pixels Difference Image View) can be switched with simple key
+stokes (O or P)</p></li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>“Mesh optimization only support glTF and obj file format while mesh
+compression only support obj file format.</p></li>
+<li><p>Embedded gltf is not supported for now. Only gltf with external .bin
+mesh file is supported.</p></li>
+<li><p>.obj file texture load (with an external mtl file) and view is not
+supported.</p></li>
+<li><p>“AutoOpt” in the mesh optimization setting may not produce the best
+result, it is just a default setting which includes vertex cache
+optimization with cache size of 16, overdraw optimization with ACMR
+threshold 1.05 and vertex fetch optimization. The mesh optimization
+setting is model-dependent and depend on actual hardware. If result
+is not optimized, users are advised to use “UserOpt” setting and
+refer to <a class="reference external" href="gui_tool/user_guide/UserGuide.html#Mesh_Optimizer_Settings">Mesh Optimizer Settings for “UserOpt”
+selection</a> to set each value manually
+or check/uncheck certain optimization.</p></li>
+<li><p>Mesh Optimization with all selected Mesh Optimizer Settings will need
+to work with <a class="reference external" href="gui_tool/user_guide/UserGuide.html#Analyzing_Mesh">mesh analyzing</a> with the values
+set to match the hardware to get the optimum result.</p></li>
+<li><p>KTX 3 color channels multiple mip level may result in GUI crash and
+will be fix in next release.</p></li>
+</ul>
+</section>
+<section id="v2-7">
+<h2>V2.7<a class="headerlink" href="#v2-7" title="Permalink to this headline">¶</a></h2>
+<p>October 2017</p>
+<p><strong>Features</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="#_Cross_platform_support">Linux and Mac support-</a> build with
+cmake and shell script</p></li>
+<li><p>Preview of 3D model viewer and asset compression</p>
+<ul>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#glTF_Viewer_and">Compress texture images within the glTF
+file</a>.</p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#glTF_Viewer_and">View 3D Models with DX12 using glTF v2.0</a>
+file format <a class="reference external" href="https://www.khronos.org/gltf">https://www.khronos.org/gltf</a></p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#glTF_3D_Model">Compare compressed model</a> textures with
+original</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>“Drag and drop” does not work due to User Interface Privilege
+Isolation technology which forbid dragging from non-admin to admin,
+please relaunch the app without admin again if drag and drop does not
+work.</p></li>
+<li><p>glTF viewer is pre-mature and requires DX12 feature level 12, support
+only Win10 RS2 or later, also Window SDK 10.0.15063.0 is recommended
+for best functionality of the viewer.</p></li>
+<li><p>Decompress view with Vulkan only support up to driver version 1.5.0.
+Stay tune for update to support the latest driver.</p></li>
+<li><p>Some glTF view might appear zoom in or out. Please use the mouse
+wheel to zoom in/out for better view.</p></li>
+</ul>
+<p><img alt="image118" src="_images/image118.png" /></p>
+</section>
+<section id="v2-5">
+<h2>V2.5<a class="headerlink" href="#v2-5" title="Permalink to this headline">¶</a></h2>
+<p>October 2017</p>
+<p><strong>Features</strong></p>
+<ul class="simple">
+<li><p>GUI updates includes</p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#GUI_HDR_Properties">Added support for HDR image view</a>, a HDR
+properties window has been added to allow user adjust Exposure,
+Defog, Knee Low and Knee-High values.</p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#GUI_Channel_weighting">Added support for channel weight
+setting</a> in destination setting window
+for compression codecs.</p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#GUI_Alpha_setting">Added support for alpha setting</a> in
+destination setting window for BC1.</p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#Selectable_GPU_or">Added option to select image view with GPU or
+CPU</a> (decompress with GPU or CPU).</p></li>
+<li><p>GUI “Process” icon behavior has been changed for the convenience of
+the users:</p>
+<ul>
+<li><p>“Process” icon has been enabled all the time even when users do
+not add any compression setting to the original images.</p></li>
+<li><p>Allow user to drag and drop multiple images and click “Process”
+right away, in which GUI will set the compression setting chosen
+by the users to all original images.</p></li>
+</ul>
+</li>
+<li><p>Codecs updates includes</p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#ASTC">ASTC</a></p></li>
+<li><p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#ETC2">ETC2</a></p></li>
+<li><p>Improved BC6H Compression quality</p></li>
+</ul>
+</section>
+<section id="v2-4">
+<h2>V2.4<a class="headerlink" href="#v2-4" title="Permalink to this headline">¶</a></h2>
+<p>December 2016</p>
+<p><strong>Features</strong></p>
+<ul class="simple">
+<li><p>Improved performance of ASTC compression</p></li>
+<li><p>Performance adjusted according to quality settings</p></li>
+<li><p>Fast multi-threaded implementation Example: Boat.png sample image
+with Quality = 0.05 and BitRate = 8.0 over 40% faster for single
+threaded compression compare with v2.3 35x faster for multi threaded
+(8 threads on a 8 Core CPU) compression</p></li>
+<li><p>Support MipMap generation in KTX files</p></li>
+<li><p>Added TGA image plugin</p></li>
+<li><p>Added Vulkan GPU based decompression and viewing of compressed image</p></li>
+<li><p>64-bit support added to Command Line and GUI applications</p></li>
+</ul>
+<p><strong>Known issues and limitations</strong></p>
+<ul class="simple">
+<li><p>MipMap views is not supported in GPU based decompression</p></li>
+</ul>
+<p><strong>Bug Fixes and Changes</strong></p>
+<ul class="simple">
+<li><p>GUI application no longer requires GPUOpen CodeXL components</p>
+<ul>
+<li><p>Replaced Progress Bar</p></li>
+<li><p>Replaced About Box</p></li>
+<li><p>Replaced Welcome Page</p></li>
+<li><p>Removed Crash Reports</p></li>
+</ul>
+</li>
+<li><p>To build GUI and CLI applications from source, it is required to
+install Qt v5.7 first (Qt v5.5 in common folder is no longer
+required)</p></li>
+<li><p>The path setting for 32 and 64 bit Qt files is set in a shared
+VisualStudio project file Compressonator_RootDev.proj</p></li>
+<li><p>Fixed the problem of corrupted BlockRate values in GUI when loading
+project files and processing</p></li>
+<li><p>Fixed the corrupted image block problem when “BlockRate” width is not
+equal to height during ASTC CPU based decompression</p></li>
+<li><p>Added check on valid ASTC user input block size (WxH) parameter</p></li>
+<li><p>Fixed ATC_RGB channel swizzle</p></li>
+<li><p>Fixed missing decompressed image output to TGA file (replaced Qt
+plugins with Compressonator’s own TGA plugin)</p></li>
+</ul>
+</section>
+<section id="v2-3">
+<h2>V2.3<a class="headerlink" href="#v2-3" title="Permalink to this headline">¶</a></h2>
+<p>July 2016</p>
+<p><strong>Features</strong></p>
+<p><a class="reference external" href="gui_tool/user_guide/TextureCompression.html#etc2">ETC2 codec for RGB textures</a></p>
+<ul class="simple">
+<li><p>Compatible with OpenGL’s GL_COMPRESSED_RGB8_ETC2 API</p></li>
+</ul>
+<p><a class="reference external" href="gui_tool/user_guide/TextureCompression.html#astc">ASTC</a> compression &amp; decompression of various block sizes
+from 4x4 to 12x12</p>
+<ul class="simple">
+<li><p>Supported through OpenGL APIs</p></li>
+<li><p>Requires GPU HW supports ASTC format</p></li>
+</ul>
+<p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#selectable-gpu-or-cpu-based-compressed-image-views">Selectable GPU or CPU based compressed image
+views</a></p>
+<ul class="simple">
+<li><p>GPU rendering based on OpenGL or DirectX</p></li>
+</ul>
+<p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#gui-channel-weighting">Channel weighting</a></p>
+<ul class="simple">
+<li><p>Enabled in Compression setting</p></li>
+</ul>
+<p><a class="reference external" href="gui_tool/user_guide/UserGuide.html#GUI-Alpha-setting">Alpha setting enabled for BC1 (DXT1)</a></p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/acompress-128.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">Compressonator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="developer_sdk/index.html">Developer SDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line_tool/index.html">Command Line Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui_tool/index.html">GUI Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_from_source/build_instructions.html">Build from GitHub Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/index.html">Analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Revision History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support/contact.html">Contact and Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="analysis/index.html" title="previous chapter">Analysis</a></li>
+      <li>Next: <a href="support/contact.html" title="next chapter">Contact and Support</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017 to 2023, AMD Developer Tools.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

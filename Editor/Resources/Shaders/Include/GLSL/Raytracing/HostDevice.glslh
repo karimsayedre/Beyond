@@ -1,0 +1,59 @@
+#pragma once
+#extension GL_EXT_shader_explicit_arithmetic_types_int64 : require
+
+// Push constant structure for the ray tracer
+struct PushConstantRay
+{
+	uint Frame;
+};
+
+struct Vertex // See ObjLoader, copy of VertexObj, could be compressed for device
+{
+	vec3 Position;
+	vec3 Normal;
+	vec3 Tangent;
+	vec3 Binormal;
+	vec2 TexCoord;
+};
+
+struct Material
+{
+	// 16-byte aligned members
+	vec4 AlbedoColor;
+
+	// 12-byte aligned float3, followed by 4-byte members to avoid padding
+	vec3 SpecularColor; // 12 bytes, aligned to 16 bytes
+	float Specular;     // 4 bytes (fills the padding after SpecularColor)
+
+	vec3 AttenuationColor;     // 12 bytes, aligned to 16 bytes
+	float AttenuationDistance; // 4 bytes (fills the padding after AttenuationColor)
+
+	vec3 SheenColor;      // 12 bytes, aligned to 16 bytes
+	float SheenRoughness; // 4 bytes (fills the padding after SheenColor)
+
+	// 8-byte aligned members
+	float Roughness;   // 8 bytes, aligned to 8 bytes
+	float Metalness;   // 4 bytes, aligned to 4 bytes
+	float Emission;    // 4 bytes, aligned to 4 bytes
+	bool UseNormalMap; // 4 bytes, aligned to 4 bytes
+
+	uint AlbedoTexIndex;    // 4 bytes, aligned to 4 bytes
+	uint NormalTexIndex;    // 4 bytes, aligned to 4 bytes
+	uint RoughnessTexIndex; // 4 bytes, aligned to 4 bytes
+	uint ClearcoatTexIndex; // 4 bytes, aligned to 4 bytes
+
+	uint TransmissionTexIndex; // 4 bytes, aligned to 4 bytes
+	uint MetalnessTexIndex;    // 4 bytes, aligned to 4 bytes
+	uint EmissionTexIndex;     // 4 bytes, aligned to 4 bytes
+	float IOR;                 // 4 bytes, aligned to 4 bytes
+
+	float Transmission;       // 4 bytes, aligned to 4 bytes
+	float Thickness;          // 4 bytes, aligned to 4 bytes
+	float Clearcoat;          // 4 bytes, aligned to 4 bytes
+	float ClearcoatRoughness; // 4 bytes, aligned to 4 bytes
+
+	float Iridescence;          // 4 bytes, aligned to 4 bytes
+	float IridescenceIor;       // 4 bytes, aligned to 4 bytes
+	float IridescenceThickness; // 4 bytes, aligned to 4 bytes
+	uint Flags;                 // 4 bytes, aligned to 4 bytes
+};

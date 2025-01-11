@@ -1,0 +1,38 @@
+#pragma once
+
+
+
+vec3 RotateVectorAboutY(float angle, vec3 vec)
+{
+	angle = radians(angle);
+	mat3x3 rotationMatrix = { vec3(cos(angle),0.0,sin(angle)),
+							vec3(0.0,1.0,0.0),
+							vec3(-sin(angle),0.0,cos(angle)) };
+	return rotationMatrix * vec;
+}
+
+float Convert_sRGB_FromLinear(float theLinearValue)
+{
+	return theLinearValue <= 0.0031308f
+		? theLinearValue * 12.92f
+		: pow(theLinearValue, 1.0f / 2.4f) * 1.055f - 0.055f;
+}
+
+vec4 ToLinear(vec4 sRGB)
+{
+	bvec4 cutoff = lessThan(sRGB, vec4(0.04045));
+	vec4 higher = pow((sRGB + vec4(0.055))/vec4(1.055), vec4(2.4));
+	vec4 lower = sRGB/vec4(12.92);
+
+	return mix(higher, lower, cutoff);
+}
+
+vec4 UnpackNormalMap( vec4 TextureSample )
+{
+
+	vec2 NormalXY = TextureSample.xy;
+	
+	NormalXY = NormalXY * 2.0 - 1.0;
+	float NormalZ = sqrt( clamp( 1.0f - dot( NormalXY, NormalXY ), 0.0, 1.0 ) );
+	return vec4( NormalXY.xy, NormalZ, 1.0f );
+}

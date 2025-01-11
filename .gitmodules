@@ -1,0 +1,34 @@
+[submodule "Beyond/vendor/imgui"]
+	path = Beyond/vendor/imgui
+	url = https://github.com/karimsayedre/imgui
+    branch = docking
+	ignore = dirty
+[submodule "Beyond/vendor/glm"]
+	path = Beyond/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "Beyond/vendor/msdf-atlas-gen"]
+	path = Beyond/vendor/msdf-atlas-gen
+	url = https://github.com/TheCherno/msdf-atlas-gen
+	ignore = dirty
+[submodule "Beyond/vendor/JoltPhysics/JoltPhysics"]
+	path = Beyond/vendor/JoltPhysics/JoltPhysics
+	url = https://github.com/jrouwe/JoltPhysics
+[submodule "Beyond/vendor/NFD-Extended/NFD-Extended"]
+	path = Beyond/vendor/NFD-Extended/NFD-Extended
+	url = https://github.com/btzy/nativefiledialog-extended
+[submodule "Beyond/vendor/tracy/tracy"]
+	path = Beyond/vendor/tracy/tracy
+	url = https://github.com/wolfpld/tracy
+[submodule "Beyond/vendor/EASTL-3.21.23"]
+	path = Beyond/vendor/EASTL-3.21.23
+	url = https://github.com/karimsayedre/EASTL.git
+[submodule "Beyond/vendor/spdlog"]
+	path = Beyond/vendor/spdlog
+	url = https://github.com/karimsayedre/spdlog.git
+
+[submodule "Beyond/vendor/FastNoise"]
+	path = Beyond/vendor/FastNoise
+	url = https://github.com/Auburn/FastNoiseLite.git
+[submodule "Beyond/vendor/glfw"]
+	path = Beyond/vendor/glfw
+	url = https://github.com/TheCherno/glfw.git

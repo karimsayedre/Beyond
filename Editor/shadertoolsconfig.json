@@ -1,0 +1,17 @@
+{
+
+  "hlsl.additionalIncludeDirectories": [
+    "Resources/Shaders/Include/HLSL/",
+    "Resources/Shaders/Include/Common/",
+    "Resources/Shaders"
+
+  ],
+  "hlsl.preprocessorDefinitions": {
+    "__hlsl": 1,
+    "HLSL": 1,
+    "__HLSL__": 1,
+    "__spirv__": 1,
+    "RTXGI_DDGI_BINDLESS_RESOURCES": 0,
+    "RTXGI_PUSH_CONSTS_TYPE": 1
+  }
+}

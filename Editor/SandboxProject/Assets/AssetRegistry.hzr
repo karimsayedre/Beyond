@@ -1,0 +1,1510 @@
+Assets:
+  - Handle: 40886563372580531
+    FilePath: Meshes/BistroInterior_Wine.hsmesh
+    Type: StaticMesh
+  - Handle: 140149702123254823
+    FilePath: Meshes/Source/Default/Cone.gltf
+    Type: MeshSource
+  - Handle: 173603213072264167
+    FilePath: Meshes/NewSponza_Curtains_glTF.hsmesh
+    Type: StaticMesh
+  - Handle: 176726250474617184
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_02_Normal.png
+    Type: Texture
+  - Handle: 194368489779202255
+    FilePath: Meshes/Capsule.hmesh
+    Type: Mesh
+  - Handle: 231400806506987356
+    FilePath: Meshes/Source/Sponza/16299174074766089871.jpg
+    Type: Texture
+  - Handle: 249217427200212175
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 281883070627820425
+    FilePath: Meshes/bunny.hmesh
+    Type: Mesh
+  - Handle: 297611864332565252
+    FilePath: Meshes/Source/Intel Sponza/textures/roof_tiles_01_Roughness.png
+    Type: Texture
+  - Handle: 306490753237180898
+    FilePath: Meshes/Source/Wine Glasses/Tumbler_01.glb
+    Type: MeshSource
+  - Handle: 366965246933230532
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 436239076086424007
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 488141970285270760
+    FilePath: Meshes/Hexa.hsmesh
+    Type: StaticMesh
+  - Handle: 492972125172217281
+    FilePath: Meshes/Source/Sponza/4975155472559461469.jpg
+    Type: Texture
+  - Handle: 539341079550678001
+    FilePath: Meshes/Source/CornellBox/CornellBox.fbx
+    Type: MeshSource
+  - Handle: 541228960480133728
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_02_Roughnesscol_head_2ndfloor_02_Metalness.png
+    Type: Texture
+  - Handle: 565623711196087413
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_UTile4_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 571669958069516451
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 592367377304211040
+    FilePath: Meshes/Source/Sponza/332936164838540657.jpg
+    Type: Texture
+  - Handle: 614550364353907186
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/Soul_Tree011M_Inst_0_Emissive.jpg
+    Type: Texture
+  - Handle: 631271541937151050
+    FilePath: Meshes/Source/Default/Sphere.gltf
+    Type: MeshSource
+  - Handle: 655275010806625467
+    FilePath: Meshes/Source/Intel Sponza/NewSponza_Curtains_glTF.gltf
+    Type: MeshSource
+  - Handle: 761861143196698806
+    FilePath: Materials/M_Transparent.hmaterial
+    Type: Material
+  - Handle: 764190760845490054
+    FilePath: Meshes/Source/Default/Cube.gltf
+    Type: MeshSource
+  - Handle: 786809479458821555
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01_alpha.png
+    Type: Texture
+  - Handle: 835162086435293605
+    FilePath: Scripts/Source/SandboxUtility.cs
+    Type: ScriptFile
+  - Handle: 880448120739290720
+    FilePath: Meshes/Source/Intel Sponza/textures/stones_2ndfloor_01_Normal.png
+    Type: Texture
+  - Handle: 892920070370397297
+    FilePath: Meshes/Bottle.hsmesh
+    Type: StaticMesh
+  - Handle: 901589853269261403
+    FilePath: Meshes/Source/Hemisphere.glb
+    Type: MeshSource
+  - Handle: 915518468190480172
+    FilePath: Meshes/Source/Sponza/15722799267630235092.jpg
+    Type: Texture
+  - Handle: 918121119456288713
+    FilePath: Meshes/Source/Intel Sponza/textures/col_brickwall_01_BaseColor.png
+    Type: Texture
+  - Handle: 931559847371844646
+    FilePath: Meshes/Cube.hmesh
+    Type: Mesh
+  - Handle: 979261689968032418
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_tile_01_Roughnesswood_tile_01_Metalness.png
+    Type: Texture
+  - Handle: 979575316774197515
+    FilePath: Meshes/Default/Cube.hsmesh
+    Type: StaticMesh
+  - Handle: 1100108576230887789
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_02_Roughness.png
+    Type: Texture
+  - Handle: 1139549538425193776
+    FilePath: Meshes/Source/Sponza/6593109234861095314.jpg
+    Type: Texture
+  - Handle: 1162716615310863507
+    FilePath: Materials/GreenEmission.hmaterial
+    Type: Material
+  - Handle: 1398312787375031849
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_01_tile_Metalness.png
+    Type: Texture
+  - Handle: 1402527073352688016
+    FilePath: Meshes/Capsule.hmesh
+    Type: Mesh
+  - Handle: 1403431005693560347
+    FilePath: Materials/EmissiveMaterials/White Light copy 4.hmaterial
+    Type: Material
+  - Handle: 1503033083699106041
+    FilePath: Scripts/Source/BasicController.cs
+    Type: ScriptFile
+  - Handle: 1519739811713404747
+    FilePath: Meshes/Source/Intel Sponza/textures/window_frame_01_Metalness.png
+    Type: Texture
+  - Handle: 1541391427304119862
+    FilePath: Meshes/Source/Sponza/2051777328469649772.jpg
+    Type: Texture
+  - Handle: 1561346292037904914
+    FilePath: Materials/M_ExplosiveParticle.hmaterial
+    Type: Material
+  - Handle: 1561552323388779476
+    FilePath: Materials/EmissiveMaterials/White Light copy 7.hmaterial
+    Type: Material
+  - Handle: 1609658114684633870
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_01_Normal.png
+    Type: Texture
+  - Handle: 1620083976898509658
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01_mask_usd.png
+    Type: Texture
+  - Handle: 1629480713620347480
+    FilePath: Scripts/Source/Tests/EntityTest.cs
+    Type: ScriptFile
+  - Handle: 1662629795407243290
+    FilePath: Meshes/BistroInterior_Wine.hsmesh
+    Type: StaticMesh
+  - Handle: 1763118873464438166
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_03_BaseColor.png
+    Type: Texture
+  - Handle: 1769839804119846029
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_FirePit_Inst_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 1809256603943436321
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_door_01_Metalness.png
+    Type: Texture
+  - Handle: 1842980905370637047
+    FilePath: Meshes/Cone.hmesh
+    Type: Mesh
+  - Handle: 1853824628099563115
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_tile_01_Roughness.png
+    Type: Texture
+  - Handle: 1856208676570782604
+    FilePath: Meshes/Source/Intel Sponza/textures/stones_2ndfloor_01_Roughness.png
+    Type: Texture
+  - Handle: 1863441680912917531
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_02_Metalness.png
+    Type: Texture
+  - Handle: 1975122253263900957
+    FilePath: Meshes/Source/Sponza/7645212358685992005.jpg
+    Type: Texture
+  - Handle: 2067624615328593792
+    FilePath: Meshes/Source/Default/Capsule.gltf
+    Type: MeshSource
+  - Handle: 2126746479130028110
+    FilePath: Meshes/SponzaDemo/Sponza.hsmesh
+    Type: StaticMesh
+  - Handle: 2201431734906424843
+    FilePath: Meshes/Source/Ramp.gltf
+    Type: MeshSource
+  - Handle: 2208831434898998405
+    FilePath: Scripts/Source/RandomColor.cs
+    Type: ScriptFile
+  - Handle: 2419170850361050482
+    FilePath: Meshes/Source/Default/Cube.gltf
+    Type: MeshSource
+  - Handle: 2430710087004105649
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_1stfloor_Metalness.png
+    Type: Texture
+  - Handle: 2523005228763836411
+    FilePath: Meshes/Source/Intel Sponza/textures/window_frame_01_Roughnesswindow_frame_01_Metalness.png
+    Type: Texture
+  - Handle: 2527877959803344119
+    FilePath: Meshes/Hexa.hsmesh
+    Type: StaticMesh
+  - Handle: 2541359177795701540
+    FilePath: Meshes/Source/Sponza/4910669866631290573.jpg
+    Type: Texture
+  - Handle: 2610456129596526906
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_tile_01_Normal.png
+    Type: Texture
+  - Handle: 2615746848769741137
+    FilePath: Meshes/Source/Sponza/17556969131407844942.jpg
+    Type: Texture
+  - Handle: 2619110921659663816
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_02_Normal.png
+    Type: Texture
+  - Handle: 2748146737554149403
+    FilePath: Meshes/Source/Sponza/8051790464816141987.jpg
+    Type: Texture
+  - Handle: 2801769568585652309
+    FilePath: Meshes/Source/Sponza/715093869573992647.jpg
+    Type: Texture
+  - Handle: 2808730278898707163
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_Black_0_Specular.jpg
+    Type: Texture
+  - Handle: 2859646312894721048
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_2_0_Specular.jpg
+    Type: Texture
+  - Handle: 2894270604888545644
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_02_Roughness.png
+    Type: Texture
+  - Handle: 2930903373965828908
+    FilePath: Meshes/Source/Sponza/11872827283454512094.jpg
+    Type: Texture
+  - Handle: 2984740466461740518
+    FilePath: Meshes/Source/Intel Sponza/textures/col_1stfloor_BaseColor.png
+    Type: Texture
+  - Handle: 3022937472096329648
+    FilePath: Meshes/Cube.hmesh
+    Type: Mesh
+  - Handle: 3054821950426914824
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_FirePit_Inst_nofire_0_Emissive.jpg
+    Type: Texture
+  - Handle: 3067266531766851022
+    FilePath: Materials/M_Red.hmaterial
+    Type: Material
+  - Handle: 3107193723215041711
+    FilePath: Materials/EmissiveMaterials/White Light copy 6.hmaterial
+    Type: Material
+  - Handle: 3194113544226997171
+    FilePath: Meshes/Source/Intel Sponza/textures/ornament_01_BaseColor.png
+    Type: Texture
+  - Handle: 3200147008751018219
+    FilePath: Meshes/Source/Intel Sponza/textures/metal_door_01_Metalness.png
+    Type: Texture
+  - Handle: 3271057034469422252
+    FilePath: Meshes/Default/Torus.hsmesh
+    Type: StaticMesh
+  - Handle: 3301333928924713487
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_Red_2_0_Specular.jpg
+    Type: Texture
+  - Handle: 3317670836861388941
+    FilePath: Materials/M_Crosshair.hmaterial
+    Type: Material
+  - Handle: 3431623575412565136
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 3442609146203987406
+    FilePath: scenes/SponzaIntel.hscene
+    Type: Scene
+  - Handle: 3459207485863178962
+    FilePath: Meshes/Source/TestScene.gltf
+    Type: MeshSource
+  - Handle: 3553587418656609513
+    FilePath: Materials/Metal.hmaterial
+    Type: Material
+  - Handle: 3574286381601846226
+    FilePath: Meshes/Source/Intel Sponza/textures/lionhead_01_Roughness.png
+    Type: Texture
+  - Handle: 3623503383369971108
+    FilePath: Meshes/Source/Sponza/4477655471536070370.jpg
+    Type: Texture
+  - Handle: 3636724674297647100
+    FilePath: Meshes/NewSponza_Main_glTF_002.hmesh
+    Type: Mesh
+  - Handle: 3655334729890313725
+    FilePath: Meshes/NewSponza_Curtains_glTF.hmesh
+    Type: Mesh
+  - Handle: 3693271946708449666
+    FilePath: Scripts/Source/Tests/ExceptionTest.cs
+    Type: ScriptFile
+  - Handle: 3699100251643739110
+    FilePath: Meshes/Bottle.hmesh
+    Type: Mesh
+  - Handle: 3811657478591276148
+    FilePath: Meshes/Source/Sponza/4871783166746854860.jpg
+    Type: Texture
+  - Handle: 3925669978701983730
+    FilePath: Meshes/Source/Wine Glasses/Tumbler_02.glb
+    Type: MeshSource
+  - Handle: 3933073551855389908
+    FilePath: Meshes/Source/Sponza/5823059166183034438.jpg
+    Type: Texture
+  - Handle: 3966004997814436931
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 4042193527780215924
+    FilePath: Materials/White Light.hmaterial
+    Type: Material
+  - Handle: 4052066754632556295
+    FilePath: Meshes/bunny.hmesh
+    Type: Mesh
+  - Handle: 4067874178791398774
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_02_Roughness.png
+    Type: Texture
+  - Handle: 4077140643337065614
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_02_Normal.png
+    Type: Texture
+  - Handle: 4086223255140473876
+    FilePath: Meshes/Default/Cone.hsmesh
+    Type: StaticMesh
+  - Handle: 4113526386960283297
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_01_BaseColor.png
+    Type: Texture
+  - Handle: 4225609243453016810
+    FilePath: Meshes/Source/Intel Sponza/textures/curtain_fabric_green_BaseColor.png
+    Type: Texture
+  - Handle: 4242985021024303435
+    FilePath: Meshes/NewSponza_Curtains_glTF.hsmesh
+    Type: StaticMesh
+  - Handle: 4258383108118627141
+    FilePath: Meshes/Source/Intel Sponza/textures/window_frame_01_Normal.png
+    Type: Texture
+  - Handle: 4269949526049832885
+    FilePath: scenes/StartupScene.hscene
+    Type: Scene
+  - Handle: 4279449992328549806
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_01_tile_Roughness.png
+    Type: Texture
+  - Handle: 4307140276611884443
+    FilePath: Meshes/Source/Bistro_v5_2/BistroExterior.fbx
+    Type: MeshSource
+  - Handle: 4439109164145607995
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_01_Normal.png
+    Type: Texture
+  - Handle: 4458828384106490140
+    FilePath: env/pink_sunrise_4k.hdr
+    Type: EnvMap
+  - Handle: 4505844375994257625
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Tree_Branches_Inst_0_Emissive.jpg
+    Type: Texture
+  - Handle: 4515233452499664618
+    FilePath: Meshes/cornell.hmesh
+    Type: Mesh
+  - Handle: 4632926086905324461
+    FilePath: Materials/Translucent.hmaterial
+    Type: Material
+  - Handle: 4645038200051552617
+    FilePath: Meshes/Source/Intel Sponza/textures/metal_door_01_BaseColor.png
+    Type: Texture
+  - Handle: 4688494368252935151
+    FilePath: Meshes/Source/Sponza/2775690330959970771.jpg
+    Type: Texture
+  - Handle: 4735507997329277423
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_01_BaseColor.png
+    Type: Texture
+  - Handle: 4749600034791002773
+    FilePath: Meshes/Source/Hemisphere.glb
+    Type: MeshSource
+  - Handle: 4864666319796062586
+    FilePath: Meshes/Source/Intel Sponza/textures/ornament_01_Roughness.png
+    Type: Texture
+  - Handle: 4900162604318432163
+    FilePath: Meshes/Source/Sponza/3371964815757888145.jpg
+    Type: Texture
+  - Handle: 4902971596399919125
+    FilePath: Meshes/Source/Sponza/9916269861720640319.jpg
+    Type: Texture
+  - Handle: 4950068842212769928
+    FilePath: Meshes/Source/Intel Sponza/textures/curtain_fabric_blue_BaseColor.png
+    Type: Texture
+  - Handle: 5055754686401671116
+    FilePath: Meshes/Source/Sponza/7056944414013900257.jpg
+    Type: Texture
+  - Handle: 5064728902807820367
+    FilePath: Meshes/Source/Intel Sponza/textures/lionhead_01_Roughnesslionhead_01_Metalness.png
+    Type: Texture
+  - Handle: 5081946261716426341
+    FilePath: Meshes/Source/Intel Sponza/textures/roof_tiles_01_BaseColor.png
+    Type: Texture
+  - Handle: 5111186335767076432
+    FilePath: Meshes/Sponza.hsmesh
+    Type: StaticMesh
+  - Handle: 5186669951354466325
+    FilePath: Scripts/Source/Testing.cs
+    Type: ScriptFile
+  - Handle: 5200816781162691211
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_02_Metalness.png
+    Type: Texture
+  - Handle: 5202878878466611959
+    FilePath: Meshes/Source/lucy.obj
+    Type: MeshSource
+  - Handle: 5206050760687546320
+    FilePath: Meshes/Source/Wine Glasses/Tumbler_03.glb
+    Type: MeshSource
+  - Handle: 5218918795760344596
+    FilePath: Meshes/Source/Sponza/759203620573749278.jpg
+    Type: Texture
+  - Handle: 5279278832856743744
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_03_Metalness.png
+    Type: Texture
+  - Handle: 5295281556430382679
+    FilePath: Meshes/NewSponza_Main_glTF_002.hsmesh
+    Type: StaticMesh
+  - Handle: 5361016625003310258
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_02_Metalness.png
+    Type: Texture
+  - Handle: 5368931206825364963
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_01_Normal.png
+    Type: Texture
+  - Handle: 5377768823140202645
+    FilePath: scenes/z_Bistro.hscene
+    Type: Scene
+  - Handle: 5402063620384518678
+    FilePath: Meshes/Source/DragonAttenuation.glb
+    Type: MeshSource
+  - Handle: 5406475092557692208
+    FilePath: Meshes/Source/Sponza/2969916736137545357.jpg
+    Type: Texture
+  - Handle: 5447572540696619465
+    FilePath: Meshes/Source/CornellBox/cornell/cornell.glb
+    Type: MeshSource
+  - Handle: 5482406244047044572
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_door_01_Normal.png
+    Type: Texture
+  - Handle: 5539155615985683062
+    FilePath: Meshes/Source/Intel Sponza/textures/lionhead_01_BaseColor.png
+    Type: Texture
+  - Handle: 5568117992149336535
+    FilePath: Meshes/Source/Intel Sponza/textures/lionhead_01_Metalness.png
+    Type: Texture
+  - Handle: 5602012357308206185
+    FilePath: Meshes/Source/SubmeshCubeTest.gltf
+    Type: MeshSource
+  - Handle: 5668251626548314992
+    FilePath: Meshes/NewSponza_Curtains_glTF.hmesh
+    Type: Mesh
+  - Handle: 5717913345001425079
+    FilePath: Materials/M_Ground.hmaterial
+    Type: Material
+  - Handle: 5726069363313317864
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_02_Roughness.png
+    Type: Texture
+  - Handle: 5728448467667429193
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_1stfloor_Normal.png
+    Type: Texture
+  - Handle: 5786862589962964352
+    FilePath: Meshes/NewHemisphere.hmesh
+    Type: Mesh
+  - Handle: 5806539844017454067
+    FilePath: Meshes/Source/Intel Sponza/textures/metal_door_01_Roughness.png
+    Type: Texture
+  - Handle: 5858179292873321330
+    FilePath: Meshes/Default/Cylinder.hsmesh
+    Type: StaticMesh
+  - Handle: 5862934628435208014
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_01_Roughness.png
+    Type: Texture
+  - Handle: 5874591874521231455
+    FilePath: scenes/SunTemple.hscene
+    Type: Scene
+  - Handle: 5910798868149242130
+    FilePath: scenes/Cornell.hscene
+    Type: Scene
+  - Handle: 5922474106524494544
+    FilePath: Meshes/Source/Sponza/3827035219084910048.jpg
+    Type: Texture
+  - Handle: 6024002599491866752
+    FilePath: Meshes/Source/Intel Sponza/textures/roof_tiles_01_Normal.png
+    Type: Texture
+  - Handle: 6053869451260336688
+    FilePath: Meshes/Source/lucy.obj
+    Type: MeshSource
+  - Handle: 6068881005082175600
+    FilePath: Meshes/SponzaDemo/Sponza.hsmesh
+    Type: StaticMesh
+  - Handle: 6080520868177813818
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01_dirt_decal_01_mask_alpha_dirt_decal_Opacity.png
+    Type: Texture
+  - Handle: 6087919094517431490
+    FilePath: Meshes/Source/Default/Sphere.gltf
+    Type: MeshSource
+  - Handle: 6114965183930034660
+    FilePath: Meshes/Source/Intel Sponza/textures/col_1stfloor_Normal.png
+    Type: Texture
+  - Handle: 6149057548850182078
+    FilePath: Meshes/TransformTest.hmesh
+    Type: Mesh
+  - Handle: 6165876883664501175
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_Red_0_Specular.jpg
+    Type: Texture
+  - Handle: 6191282853240496268
+    FilePath: Meshes/Source/Sponza/13982482287905699490.jpg
+    Type: Texture
+  - Handle: 6220176263305420680
+    FilePath: Meshes/Source/PhysicsTestMesh.gltf
+    Type: MeshSource
+  - Handle: 6241966991965970047
+    FilePath: Meshes/Source/Intel Sponza/textures/curtain_fabric_Metalness.png
+    Type: Texture
+  - Handle: 6247401420797400439
+    FilePath: Meshes/Source/Sponza/17876391417123941155.jpg
+    Type: Texture
+  - Handle: 6291199467121643125
+    FilePath: Meshes/Source/Sponza/Sponza.gltf
+    Type: MeshSource
+  - Handle: 6296828380224006217
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_01_Metalness.png
+    Type: Texture
+  - Handle: 6327230690442401368
+    FilePath: Materials/Checkerboard.hmaterial
+    Type: Material
+  - Handle: 6328776700247618008
+    FilePath: Scripts/Source/FPSPlayer.cs
+    Type: ScriptFile
+  - Handle: 6375128773135419143
+    FilePath: Meshes/Source/Sponza/13196865903111448057.jpg
+    Type: Texture
+  - Handle: 6378172125251383118
+    FilePath: Meshes/Source/Sponza/11490520546946913238.jpg
+    Type: Texture
+  - Handle: 6420222930268638784
+    FilePath: Meshes/Source/Wine Glasses/Bottle.glb
+    Type: MeshSource
+  - Handle: 6449129762200967732
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_02_Roughness.png
+    Type: Texture
+  - Handle: 6454419853162993717
+    FilePath: Meshes/Source/Sponza/466164707995436622.jpg
+    Type: Texture
+  - Handle: 6457577597141190594
+    FilePath: Meshes/bunny.hsmesh
+    Type: StaticMesh
+  - Handle: 6459997622782596977
+    FilePath: Meshes/Source/Intel Sponza/textures/arch_stone_wall_01_BaseColor.png
+    Type: Texture
+  - Handle: 6495180296822027818
+    FilePath: Materials/EmissiveMaterials/White Light copy.hmaterial
+    Type: Material
+  - Handle: 6514567314689135449
+    FilePath: Scripts/Source/PlayerSphere.cs
+    Type: ScriptFile
+  - Handle: 6533913068569258183
+    FilePath: env/rooitou_park_4k.hdr
+    Type: EnvMap
+  - Handle: 6538168666190629697
+    FilePath: Meshes/Source/SanMiguel/SanMiguel.gltf
+    Type: MeshSource
+  - Handle: 6583382716572344530
+    FilePath: Meshes/Default/Cylinder.hsmesh
+    Type: StaticMesh
+  - Handle: 6617153572532049477
+    FilePath: Meshes/Source/Tests/TransformTest.gltf
+    Type: MeshSource
+  - Handle: 6630757823538057996
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Dome_2_0_Normal.jpg
+    Type: Texture
+  - Handle: 6794048458811322821
+    FilePath: Meshes/Default/Capsule.hsmesh
+    Type: StaticMesh
+  - Handle: 6888392202187207536
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_door_01_BaseColor.png
+    Type: Texture
+  - Handle: 6906888403547450146
+    FilePath: Materials/M_Blue.hmaterial
+    Type: Material
+  - Handle: 6910931254626786669
+    FilePath: Materials/Orange Translucent.hmaterial
+    Type: Material
+  - Handle: 6919512192630935579
+    FilePath: Meshes/Source/Intel Sponza/textures/floor_tiles_01_BaseColor.png
+    Type: Texture
+  - Handle: 6920784319519238094
+    FilePath: Scripts/Source/Tests/DOF-Test.cs
+    Type: ScriptFile
+  - Handle: 6949008435051020864
+    FilePath: Meshes/Source/NewHemisphere.glb
+    Type: MeshSource
+  - Handle: 6997502974937836971
+    FilePath: Meshes/Bottle.hsmesh
+    Type: StaticMesh
+  - Handle: 7013198250730905531
+    FilePath: Meshes/Source/Wine Glasses/Bottle & Tumbler.glb
+    Type: MeshSource
+  - Handle: 7067009232148393218
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_01_tile_BaseColor.png
+    Type: Texture
+  - Handle: 7213906716013574718
+    FilePath: Meshes/BistroExterior.hsmesh
+    Type: StaticMesh
+  - Handle: 7287008270129829234
+    FilePath: Materials/Red Translucent.hmaterial
+    Type: Material
+  - Handle: 7324637778221490707
+    FilePath: Meshes/Source/Default/Plane.gltf
+    Type: MeshSource
+  - Handle: 7382731343007116294
+    FilePath: Meshes/Cylinder.hmesh
+    Type: Mesh
+  - Handle: 7463961973123765961
+    FilePath: Meshes/bunny.hsmesh
+    Type: StaticMesh
+  - Handle: 7480318952349763766
+    FilePath: Meshes/Source/Sponza/13824894030729245199.jpg
+    Type: Texture
+  - Handle: 7502837970737945044
+    FilePath: Materials/EmissiveMaterials/White Light copy 3.hmaterial
+    Type: Material
+  - Handle: 7527720138506375287
+    FilePath: Meshes/Source/Default/Cone.gltf
+    Type: MeshSource
+  - Handle: 7559385493511106222
+    FilePath: Meshes/Source/Bunny/bunny.obj
+    Type: MeshSource
+  - Handle: 7627212855008768112
+    FilePath: Materials/EmissiveMaterials/White Light copy 2.hmaterial
+    Type: Material
+  - Handle: 7720117031274299063
+    FilePath: Meshes/CubeScene.hmesh
+    Type: Mesh
+  - Handle: 7745898825945863141
+    FilePath: Meshes/Source/Ramp.gltf
+    Type: MeshSource
+  - Handle: 7758471207721253174
+    FilePath: Meshes/Source/Sponza/2374361008830720677.jpg
+    Type: Texture
+  - Handle: 7842162070238212491
+    FilePath: Meshes/Default/Plane.hsmesh
+    Type: StaticMesh
+  - Handle: 7849690312330082760
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 7893583335608259743
+    FilePath: Meshes/Source/Wine Glasses/Bottle & Tumbler.glb
+    Type: MeshSource
+  - Handle: 7911339869882111176
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_FirePit_Inst_0_Emissive.jpg
+    Type: Texture
+  - Handle: 7938270026160215288
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_01_Metalness.png
+    Type: Texture
+  - Handle: 7970545932246460413
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_02_BaseColor.png
+    Type: Texture
+  - Handle: 7992335591226207888
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_02_Metalness.png
+    Type: Texture
+  - Handle: 8205527135819527967
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 8345103312028421676
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_1stfloor_Roughness.png
+    Type: Texture
+  - Handle: 8358133259771487024
+    FilePath: Meshes/BistroExterior.hsmesh
+    Type: StaticMesh
+  - Handle: 8424802394728360364
+    FilePath: Meshes/Source/CornellBox/CornellBox.fbx
+    Type: MeshSource
+  - Handle: 8428220783520776882
+    FilePath: scenes/SponzaDemo.hscene
+    Type: Scene
+  - Handle: 8481009031768110914
+    FilePath: Meshes/Source/Sponza/6772804448157695701.jpg
+    Type: Texture
+  - Handle: 8512702305175142107
+    FilePath: Meshes/DragonAttenuation.hmesh
+    Type: Mesh
+  - Handle: 8551591354010160770
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_01_tile_Normal.png
+    Type: Texture
+  - Handle: 8673771797373308793
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_03_Roughnesscol_head_2ndfloor_03_Metalness.png
+    Type: Texture
+  - Handle: 8712364238669723052
+    FilePath: Meshes/Source/Sponza/6667038893015345571.jpg
+    Type: Texture
+  - Handle: 8768871697221351075
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_02_Normal.png
+    Type: Texture
+  - Handle: 8879462089680211386
+    FilePath: Meshes/Source/Sponza/7815564343179553343.jpg
+    Type: Texture
+  - Handle: 8929846406387706154
+    FilePath: Meshes/Source/Intel Sponza/textures/roof_tiles_01_Metalness.png
+    Type: Texture
+  - Handle: 8948690909493164991
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 8987586188804361884
+    FilePath: Materials/M_RedGlow.hmaterial
+    Type: Material
+  - Handle: 9002159148129775057
+    FilePath: Meshes/SponzaDemo/Sponza.hmesh
+    Type: Mesh
+  - Handle: 9021519179473982521
+    FilePath: Meshes/Source/TestScene.gltf
+    Type: MeshSource
+  - Handle: 9032328346981234057
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_02_Roughnessbrickwall_02_Metalness.png
+    Type: Texture
+  - Handle: 9060624472951957171
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_FirePit_Inst_0_Normal.jpg
+    Type: Texture
+  - Handle: 9093041422778520396
+    FilePath: Meshes/Source/Tests/TransformTest.gltf
+    Type: MeshSource
+  - Handle: 9146324999836521978
+    FilePath: Meshes/NewSponza_Main_glTF_002.hsmesh
+    Type: StaticMesh
+  - Handle: 9192547327808807500
+    FilePath: Scripts/Source/Flocking/BoidHelper.cs
+    Type: ScriptFile
+  - Handle: 9296620601316722884
+    FilePath: Meshes/NewSponza_Main_glTF_002.hmesh
+    Type: Mesh
+  - Handle: 9329111874873850868
+    FilePath: Meshes/Source/Bistro_v5_2/BistroInterior_Wine.fbx
+    Type: MeshSource
+  - Handle: 9347013533206220551
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_Black_0_Normal.jpg
+    Type: Texture
+  - Handle: 9377365161583735149
+    FilePath: textures/FlatNormal.png
+    Type: Texture
+  - Handle: 9397582456294548783
+    FilePath: Meshes/Source/Sponza/3628158980083700836.jpg
+    Type: Texture
+  - Handle: 9404525221067600176
+    FilePath: Meshes/Source/Intel Sponza/textures/metal_door_01_Roughnessmetal_door_01_Metalness.png
+    Type: Texture
+  - Handle: 9523056248535874784
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_01_BaseColor.png
+    Type: Texture
+  - Handle: 9553728205620439484
+    FilePath: Meshes/SponzaDemo/Sponza.hmesh
+    Type: Mesh
+  - Handle: 9573114123222933309
+    FilePath: Meshes/BistroInterior_Wine.hsmesh
+    Type: StaticMesh
+  - Handle: 9641125253486060571
+    FilePath: Meshes/NewSponza_Main_glTF_002.hmesh
+    Type: Mesh
+  - Handle: 9649037761796154887
+    FilePath: Meshes/Source/Intel Sponza/textures/col_brickwall_01_Normal.png
+    Type: Texture
+  - Handle: 9651962001650995687
+    FilePath: Meshes/Cylinder.hmesh
+    Type: Mesh
+  - Handle: 9679377636657977694
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_01_Roughnessstone_trims_01_Metalness.png
+    Type: Texture
+  - Handle: 9681192240405426392
+    FilePath: Meshes/Cone.hmesh
+    Type: Mesh
+  - Handle: 9685341899332821985
+    FilePath: Meshes/Source/Intel Sponza/textures/arch_stone_wall_01_Roughness.png
+    Type: Texture
+  - Handle: 9710553562059835791
+    FilePath: Scripts/Intermediates/Release/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+    Type: ScriptFile
+  - Handle: 9715297179630445964
+    FilePath: Meshes/Source/Sponza/14650633544276105767.jpg
+    Type: Texture
+  - Handle: 9884716306909508465
+    FilePath: Meshes/Source/Sponza/16885566240357350108.jpg
+    Type: Texture
+  - Handle: 9960262679206041169
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 10042899362477044579
+    FilePath: Meshes/Source/Sponza/12501374198249454378.jpg
+    Type: Texture
+  - Handle: 10059446532611641490
+    FilePath: Meshes/lucy.hsmesh
+    Type: StaticMesh
+  - Handle: 10104946651903273225
+    FilePath: Scripts/Source/Noise.cs
+    Type: ScriptFile
+  - Handle: 10223713372208164300
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_01_Roughness.png
+    Type: Texture
+  - Handle: 10389384897805031984
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_UTile4_0_Specular.jpg
+    Type: Texture
+  - Handle: 10397590702224707420
+    FilePath: Meshes/Source/Intel Sponza/textures/arch_stone_wall_01_Roughnessarch_stone_wall_01_Metalness.png
+    Type: Texture
+  - Handle: 10402287888711684654
+    FilePath: Meshes/Source/Intel Sponza/NewSponza_Main_glTF_002.gltf
+    Type: MeshSource
+  - Handle: 10415021561049586213
+    FilePath: Meshes/NewSphere.hmesh
+    Type: Mesh
+  - Handle: 10444307568555827127
+    FilePath: Meshes/Source/Sponza/10388182081421875623.jpg
+    Type: Texture
+  - Handle: 10453040408184141197
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_01_Metalness.png
+    Type: Texture
+  - Handle: 10459196706056495314
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01.png
+    Type: Texture
+  - Handle: 10508360094044575592
+    FilePath: Meshes/BistroInterior_Wine.hmesh
+    Type: Mesh
+  - Handle: 10555849300244695612
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_01_Roughnessceiling_plaster_01_Metalness.png
+    Type: Texture
+  - Handle: 10609024822783227504
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 10615205244226081873
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 10621759847358830328
+    FilePath: Meshes/Cone.hmesh
+    Type: Mesh
+  - Handle: 10669214849317971511
+    FilePath: Meshes/BistroExterior.hsmesh
+    Type: StaticMesh
+  - Handle: 10680865930988161271
+    FilePath: Meshes/Source/Intel Sponza/textures/col_1stfloor_Roughnesscol_1stfloor_Metalness.png
+    Type: Texture
+  - Handle: 10721252533752398311
+    FilePath: Meshes/Capsule.hmesh
+    Type: Mesh
+  - Handle: 10732525280576886110
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_01_Metalness.png
+    Type: Texture
+  - Handle: 10827357915495208613
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 10837887148880635100
+    FilePath: Meshes/Source/Sponza/8747919177698443163.jpg
+    Type: Texture
+  - Handle: 10858979554718745367
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_Red_0_Normal.jpg
+    Type: Texture
+  - Handle: 10869328730588335121
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_1stfloor_Roughnesscol_head_1stfloor_Metalness.png
+    Type: Texture
+  - Handle: 10938053888009394537
+    FilePath: Meshes/Default/Capsule.hsmesh
+    Type: StaticMesh
+  - Handle: 10942759881061867516
+    FilePath: Scripts/Source/PlayerController2D.cs
+    Type: ScriptFile
+  - Handle: 10997594376572255458
+    FilePath: Meshes/Source/Sponza/8114461559286000061.jpg
+    Type: Texture
+  - Handle: 10997837012878513079
+    FilePath: Meshes/Source/Default/Cylinder.gltf
+    Type: MeshSource
+  - Handle: 11087797630079330463
+    FilePath: Meshes/Cube.hmesh
+    Type: Mesh
+  - Handle: 11122430103113385887
+    FilePath: Meshes/BistroInterior.hsmesh
+    Type: StaticMesh
+  - Handle: 11190879308782347684
+    FilePath: Meshes/Source/Default/Capsule.gltf
+    Type: MeshSource
+  - Handle: 11196115716415709498
+    FilePath: Meshes/Source/Sponza/4675343432951571524.jpg
+    Type: Texture
+  - Handle: 11334789309423834203
+    FilePath: Scripts/Source/AudioController.cs
+    Type: ScriptFile
+  - Handle: 11335734067260628356
+    FilePath: Meshes/Source/Intel Sponza/textures/window_frame_01_BaseColor.png
+    Type: Texture
+  - Handle: 11422126402267276132
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Dome_Inst_0_Normal.jpg
+    Type: Texture
+  - Handle: 11434620081428043839
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01_mask_gltf.png
+    Type: Texture
+  - Handle: 11445690598797111642
+    FilePath: Materials/EmissiveMaterials/White Light.hmaterial
+    Type: Material
+  - Handle: 11459312161448472869
+    FilePath: Meshes/Source/CubeScene.gltf
+    Type: MeshSource
+  - Handle: 11594728648022077683
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_02_Roughnessstone_trims_02_Metalness.png
+    Type: Texture
+  - Handle: 11630371052269982226
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 11665984590734068069
+    FilePath: Meshes/Default/Cone.hsmesh
+    Type: StaticMesh
+  - Handle: 11685195404393625382
+    FilePath: Meshes/Source/Intel Sponza/textures/curtain_fabric_Roughnesscurtain_fabric_Metalness.png
+    Type: Texture
+  - Handle: 11740554304227797126
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Dome_2_0_Specular.jpg
+    Type: Texture
+  - Handle: 11777979739347490440
+    FilePath: Scripts/Source/ScriptSpawner.cs
+    Type: ScriptFile
+  - Handle: 11785537143080075875
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_0_Specular.jpg
+    Type: Texture
+  - Handle: 11794241760375319157
+    FilePath: Meshes/Source/Sponza/6047387724914829168.jpg
+    Type: Texture
+  - Handle: 11824568267591754966
+    FilePath: Scripts/Source/Flocking/Boid.cs
+    Type: ScriptFile
+  - Handle: 11931823762063343799
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Tree_Branches_0_Emissive.jpg
+    Type: Texture
+  - Handle: 11978776728096222271
+    FilePath: Scripts/Source/FirstPersonController.cs
+    Type: ScriptFile
+  - Handle: 12021209132834659220
+    FilePath: Meshes/Default/Torus.hsmesh
+    Type: StaticMesh
+  - Handle: 12025357743404409531
+    FilePath: Meshes/NewSponza_Main_glTF_002.hmesh
+    Type: Mesh
+  - Handle: 12081167142690250793
+    FilePath: Meshes/Source/Default/Torus.gltf
+    Type: MeshSource
+  - Handle: 12082549404015851338
+    FilePath: Meshes/Source/Sponza/6151467286084645207.jpg
+    Type: Texture
+  - Handle: 12138550138008625168
+    FilePath: Meshes/Source/Intel Sponza/textures/metal_door_01_Normal.png
+    Type: Texture
+  - Handle: 12168533092652586540
+    FilePath: Meshes/Source/Intel Sponza/textures/kloppenheim_05_4k.hdr
+    Type: EnvMap
+  - Handle: 12183912514021099365
+    FilePath: Meshes/Source/Sponza/3455394979645218238.jpg
+    Type: Texture
+  - Handle: 12204254836168913733
+    FilePath: Meshes/Bottle.hsmesh
+    Type: StaticMesh
+  - Handle: 12204692275948197925
+    FilePath: Meshes/bunny.hmesh
+    Type: Mesh
+  - Handle: 12222375391939870642
+    FilePath: Meshes/Source/PhysicsTestMesh.gltf
+    Type: MeshSource
+  - Handle: 12244319173946876725
+    FilePath: Meshes/Source/Intel Sponza/textures/lionhead_01_Normal.png
+    Type: Texture
+  - Handle: 12271101840048388474
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 12285041366121875844
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_02_BaseColor.png
+    Type: Texture
+  - Handle: 12290298943527494328
+    FilePath: Meshes/Source/Intel Sponza/textures/floor_tiles_01_Metalness.png
+    Type: Texture
+  - Handle: 12294169958023368807
+    FilePath: Meshes/Sponza.hsmesh
+    Type: StaticMesh
+  - Handle: 12372053694584542433
+    FilePath: Meshes/Source/Bunny/bunny.obj
+    Type: MeshSource
+  - Handle: 12387183670818522676
+    FilePath: Materials/M_Green.hmaterial
+    Type: Material
+  - Handle: 12399379287302706503
+    FilePath: Meshes/lucy.hsmesh
+    Type: StaticMesh
+  - Handle: 12437748640757821929
+    FilePath: Meshes/Source/Intel Sponza/textures/stones_2ndfloor_01_BaseColor.png
+    Type: Texture
+  - Handle: 12510095290798602561
+    FilePath: Meshes/Source/Intel Sponza/textures/arch_stone_wall_01_Normal.png
+    Type: Texture
+  - Handle: 12589133146863347279
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_01_Roughnessdoor_stoneframe_01_Metalness.png
+    Type: Texture
+  - Handle: 12592170531547987728
+    FilePath: Meshes/lucy.hsmesh
+    Type: StaticMesh
+  - Handle: 12632355322029066569
+    FilePath: Meshes/Hemisphere.hsmesh
+    Type: StaticMesh
+  - Handle: 12639062040304944903
+    FilePath: Meshes/Source/SunTemple/SunTemple.fbx
+    Type: MeshSource
+  - Handle: 12652740033598540607
+    FilePath: Meshes/Source/SunTemple/SunTemple_Reflection.hdr
+    Type: EnvMap
+  - Handle: 12694338993765337386
+    FilePath: Materials/Glass.hmaterial
+    Type: Material
+  - Handle: 12765578716787132266
+    FilePath: Meshes/Source/CubeScene.gltf
+    Type: MeshSource
+  - Handle: 12784588477325050613
+    FilePath: Meshes/Source/Intel Sponza/textures/col_brickwall_01_Roughnesscol_brickwall_01_Metalness.png
+    Type: Texture
+  - Handle: 12817323581981705019
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 12833834839725078743
+    FilePath: Meshes/Source/Sponza/14118779221266351425.jpg
+    Type: Texture
+  - Handle: 12846556980320989806
+    FilePath: scenes/RenderingTests.hscene
+    Type: Scene
+  - Handle: 12852520886212001564
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01_dirt_decal_01_mask_gltf_alpha_dirt_decal_Opacity.png
+    Type: Texture
+  - Handle: 12909099872171636441
+    FilePath: Meshes/Source/Default/Plane.gltf
+    Type: MeshSource
+  - Handle: 12920297085265551021
+    FilePath: Meshes/BistroExterior.hsmesh
+    Type: StaticMesh
+  - Handle: 12933423233333125099
+    FilePath: Meshes/NewSponza_Curtains_glTF.hmesh
+    Type: Mesh
+  - Handle: 12944751155697459110
+    FilePath: Meshes/Source/Hexa.glb
+    Type: MeshSource
+  - Handle: 12949643289870895869
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 12988890390234166870
+    FilePath: Meshes/Source/Intel Sponza/textures/stones_2ndfloor_01_Roughnessstones_2ndfloor_01_Metalness.png
+    Type: Texture
+  - Handle: 13065255626481712796
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_01_Roughness.png
+    Type: Texture
+  - Handle: 13072585729679780642
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_02_BaseColor.png
+    Type: Texture
+  - Handle: 13076483717025825644
+    FilePath: Meshes/Bottle.hmesh
+    Type: Mesh
+  - Handle: 13157161994193397856
+    FilePath: Meshes/Source/Sponza/14267839433702832875.jpg
+    Type: Texture
+  - Handle: 13201153142622408135
+    FilePath: Meshes/Source/Wine Glasses/Tumbler_02.glb
+    Type: MeshSource
+  - Handle: 13303234680008561002
+    FilePath: Meshes/Source/Sponza/11968150294050148237.jpg
+    Type: Texture
+  - Handle: 13315568890480991666
+    FilePath: Materials/EmissiveGreenn.hmaterial
+    Type: Material
+  - Handle: 13330861606750879713
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_Red_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 13357028796339772595
+    FilePath: Meshes/NewSponza_Curtains_glTF.hmesh
+    Type: Mesh
+  - Handle: 13438252888317586359
+    FilePath: Meshes/Source/Intel Sponza/textures/curtain_fabric_Roughness.png
+    Type: Texture
+  - Handle: 13491154416491016020
+    FilePath: Meshes/Source/Intel Sponza/textures/floor_tiles_01_Normal.png
+    Type: Texture
+  - Handle: 13514103858636311561
+    FilePath: Meshes/lucy.hsmesh
+    Type: StaticMesh
+  - Handle: 13530873319512758858
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_0_Normal.jpg
+    Type: Texture
+  - Handle: 13620358556517168169
+    FilePath: Meshes/Source/Intel Sponza/textures/stones_2ndfloor_01_Metalness.png
+    Type: Texture
+  - Handle: 13635817213924177454
+    FilePath: Scripts/Source/Flocking/BoidManager.cs
+    Type: ScriptFile
+  - Handle: 13742010155301903402
+    FilePath: Meshes/Source/Intel Sponza/textures/roof_tiles_01_Roughnessroof_tiles_01_Metalness.png
+    Type: Texture
+  - Handle: 13777620941838874673
+    FilePath: Meshes/Source/Intel Sponza/textures/floor_tiles_01_Roughnessfloor_tiles_01_Metalness.png
+    Type: Texture
+  - Handle: 13864752627671386566
+    FilePath: Meshes/Source/Sponza/5792855332885324923.jpg
+    Type: Texture
+  - Handle: 13871400415578607652
+    FilePath: Meshes/Source/Sponza/7441062115984513793.jpg
+    Type: Texture
+  - Handle: 13932678644345625199
+    FilePath: Meshes/Source/Wine Glasses/Tumbler_01.glb
+    Type: MeshSource
+  - Handle: 13957599674144021238
+    FilePath: Meshes/AudioDemo/TestScene.hsmesh
+    Type: StaticMesh
+  - Handle: 13958704023093277049
+    FilePath: Meshes/Source/Sponza/8503262930880235456.jpg
+    Type: Texture
+  - Handle: 13985030668267923316
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_02_BaseColor.png
+    Type: Texture
+  - Handle: 14010981776940906869
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_02_Roughnessceiling_plaster_01_Metalness.png
+    Type: Texture
+  - Handle: 14033387603395490773
+    FilePath: Scripts/Source/PhysicsCubeSpawner.cs
+    Type: ScriptFile
+  - Handle: 14042237202842000601
+    FilePath: Meshes/Source/Wine Glasses/Bottle.glb
+    Type: MeshSource
+  - Handle: 14088956270353507828
+    FilePath: Meshes/BistroExterior.hsmesh
+    Type: StaticMesh
+  - Handle: 14108333152997234753
+    FilePath: Meshes/Source/Intel Sponza/textures/col_brickwall_01_Roughnesscolumn_brickwall_01_Metalness.png
+    Type: Texture
+  - Handle: 14123664103182541911
+    FilePath: Scripts/Source/TeleportTest.cs
+    Type: ScriptFile
+  - Handle: 14134294780386952232
+    FilePath: Meshes/Source/Sponza/2185409758123873465.jpg
+    Type: Texture
+  - Handle: 14220184755527937974
+    FilePath: Scripts/Source/TeleportTest.cs
+    Type: ScriptFile
+  - Handle: 14239080460493142119
+    FilePath: Meshes/Capsule.hmesh
+    Type: Mesh
+  - Handle: 14306409414108539392
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_02_BaseColor.png
+    Type: Texture
+  - Handle: 14363864663945031050
+    FilePath: Meshes/NewSponza_Main_glTF_002.hmesh
+    Type: Mesh
+  - Handle: 14377900482014930165
+    FilePath: Meshes/Source/SubmeshCubeTest.gltf
+    Type: MeshSource
+  - Handle: 14406833763064177992
+    FilePath: Meshes/Source/Sponza/8006627369776289000.png
+    Type: Texture
+  - Handle: 14413293902653137400
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_2_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 14432454180488582489
+    FilePath: Meshes/BistroInterior.hsmesh
+    Type: StaticMesh
+  - Handle: 14438489905109240230
+    FilePath: Meshes/NewHemisphere.hmesh
+    Type: Mesh
+  - Handle: 14550848700841468412
+    FilePath: Meshes/Source/Sponza/9288698199695299068.jpg
+    Type: Texture
+  - Handle: 14551617595148055688
+    FilePath: Meshes/Hexa.hsmesh
+    Type: StaticMesh
+  - Handle: 14595129124422003971
+    FilePath: Meshes/Source/Bistro_v5_2/san_giuseppe_bridge_4k.hdr
+    Type: EnvMap
+  - Handle: 14607193700165112901
+    FilePath: Meshes/NewSphere.hmesh
+    Type: Mesh
+  - Handle: 14630220775596039557
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01_mask.png
+    Type: Texture
+  - Handle: 14680396561567086615
+    FilePath: Meshes/Source/Intel Sponza/textures/floor_tiles_01_Roughness.png
+    Type: Texture
+  - Handle: 14754310566107420617
+    FilePath: Meshes/xyzrgb_dragon.hsmesh
+    Type: StaticMesh
+  - Handle: 14809669619237524409
+    FilePath: Meshes/Source/Intel Sponza/textures/col_brickwall_01_Metalness.png
+    Type: Texture
+  - Handle: 14839178554435862597
+    FilePath: Meshes/AudioDemo/TestScene.hsmesh
+    Type: StaticMesh
+  - Handle: 14869910458256766780
+    FilePath: Meshes/Default/Sphere.hsmesh
+    Type: StaticMesh
+  - Handle: 14924744775604793321
+    FilePath: Meshes/Default/Sphere.hsmesh
+    Type: StaticMesh
+  - Handle: 14933909024854722123
+    FilePath: Scripts/Source/Tests/CSharpTest.cs
+    Type: ScriptFile
+  - Handle: 15044092709382024791
+    FilePath: textures/Transparent.png
+    Type: Texture
+  - Handle: 15052195243010679605
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_02_Normal.png
+    Type: Texture
+  - Handle: 15177295589136958918
+    FilePath: Meshes/Source/Sponza/2411100444841994089.jpg
+    Type: Texture
+  - Handle: 15223008756059261996
+    FilePath: Meshes/Source/Sponza/8750083169368950601.jpg
+    Type: Texture
+  - Handle: 15227911156694332596
+    FilePath: env/dikhololo_night_4k.hdr
+    Type: EnvMap
+  - Handle: 15242853988763368351
+    FilePath: Meshes/Sponza.hsmesh
+    Type: StaticMesh
+  - Handle: 15263316427076375955
+    FilePath: Meshes/NewSponza_Curtains_glTF.hmesh
+    Type: Mesh
+  - Handle: 15277629569207806540
+    FilePath: env/venice_dawn_1_4k.hdr
+    Type: EnvMap
+  - Handle: 15309760235707841266
+    FilePath: Meshes/Hexa.hsmesh
+    Type: StaticMesh
+  - Handle: 15312857339548210947
+    FilePath: Meshes/Source/NewHemisphere.glb
+    Type: MeshSource
+  - Handle: 15314299668622225534
+    FilePath: Meshes/Source/Intel Sponza/textures/window_frame_01_Roughness.png
+    Type: Texture
+  - Handle: 15355218829062136338
+    FilePath: Meshes/Source/Sponza/5061699253647017043.png
+    Type: Texture
+  - Handle: 15424484532806463621
+    FilePath: Meshes/Source/NewSphere.glb
+    Type: MeshSource
+  - Handle: 15426307752631992336
+    FilePath: Meshes/Sponza.hsmesh
+    Type: StaticMesh
+  - Handle: 15494089541421501897
+    FilePath: Meshes/Source/Intel Sponza/textures/col_1stfloor_Metalness.png
+    Type: Texture
+  - Handle: 15521819327037387660
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_01_Normal.png
+    Type: Texture
+  - Handle: 15545230246112451656
+    FilePath: Scripts/Source/AudioDemo.cs
+    Type: ScriptFile
+  - Handle: 15647131286026575122
+    FilePath: Scripts/Source/MapGenerator.cs
+    Type: ScriptFile
+  - Handle: 15748036698959169759
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_03_Normal.png
+    Type: Texture
+  - Handle: 15759719327607818638
+    FilePath: Meshes/Source/Sponza/10381718147657362067.jpg
+    Type: Texture
+  - Handle: 15766294321911923870
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_door_01_Roughnesswood_door_01_Metalness.png
+    Type: Texture
+  - Handle: 15814472123339703786
+    FilePath: Scripts/Source/PlayerCube.cs
+    Type: ScriptFile
+  - Handle: 15840611440913162578
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_2ndfloor_03_Roughness.png
+    Type: Texture
+  - Handle: 15911685079772765234
+    FilePath: Meshes/Source/Sponza/15295713303328085182.jpg
+    Type: Texture
+  - Handle: 15950707344451019416
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Dome_Inst_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 15961788714814087316
+    FilePath: Meshes/Source/Sponza/16275776544635328252.png
+    Type: Texture
+  - Handle: 15962420555546559825
+    FilePath: Meshes/Hexa8.hsmesh
+    Type: StaticMesh
+  - Handle: 15967763609866477828
+    FilePath: Materials/Capsule.hmaterial
+    Type: Material
+  - Handle: 15985565758716158968
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_01_tile_Roughnessstone_01_tile_Metalness.png
+    Type: Texture
+  - Handle: 16037519387436808914
+    FilePath: Meshes/Hexa.hsmesh
+    Type: StaticMesh
+  - Handle: 16046093643805808507
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Dome_2_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 16048104985464006669
+    FilePath: Meshes/Hexa.hmesh
+    Type: Mesh
+  - Handle: 16246615162165514685
+    FilePath: Meshes/Source/Sponza/2299742237651021498.jpg
+    Type: Texture
+  - Handle: 16291313161120594956
+    FilePath: Meshes/Source/CornellBox/cornell/cornell.glb
+    Type: MeshSource
+  - Handle: 16319119448334387526
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_Red_2_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 16374401788634429369
+    FilePath: Meshes/Source/Sponza/755318871556304029.jpg
+    Type: Texture
+  - Handle: 16445136989126874172
+    FilePath: Meshes/Source/Sponza/11474523244911310074.jpg
+    Type: Texture
+  - Handle: 16497380876707455890
+    FilePath: Meshes/Tumbler_03.hsmesh
+    Type: StaticMesh
+  - Handle: 16586099045079046302
+    FilePath: Meshes/Source/Intel Sponza/textures/arch_stone_wall_01_Metalness.png
+    Type: Texture
+  - Handle: 16601117788809409556
+    FilePath: Meshes/NewSponza_Curtains_glTF.hmesh
+    Type: Mesh
+  - Handle: 16609764433639322688
+    FilePath: Meshes/Source/Intel Sponza/textures/ornament_01_Normal.png
+    Type: Texture
+  - Handle: 16618010534494904126
+    FilePath: Meshes/Source/Intel Sponza/textures/curtain_fabric_Normal.png
+    Type: Texture
+  - Handle: 16630884984563210112
+    FilePath: Meshes/Tumbler_03.hsmesh
+    Type: StaticMesh
+  - Handle: 16661967549420579512
+    FilePath: Scripts/Source/Tests/CollisionCallbackTest.cs
+    Type: ScriptFile
+  - Handle: 16704718035390383336
+    FilePath: Meshes/Default/Cube.hsmesh
+    Type: StaticMesh
+  - Handle: 16724618810269419794
+    FilePath: Scripts/Source/ThirdPerson.cs
+    Type: ScriptFile
+  - Handle: 16727975345353611397
+    FilePath: Materials/EmissiveCyan.hmaterial
+    Type: Material
+  - Handle: 16740948682508676009
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_Red_2_0_Normal.jpg
+    Type: Texture
+  - Handle: 16746041028872853051
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Dome_Inst_0_Specular.jpg
+    Type: Texture
+  - Handle: 16782731815207911125
+    FilePath: Materials/ShinyPlastic.hmaterial
+    Type: Material
+  - Handle: 16870898127368771585
+    FilePath: Meshes/BistroExterior.hsmesh
+    Type: StaticMesh
+  - Handle: 16895448782941973498
+    FilePath: Meshes/Hexa.hsmesh
+    Type: StaticMesh
+  - Handle: 16947718648921030200
+    FilePath: Scripts/Source/Flocking/BoidSettings.cs
+    Type: ScriptFile
+  - Handle: 17026428149618823067
+    FilePath: Meshes/cornell.hmesh
+    Type: Mesh
+  - Handle: 17082708042348902892
+    FilePath: Meshes/Source/SunTemple/SunTemple_Skybox.hdr
+    Type: EnvMap
+  - Handle: 17100554494272095068
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_Black_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 17107060801668695122
+    FilePath: Meshes/Source/NewSphere.glb
+    Type: MeshSource
+  - Handle: 17168302151637449598
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_tile_01_BaseColor.png
+    Type: Texture
+  - Handle: 17172092952659644204
+    FilePath: Meshes/Source/Sponza/8773302468495022225.jpg
+    Type: Texture
+  - Handle: 17185668352605764684
+    FilePath: Meshes/Source/Wine Glasses/Tumbler_03.glb
+    Type: MeshSource
+  - Handle: 17198765700985074833
+    FilePath: Meshes/Source/Intel Sponza/textures/ornament_01_Metalness.png
+    Type: Texture
+  - Handle: 17275068638416400859
+    FilePath: Meshes/TransformTest.hmesh
+    Type: Mesh
+  - Handle: 17280759268803093753
+    FilePath: Meshes/Source/Sponza/1219024358953944284.jpg
+    Type: Texture
+  - Handle: 17325212914944696689
+    FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_01_BaseColor.png
+    Type: Texture
+  - Handle: 17336150508383613393
+    FilePath: Meshes/NewSponza_Curtains_glTF.hmesh
+    Type: Mesh
+  - Handle: 17411583585817021928
+    FilePath: env/birchwood_4k.hdr
+    Type: EnvMap
+  - Handle: 17457802510525475793
+    FilePath: Meshes/Source/Intel Sponza/textures/col_brickwall_01_Roughness.png
+    Type: Texture
+  - Handle: 17468550292540788615
+    FilePath: Materials/Rough.hmaterial
+    Type: Material
+  - Handle: 17474128867397398656
+    FilePath: Meshes/Source/Sponza/8481240838833932244.jpg
+    Type: Texture
+  - Handle: 17485582718447778262
+    FilePath: Meshes/Source/Bistro_v5_2/BistroInterior.fbx
+    Type: MeshSource
+  - Handle: 17488733388014310338
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_door_01_Roughness.png
+    Type: Texture
+  - Handle: 17520664468398466599
+    FilePath: Materials/Air filled glass.hmaterial
+    Type: Material
+  - Handle: 17659923004833730015
+    FilePath: Materials/SponzaFloor.hmaterial
+    Type: Material
+  - Handle: 17669854248305532735
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_02_Metalness.png
+    Type: Texture
+  - Handle: 17698008482734693420
+    FilePath: Meshes/Source/Sponza/7268504077753552595.jpg
+    Type: Texture
+  - Handle: 17701322470359774207
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_2_0_Normal.jpg
+    Type: Texture
+  - Handle: 17783092084184081445
+    FilePath: Meshes/Source/Intel Sponza/textures/curtain_fabric_red_BaseColor.png
+    Type: Texture
+  - Handle: 17783655385648826200
+    FilePath: Meshes/Source/Sponza/4601176305987539675.jpg
+    Type: Texture
+  - Handle: 17804175455568457640
+    FilePath: Meshes/SunTemple.hmesh
+    Type: Mesh
+  - Handle: 17810696831416626779
+    FilePath: Meshes/Default/Plane.hsmesh
+    Type: StaticMesh
+  - Handle: 17814863865231876021
+    FilePath: Meshes/Source/Intel Sponza/textures/col_head_1stfloor_BaseColor.png
+    Type: Texture
+  - Handle: 17826228315042351385
+    FilePath: Meshes/Source/Intel Sponza/textures/door_stoneframe_02_Roughnessdoor_stoneframe_02_Metalness.png
+    Type: Texture
+  - Handle: 17853518740815327945
+    FilePath: Materials/Reflective.hmaterial
+    Type: Material
+  - Handle: 17862476735385834861
+    FilePath: Meshes/Source/Default/Torus.gltf
+    Type: MeshSource
+  - Handle: 17873057721213593307
+    FilePath: Meshes/Sponza.hmesh
+    Type: Mesh
+  - Handle: 17883360476117771249
+    FilePath: Meshes/Source/SunTemple/SunTemple_Reflection_Interior.hdr
+    Type: EnvMap
+  - Handle: 17899321337888059826
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_UTile4_0_Normal.jpg
+    Type: Texture
+  - Handle: 17923656806155887818
+    FilePath: Meshes/Source/Intel Sponza/textures/wood_tile_01_Metalness.png
+    Type: Texture
+  - Handle: 17925812307024783702
+    FilePath: Materials/EmissiveMaterials/White Light copy 5.hmaterial
+    Type: Material
+  - Handle: 17929205085838006344
+    FilePath: Scripts/Intermediates/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+    Type: ScriptFile
+  - Handle: 17935062781476981053
+    FilePath: Meshes/NewSponza_Main_glTF_002.hmesh
+    Type: Mesh
+  - Handle: 17948184813918906566
+    FilePath: Scripts/Source/Projectile.cs
+    Type: ScriptFile
+  - Handle: 17968275339331234665
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_0_Specular.jpg
+    Type: Texture
+  - Handle: 18045148268341754189
+    FilePath: Meshes/Source/Intel Sponza/textures/ceiling_plaster_01_Roughness.png
+    Type: Texture
+  - Handle: 18075972389904841956
+    FilePath: Meshes/Source/Default/Cylinder.gltf
+    Type: MeshSource
+  - Handle: 18093226763699172972
+    FilePath: Meshes/Source/Intel Sponza/textures/dirt_decal_01_invmask.png
+    Type: Texture
+  - Handle: 18099476100656321707
+    FilePath: Meshes/Cone.hmesh
+    Type: Mesh
+  - Handle: 18126545304027199130
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_0_BaseColor.jpg
+    Type: Texture
+  - Handle: 18156555171054506689
+    FilePath: Meshes/Hemisphere.hsmesh
+    Type: StaticMesh
+  - Handle: 18162458286867185354
+    FilePath: Meshes/Source/Intel Sponza/textures/brickwall_01_Roughnessbrickwall_01_Metalness.png
+    Type: Texture
+  - Handle: 18237044691457446380
+    FilePath: Meshes/Source/Sponza/14170708867020035030.jpg
+    Type: Texture
+  - Handle: 18248728959985520960
+    FilePath: Meshes/Source/Sponza/white.png
+    Type: Texture
+  - Handle: 18334777110398596747
+    FilePath: scenes/z_BistroExterior.hscene
+    Type: Scene
+  - Handle: 18340836617165723212
+    FilePath: Meshes/Source/Intel Sponza/textures/col_1stfloor_Roughness.png
+    Type: Texture
+  - Handle: 18353033108684313197
+    FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_Arch_Inst_0_Normal.jpg
+    Type: Texture
+  - Handle: 18381535864547826595
+    FilePath: Meshes/Source/Intel Sponza/textures/ornament_01_Roughnessornament_01_Metalness.png
+    Type: Texture
+  - Handle: 18385094936158744897
+    FilePath: Meshes/Source/Sponza/8783994986360286082.jpg
+    Type: Texture
+  - Handle: 18442412098063382630
+    FilePath: Meshes/CubeScene.hmesh
+    Type: Mesh

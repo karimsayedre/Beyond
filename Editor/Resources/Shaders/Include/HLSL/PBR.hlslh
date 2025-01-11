@@ -1,0 +1,55 @@
+#pragma once
+#include <Common.slh>
+
+float3 FresnelSchlickRoughness(float3 F0, float cosTheta, float roughness)
+{
+	return F0 + (max(float3(1.0 - roughness.xxx), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+float NdfGGX(float cosLh, float roughness)
+{
+    float alpha = roughness * roughness;
+    float alphaSqr = alpha * alpha;
+    float cosLhSqr = cosLh * cosLh;
+    float denominator = cosLhSqr * (alphaSqr - 1.0) + 1.0;
+
+    return alphaSqr / (PI * denominator * denominator);
+}
+
+float GaSchlickGGX(float cosLi, float NdotV, float roughness)
+{
+    float k = (roughness * roughness) / 2.0;
+    float G1 = (NdotV * (1.0 - k)) + k;
+    float G2 = (cosLi * (1.0 - k)) + k;
+    
+    return 1.0 / (G1 * G2);
+}
+
+// Normal Distribution Function (D)
+float NormalDistributionFunction(float NdotH, float roughness)
+{
+    float alpha = roughness * roughness;
+    float alphaSqr = alpha * alpha;
+    float cosLhSqr = NdotH * NdotH;
+    float denominator = cosLhSqr * (alphaSqr - 1.0) + 1.0;
+
+    return exp((NdotH * NdotH - 1) / (alpha * NdotH * NdotH)) / (PI * alpha * NdotH * NdotH * NdotH * NdotH);
+}
+
+// Fresnel Equation (F)
+float3 FresnelEquation(float3 F0, float VdotH)
+{
+    return F0 + (1 - F0) * pow(1 - VdotH, 5);
+}
+
+// Geometry Function (G)
+float GeometryFunction(float NdotH, float NoV, float cosLi, float VdotH)
+{
+    return min(1.0, min((2 * NdotH * NoV) / VdotH, (2 * NdotH * cosLi) / VdotH));
+}
+
+
+float3 AbsorptionCoefficient(float attenuationDistance, float3 attenuationColor)
+{
+	return attenuationDistance <= 0.0F ? float3(0.0F, 0.0F, 0.0F) : -float3(log(attenuationColor.x), log(attenuationColor.y), log(attenuationColor.z)) / attenuationDistance;
+}

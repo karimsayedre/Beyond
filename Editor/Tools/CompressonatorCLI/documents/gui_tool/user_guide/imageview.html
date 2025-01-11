@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Image View &#8212; Compressonator Compressonator - latest build documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Toolbars" href="toolbars.html" />
+    <link rel="prev" title="The Main Window" href="index_themainwindow.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="image-view">
+<h1>Image View<a class="headerlink" href="#image-view" title="Permalink to this headline">¶</a></h1>
+<p>The Image View is the main window in Compressonator GUI. It is where you can view a wide variety of source image formats, see the results of compression, inspect image analysis metrics, and much more.</p>
+<p>To open an image in the Image View you must left-click on the image icon next to an item in the Project Explorer. Multiple images can be opened simultaneously and switched between by selecting the appropriate tab at the top of the Image View.</p>
+<section id="viewing-images">
+<h2>Viewing Images<a class="headerlink" href="#viewing-images" title="Permalink to this headline">¶</a></h2>
+<p>The Image Viewer in combination with the Project Explorer allows users
+to view a large variety of image formats. Ref <a class="reference external" href="#_Adding_additional_image">Adding Addition Image
+Formats</a> on what formats are supported.</p>
+<p>Note: In some cases viewing an image may take some time to display if
+the CPU is used to decompress a large compressed image item.</p>
+<ul class="simple">
+<li><p>To display an original image view, single mouse click on the item on
+the Project Explorer.</p></li>
+<li><p>To display a destination item image view double click mouse on the
+Item on the Project Explorer.</p></li>
+</ul>
+<p><img alt="image57" src="../../_images/image59.png" /></p>
+<p>Image View of Ruby.bmp</p>
+<p>To view a processed image (Project Explorer destination item with a
+green circle), double click on it (Ruby_bmp_1 in this example) and you
+will see another Image View tab window appear displaying the processed
+image.</p>
+<p><img alt="image58" src="../../_images/image60.png" /></p>
+<p>BC7 Compressed Image View of Ruby_bmp1.dds file</p>
+<p>Users can capture viewed images to file using context menu “Save View as” or keyboard keys Ctrl C (displayed image), Alt C (original source image) to save to Windows Clipboard.</p>
+<blockquote>
+<div><p><img alt="image131" src="../../_images/image131.png" />
+Image view context menu (enabled by right mouse button click)</p>
+</div></blockquote>
+<p>Cursor positions in block increments is also displayed, users can now save any block to file using “Save Source Block … as” where … is the current cursor location translated to a block position.</p>
+<blockquote>
+<div><p><img alt="image121" src="../../_images/image121.png" /></p>
+<p>Image view status bar showing cursors block position</p>
+</div></blockquote>
+<p>This feature is useful in capturing the source texture blocks that was used for generating compressed blocks that exhibit decompressed image artifacts or poor quality. Depending on the source, a 4x4 block image is saved to either BMP or EXR file formats, which can later be used for repeated analysis.</p>
+<section id="using-a-mouse-wheel-for-zoom">
+<h3>Using a Mouse Wheel for Zoom<a class="headerlink" href="#using-a-mouse-wheel-for-zoom" title="Permalink to this headline">¶</a></h3>
+<p>Rotating the mouse wheel in or out will also zoom the image in
+increments of 10. To zoom at a faster rate (increments of 100) hold down
+the keyboard Ctrl key and rotate the mouse wheel. Zoom will be centered
+on the current mouse cursor location.</p>
+</section>
+<section id="using-the-mouse-to-move-the-image-in-the-view">
+<h3>Using the Mouse to Move the Image in the View<a class="headerlink" href="#using-the-mouse-to-move-the-image-in-the-view" title="Permalink to this headline">¶</a></h3>
+<p>To move the image around the view, place the mouse over the image and
+press down the left mouse button. While keeping it pressed, move the
+image around the view. To stop the move, release the left mouse button.</p>
+<p>Note: you can only perform these operations when the mouse cursor is
+over the image.</p>
+</section>
+</section>
+<section id="adding-additional-image-formats">
+<h2>Adding additional Image Formats<a class="headerlink" href="#adding-additional-image-formats" title="Permalink to this headline">¶</a></h2>
+<p>There are a number of default image file formats that are supported by
+the application</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 71%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Format</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BMP</p></td>
+<td><p>Windows Bitmap</p></td>
+</tr>
+<tr class="row-odd"><td><p>PNG</p></td>
+<td><p>Portable Network Graphics</p></td>
+</tr>
+<tr class="row-even"><td><p>EXR</p></td>
+<td><p>High Dynamic Range Images</p></td>
+</tr>
+<tr class="row-odd"><td><p>DDS</p></td>
+<td><p>Direct Draw Surface files</p></td>
+</tr>
+<tr class="row-even"><td><p>KTX, KTX2</p></td>
+<td><p>Khronos Texture Files</p></td>
+</tr>
+<tr class="row-odd"><td><p>TGA</p></td>
+<td><p>Targa Texture files</p></td>
+</tr>
+<tr class="row-even"><td><p>TIFF</p></td>
+<td><p>Tagged Image File Format files</p></td>
+</tr>
+</tbody>
+</table>
+<p>Support for EXR, TGA, DDS and KTX are linked into the main application and
+cannot be overwritten</p>
+<p>Users can add additional file format by placing appropriate Qt Image
+plugins into \plugins\imageformats folder.</p>
+</section>
+<section id="ktx2-support-notes">
+<h2>KTX2 Support Notes<a class="headerlink" href="#ktx2-support-notes" title="Permalink to this headline">¶</a></h2>
+<p>KTX2 is supported by a DLL in the plugin folder AMD Compress\plugins\imageformats and at the root folder as ktx.dll
+it supports saving and loading multichannel images, BCn, and ETCn codecs.</p>
+<p>The following custom image formats supported in Compressonator KTX is not available in KTX2
+ATC_RGB,ATC_RGBA_Explicit,ATI1N,ATI2N,ATI2N_XY, DXT5_xGBR, ATI2N_DXT5,
+DXT5_xGBR,DXT5_RxBG ,DXT5_RBxG,DXT5_xRBG,DXT5_RGxB and DXT5_xGxR.</p>
+<p>For ATI1N use BC4 and for ATI2N use BC5.</p>
+<p>Additional support for universal textures and streaming can be added upon request.
+For specific KTX2 feature enablement, please file a request at <a class="reference external" href="https://github.com/GPUOpen-Tools/compressonator/issues">https://github.com/GPUOpen-Tools/compressonator/issues</a></p>
+</section>
+<section id="image-view-switch-between-original-and-processed">
+<h2>Image View switch between Original and Processed<a class="headerlink" href="#image-view-switch-between-original-and-processed" title="Permalink to this headline">¶</a></h2>
+<p>This feature allows users to switch quickly between Original Image View
+and Processed Image View (Processed refers to Compressed Image View or
+Pixels Difference Image View) by simple key stokes (O or P) or from the
+Image View bar dropdown list. This allows users to have a visual
+comparison between Original and Processed images.</p>
+<p>After <a class="reference external" href="#_Compressing_Images">compressing image</a>, click on the green
+circle beside the compressed Image to generate the image view window as
+shown below:</p>
+<p><img alt="image110" src="../../_images/image114.png" /></p>
+<p>Click on the Image View window to set focus, then hit “Space” bar to
+switch between Original and Processed (In this case, Processed refers to
+Compressed Image) Image Views. You can also switch between Processed and
+and Original Views by select the related views from the combo drop down
+list <img alt="image111" src="../../_images/image115.png" /></p>
+<p>To change the Processed Image View to Image Diff View, click on the icon
+<img alt="image112" src="../../_images/image116.png" /> beside the <img alt="image113" src="../../_images/image115.png" /> , observed that Processed View now
+shows Image Diff View (In this case, Processed refers to Image Diff),
+you can switch between Original and Image Diff View by hitting the
+“Space” bar. Note: You may need to increase the Image Brightness by
+clicking on <img alt="image114" src="../../_images/image117.png" /> to view the Processed Image Diff.</p>
+<p>To change the Processed Image View back to Compressed Image View, click
+on the same icon <img alt="image115" src="../../_images/image116.png" />.</p>
+</section>
+<section id="psnr-image-quality-metric">
+<h2>PSNR Image Quality Metric<a class="headerlink" href="#psnr-image-quality-metric" title="Permalink to this headline">¶</a></h2>
+<p><img alt="image434" src="../../_images/psnr_location.png" /></p>
+<p>When viewing the compressed result of an image some analysis metrics are calculated and can be viewed. One such metric is the PSNR. It can be seen in the status bar at the bottom of the image view and updates based on which mipmap level or cubemap face is currently being viewed.</p>
+<p>The PSNR value can be used to numerically compare the quality of various types of compressed images and filter options applied to an image.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/acompress-128.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../index.html">Compressonator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../developer_sdk/index.html">Developer SDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../command_line_tool/index.html">Command Line Tool</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">GUI Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build_from_source/build_instructions.html">Build from GitHub Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../revisions.html">Revision History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support/contact.html">Contact and Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Bibliography</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">GUI Tool</a><ul>
+  <li><a href="index.html">GUI User Guide</a><ul>
+  <li><a href="index_themainwindow.html">The Main Window</a><ul>
+      <li>Previous: <a href="index_themainwindow.html" title="previous chapter">The Main Window</a></li>
+      <li>Next: <a href="toolbars.html" title="next chapter">Toolbars</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017 to 2023, AMD Developer Tools.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

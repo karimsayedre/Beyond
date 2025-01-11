@@ -1,0 +1,11 @@
+#pragma once
+
+struct HitPayload
+{
+  vec3 HitValue;
+  uint Seed;
+  vec3 Weight;
+  int  Depth;
+  vec3 RayOrigin;
+  vec3 RayDir;
+};

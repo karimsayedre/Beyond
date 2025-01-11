@@ -1,0 +1,299 @@
+#pragma once
+
+#include <Common.hlslh>
+#include <Compression.hlslh>
+#include <Raytracing/RaytracingMath.hlslh>
+#include <Raytracing/Vertex.hlslh>
+#include <Raytracing/Descriptors.hlslh>
+
+// #if HLSL_VERSION > 660
+#define PAYLOAD_DECORATION [raypayload]
+
+#define PAYLOAD_WRITE_MODIFIER(...) : write(__VA_ARGS__)
+#define PAYLOAD_READ_MODIFIER(...) : read(__VA_ARGS__)
+
+// #else
+// #define PAYLOAD_DECORATION
+// #define PAYLOAD_WRITE_MODIFIER(...)
+// #define PAYLOAD_READ_MODIFIER(...)
+// #endif
+
+struct PAYLOAD_DECORATION Payload
+{
+	float2 BarycentricCoords PAYLOAD_WRITE_MODIFIER(miss) PAYLOAD_READ_MODIFIER(caller);
+	float HitT PAYLOAD_WRITE_MODIFIER(closesthit, miss) PAYLOAD_READ_MODIFIER(caller);
+	uint PrimitiveIndex PAYLOAD_WRITE_MODIFIER(miss) PAYLOAD_READ_MODIFIER(caller);
+	uint InstanceID PAYLOAD_WRITE_MODIFIER(miss) PAYLOAD_READ_MODIFIER(caller);
+	uint WorldNormals PAYLOAD_WRITE_MODIFIER(closesthit) PAYLOAD_READ_MODIFIER(caller);
+};
+
+struct PAYLOAD_DECORATION RayPackedPayload
+{
+	float HitT PAYLOAD_WRITE_MODIFIER(closesthit, miss) PAYLOAD_READ_MODIFIER(caller);     // 0
+	float3 WorldPosition PAYLOAD_WRITE_MODIFIER(closesthit) PAYLOAD_READ_MODIFIER(caller); // 4 - 12
+	uint PackedAlbedo PAYLOAD_WRITE_MODIFIER(closesthit) PAYLOAD_READ_MODIFIER(caller);    // 16: r11g11b10
+
+	// Separate PackedAlphaMetalRoughDepth fields for clarity
+	uint PackedAlpha : 8;     // 8 bits for Alpha
+	uint PackedMetalness : 8; // 8 bits for Metalness
+	uint PackedRoughness : 8; // 8 bits for Roughness
+	uint PackedDepth : 8;     // 8 bits for Depth
+
+	uint PackedEmissive : 16;           // 16 bits for Emissive (half precision)
+	min16uint PackedMaterialIndex : 16; // 16 bits for material Index (half precision)
+
+	uint PackedNormal PAYLOAD_WRITE_MODIFIER(closesthit) PAYLOAD_READ_MODIFIER(caller); // 28: r11g11b10
+
+	// Methods for accessing separated fields
+	float GetMetalness() { return Unpack8BitToFloat(PackedMetalness); }
+	float GetAlpha() { return Unpack8BitToFloat(PackedAlpha); }
+	float GetMaterialIndex() { return Unpack8BitToFloat(PackedMaterialIndex); }
+	float GetDepth() { return Unpack8BitToFloat(PackedDepth); }
+	float GetRoughness() { return Unpack8BitToFloat(PackedRoughness); }
+};
+
+// RayPackedPayload PackPayload(Payload input)
+// {
+// 	RayPackedPayload output = (RayPackedPayload)0;
+// 	output.HitT = input.HitT;
+// 	output.WorldPosition = input.WorldPosition;
+
+// 	output.PackedAlbedo = PackR11G11B10(input.Albedo.rgb);
+// 	output.PackedAlpha = PackFloatTo8Bit(input.Albedo.a);
+// 	output.PackedMetalness = PackFloatTo8Bit(input.Metalness);
+// 	output.PackedRoughness = PackFloatTo8Bit(input.Roughness);
+// 	output.PackedDepth = input.Depth;
+
+// 	output.PackedNormal = PackNormal(input.Normal);
+
+// 	output.PackedEmissive = f32tof16(input.Emissive.r);
+// 	output.PackedMaterialIndex = (min16uint)input.MaterialIndex;
+// 	return output;
+// }
+
+// Payload UnpackPayload(RayPackedPayload input)
+// {
+// 	Payload output;
+// 	output.HitT = input.HitT;
+// 	output.WorldPosition = input.WorldPosition;
+
+// 	output.Albedo.rgb = UnpackR11G11B10(input.PackedAlbedo);
+// 	output.Albedo.a = Unpack8BitToFloat(input.PackedAlpha);
+
+// 	output.Normal = UnpackNormal(input.PackedNormal);
+
+// 	output.Metalness = Unpack8BitToFloat(input.PackedMetalness);
+// 	output.Roughness = Unpack8BitToFloat(input.PackedRoughness);
+// 	output.Depth = input.PackedDepth;
+
+// 	output.Emissive.r = f16tof32(input.PackedEmissive);
+// 	output.MaterialIndex = uint(input.PackedMaterialIndex);
+
+// 	return output;
+// }
+
+struct PbrMaterial
+{
+	float3 baseColor; // base color
+	float opacity;    // 1 = opaque, 0 = fully transparent
+	float2 roughness; // 0 = smooth, 1 = rough (anisotropic: x = U, y = V)
+	float metallic;   // 0 = dielectric, 1 = metallic
+	float3 emissive;  // emissive color
+
+	float3 WorldPosition;
+	float HitT;
+
+	float3 N;  // shading normal
+	float3 T;  // shading normal
+	float3 B;  // shading normal
+	float3 Ng; // geometric normal
+
+	float ior1; // index of refraction : current medium (i.e. air)
+	float ior2; // index of refraction : the other side (i.e. glass)
+
+	float specular;       // weight of the dielectric specular layer
+	float3 specularColor; // color of the dielectric specular layer
+	float transmission;   // KHR_materials_transmission
+
+	float3 attenuationColor;   // KHR_materials_volume
+	float attenuationDistance; //
+	float thickness;           // Replace for isThinWalled?
+
+	float clearcoat;          // KHR_materials_clearcoat
+	float clearcoatRoughness; //
+	float3 Nc;                // clearcoat normal
+
+	float iridescence;
+	float iridescenceIor;
+	float iridescenceThickness;
+
+	float3 sheenColor;
+	float sheenRoughness;
+};
+
+PbrMaterial defaultPbrMaterial()
+{
+	PbrMaterial mat;
+	mat.baseColor = float3(1.0F, 1.0F, 1.0F);
+	mat.opacity = 1.0F;
+	mat.roughness = float2(1.0F, 1.0F);
+	mat.metallic = 1.0F;
+	mat.emissive = float3(0.0F, 0.0F, 0.0F);
+
+	mat.N = float3(0.0F, 0.0F, 1.0F);
+	mat.Ng = float3(0.0F, 0.0F, 1.0F);
+	mat.T = float3(1.0F, 0.0F, 0.0F);
+	mat.B = float3(0.0F, 1.0F, 0.0F);
+
+	mat.ior1 = 1.0F;
+	mat.ior2 = 1.5F;
+
+	mat.specular = 1.0F;
+	mat.specularColor = float3(1.0F, 1.0F, 1.0F);
+	mat.transmission = 0.0F;
+
+	mat.attenuationColor = float3(1.0F, 1.0F, 1.0F);
+	mat.attenuationDistance = 1.0F;
+	mat.thickness = 0.0F;
+
+	mat.clearcoat = 0.0F;
+	mat.clearcoatRoughness = 0.01F;
+	mat.Nc = float3(0.0F, 0.0F, 1.0F);
+
+	mat.iridescence = 0.0F;
+	mat.iridescenceIor = 1.5F;
+	mat.iridescenceThickness = 0.1F;
+
+	mat.sheenColor = float3(0.0F, 0.0F, 0.0F);
+	mat.sheenRoughness = 0.0F;
+
+	return mat;
+}
+
+PbrMaterial defaultPbrMaterial(float3 baseColor, float metallic, float roughness, float3 N, float3 Ng)
+{
+	PbrMaterial mat = defaultPbrMaterial();
+	mat.baseColor = baseColor;
+	mat.metallic = metallic;
+	float r2 = roughness * roughness;
+	mat.roughness = float2(r2, r2);
+	mat.Ng = Ng;
+	mat.N = N;
+	orthonormalBasis(mat.N, mat.T, mat.B);
+
+	return mat;
+}
+
+PbrMaterial GetMaterialParams(inout RayDesc ray, 
+#ifdef USE_RAYQUERY
+	float3x4 objectToWorld3x4
+#else
+	float3 worldPosition,
+	uint worldNormal
+#endif
+	, float2 triangleBarycentrices, float hitT, uint InstanceID, uint primitiveIndex, uint2 launchIndex)
+{
+	PbrMaterial payload = (PbrMaterial)0;
+	payload.HitT = -1.0f;
+	
+	float2 attrib = triangleBarycentrices;
+	payload.HitT = hitT;
+	float3 barycentrics = float3(1.0f - attrib.x - attrib.y, attrib.x, attrib.y);
+
+	ObjDesc objResource = objDescs[InstanceID];
+	Vertex vertex = LoadInterpolatedVertex(objResource, primitiveIndex, barycentrics);
+
+#ifdef USE_RAYQUERY
+payload.WorldPosition = float3(mul(objectToWorld3x4, float4(vertex.Position, 1.0)));
+#else
+payload.WorldPosition = worldPosition;
+#endif
+
+
+#ifndef USE_RAYQUERY
+	payload.N = normalize(UnpackNormal(worldNormal));
+#else
+	float3x3 TBN = float3x3(vertex.Tangent, vertex.Binormal, vertex.Normal);
+	float3x3 worldNormals = mul(((float3x3)objectToWorld3x4), TBN);
+	payload.N = normalize(mul((float3x3)(objectToWorld3x4), vertex.Normal));
+	payload.B = normalize(mul((float3x3)(objectToWorld3x4), vertex.Binormal));
+	payload.T = normalize(mul((float3x3)(objectToWorld3x4), vertex.Tangent));
+#endif
+	payload.Ng = payload.N;
+
+
+	// uint packedRayDepth = packedPayload.PackedDepth;
+
+	Material material = materials[objResource.MaterialIndex];
+
+	const float mipLevel = 0.0;
+	float4 albedoTexColor = SampleTex2DLevel(material.AlbedoTexIndex, vertex.TexCoord, mipLevel);
+	payload.baseColor = albedoTexColor.rgb * ToLinear(material.AlbedoColor.rgb);
+	payload.opacity = albedoTexColor.a * material.AlbedoColor.a;
+	payload.emissive = SampleTex2DLevel(material.EmissionTexIndex, vertex.TexCoord, mipLevel).rgb * payload.baseColor.rgb * material.Emission;
+	payload.clearcoat = SampleTex2DLevel(material.ClearcoatTexIndex, vertex.TexCoord, mipLevel).r * material.Clearcoat;
+	payload.transmission = SampleTex2DLevel(material.TransmissionTexIndex, vertex.TexCoord, mipLevel).r * material.Transmission;
+
+	payload.metallic = SampleTex2DLevel(material.MetalnessTexIndex, vertex.TexCoord, mipLevel).b * material.Metalness;
+	payload.roughness = SampleTex2DLevel(material.RoughnessTexIndex, vertex.TexCoord, mipLevel).g * material.Roughness;
+
+	float r2 = payload.roughness.r * payload.roughness.r;
+	payload.roughness = float2(r2, r2);
+
+	payload.specular = material.Specular;                     // weight of the dielectric specular layer
+	payload.specularColor = ToLinear(material.SpecularColor); // color of the dielectric specular layer
+
+	payload.attenuationColor = ToLinear(material.AttenuationColor); // KHR_materials_volume
+	payload.attenuationDistance = material.AttenuationDistance;     //
+	payload.thickness = material.Thickness;                         // Replace for isThinWalled?
+
+	payload.clearcoatRoughness = max(material.ClearcoatRoughness, 0.001f); //
+	payload.Nc = payload.N;                                                // clearcoat normal
+
+	// Adjusting normal
+	const float3 V = (-ray.Direction);
+	if (dot(payload.Ng, V) < 0) // Flip if back facing
+		payload.Ng = -payload.Ng;
+
+	// If backface
+	if (dot(payload.Ng, payload.N) < 0) // Make Normal and GeoNormal on the same side
+	{
+		payload.N = -payload.N;
+		payload.T = -payload.T;
+		payload.B = -payload.B;
+
+		payload.ior1 = material.IOR;
+		payload.ior2 = 1.0;
+	}
+	else
+	{
+		payload.ior1 = 1.0;
+		payload.ior2 = material.IOR;
+	}
+
+	// handle low tessellated meshes with smooth normals
+	float3 k2 = reflect(-V, payload.N);
+	if (dot(payload.Ng, k2) < 0.0F) payload.N = payload.Ng;
+
+	// For low tessalated, avoid internal reflection
+	float3 r = reflect(normalize(ray.Direction), payload.N);
+	if (dot(r, payload.Ng) < 0) payload.N = payload.Ng;
+
+	payload.iridescence = material.Iridescence;
+	payload.iridescenceIor = material.IridescenceIor;
+	payload.iridescenceThickness = material.IridescenceThickness;
+
+	payload.sheenColor = material.SheenColor;
+	payload.sheenRoughness = material.SheenRoughness;
+
+	
+	[flatten] if (material.UseNormalMap)
+	{
+		float3 tangentSpaceNormal = normalize(UnpackNormal(SampleTex2DLevel(material.NormalTexIndex, vertex.TexCoord, mipLevel).rg).xyz);
+		// Transform from object space to world space
+		payload.N = normalize(mul(tangentSpaceNormal, float3x3(payload.T, payload.B, payload.N)));
+	}
+	orthonormalBasis(payload.N, payload.T, payload.B);
+
+	return payload;
+}

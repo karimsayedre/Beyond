@@ -1,0 +1,1 @@
+This is an header only amalgamated library from https://github.com/biojppm/rapidyaml.

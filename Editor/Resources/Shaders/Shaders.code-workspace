@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"slangLanguageServer.trace.server": "verbose",
+		"slang.additionalSearchPaths": [
+			"${workspaceFolder}/Include/Common",
+			"${workspaceFolder}/Include/HLSL",
+			"${workspaceFolder}"
+		],
+		"slang.format.clangFormatStyle": "Microsoft"
+	}
+}

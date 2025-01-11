@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+	<!-- Visualization for VulkanMaterial -->
+	<Type Name="Beyond::VulkanMaterial">
+		<DisplayString>VulkanMaterial</DisplayString>
+		<Expand>
+			<Synthetic Name="UniformStorageBuffer">
+				<Expand>
+					<ExpandedItem>*(Beyond::MaterialBuffer*)(m_UniformStorageBuffer.Data)</ExpandedItem>
+				</Expand>
+			</Synthetic>
+			<Item Name="Name">m_Name</Item>
+			<Item Name="Shader">m_Shader</Item>
+			<Item Name="Bindless Resources">m_BindlessResources</Item>
+		</Expand>
+	</Type>
+
+	<!-- Visualization for MaterialBuffer -->
+	<Type Name="Beyond::MaterialBuffer">
+		<DisplayString>MaterialBuffer</DisplayString>
+		<Expand>
+			<!-- Key Fields -->
+			<Item Name="Albedo Color">AlbedoColor</Item>
+			<Item Name="Specular">Specular</Item>
+			<Item Name="Roughness">Roughness</Item>
+			<Item Name="Metalness">Metalness</Item>
+			<Item Name="Emission">Emission</Item>
+			<Item Name="IOR">IOR</Item>
+			<Item Name="Flags (as MaterialFlag)">*(Beyond::MaterialFlag*)&amp;Flags</Item>
+
+		</Expand>
+	</Type>
+
+</AutoVisualizer>

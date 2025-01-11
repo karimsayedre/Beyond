@@ -1,0 +1,176 @@
+#pragma once
+
+#ifndef BEY_MEMORY_ACESS
+#define BEY_MEMORY_ACESS readonly
+#endif
+
+//
+// SET 1
+//
+
+layout(std140, set = 1, binding = 4) uniform ShadowData
+{
+	mat4 DirLightMatrices[4];
+}
+u_DirShadow;
+
+struct DirectionalLight
+{
+	vec3 Direction;
+	float Intensity;
+
+	vec3 Radiance;
+	float LightSize;
+
+	bool SoftShadows;
+	bool CastsShadows;
+	float ShadowAmount;
+	float Padding;
+};
+
+layout(std140, set = 1, binding = 5) uniform SceneData
+{
+	DirectionalLight DirectionalLights;
+	vec3 CameraPosition;
+	uint FrameIndex;
+	vec3 PrevCameraPosition;
+	float MipBias;
+	float EnvironmentMapLod;
+	float EnvironmentMapIntensity;
+	vec2 Padding2; // Added padding to align to 16
+}
+u_SceneData;
+
+struct PointLight
+{
+	vec3 Position;
+	float Intensity;
+	vec3 Radiance;
+	float Radius;
+	float Falloff;
+	float SourceSize;
+	bool CastsShadows;
+	bool SoftShadows;
+};
+
+layout(std140, set = 1, binding = 6) uniform PointLightData
+{
+	uint LightCount;
+	PointLight Lights[1000];
+}
+u_PointLights;
+
+struct SpotLight
+{
+	vec3 Position;
+	float Intensity;
+
+	vec3 Radiance;
+	float Range;
+
+	vec3 Direction;
+	float Falloff;
+
+	vec3 Padding;
+	float SourceSize;
+
+	float Angle;
+	float AngleAttenuation;
+	bool CastsShadows;
+	bool SoftShadows;
+};
+
+layout(std140, set = 1, binding = 7) uniform SpotLightData
+{
+	uint LightCount;
+	SpotLight Lights[800];
+}
+u_SpotLights;
+
+layout(std140, set = 1, binding = 8) uniform SpotShadowData
+{
+	mat4 Mats[800];
+}
+u_SpotLightMatrices;
+
+layout(std430, set = 1, binding = 9) BEY_MEMORY_ACESS buffer VisiblePointLightIndicesBuffer
+{
+	int Indices[];
+}
+s_VisiblePointLightIndicesBuffer;
+
+layout(std430, set = 1, binding = 10) BEY_MEMORY_ACESS buffer VisibleSpotLightIndicesBuffer
+{
+	int Indices[];
+}
+s_VisibleSpotLightIndicesBuffer;
+
+//
+// SET 2
+//
+
+layout(std140, set = 2, binding = 0) uniform Camera
+{
+	mat4 ReprojectionMatrix;
+	mat4 PrevViewProjectionMatrix;
+	mat4 ViewProjectionMatrix;
+	mat4 InverseViewProjectionMatrix;
+	mat4 ProjectionMatrix;
+	mat4 InverseProjectionMatrix;
+	mat4 ViewMatrix;
+	mat4 InverseViewMatrix;
+	mat4 PrevViewMatrix;
+	vec2 NDCToViewMul;
+	vec2 NDCToViewAdd;
+	vec2 DepthUnpackConsts;
+	vec2 CameraTanHalfFOV;
+	vec2 CurrentJitter;
+	vec2 PreviousJitter;
+	vec2 ClipToRenderTargetScale;
+}
+u_Camera;
+
+layout(std140, set = 2, binding = 1) uniform RendererData
+{
+	uniform vec4 CascadeSplits;
+	uniform int TilesCountX;
+	uniform bool ShowCascades;
+	uniform bool SoftShadows;
+	uniform float LightSize;
+	uniform float MaxShadowDistance;
+	uniform float ShadowFade;
+	uniform bool CascadeFading;
+	uniform float CascadeTransitionFade;
+	uniform bool ShowLightComplexity;
+}
+u_RendererData;
+
+layout(std140, set = 2, binding = 2) uniform ScreenData
+{
+	vec2 InvFullResolution;
+	vec2 FullResolution;
+	vec2 InvHalfResolution;
+	vec2 HalfResolution;
+}
+u_ScreenData;
+
+const int MAX_BONES = 100;
+const int MAX_ANIMATED_MESHES = 1024;
+
+layout(std140, set = 2, binding = 4) readonly buffer BoneTransforms
+{
+	mat4 BoneTransforms[MAX_BONES * MAX_ANIMATED_MESHES];
+}
+r_BoneTransforms;
+
+struct TransformData
+{
+	vec4 ModelMatrix[3];
+	vec4 PrevModelMatrix[3];
+};
+
+layout(std430, set = 2, binding = 5) readonly buffer Transforms
+{
+	TransformData Transform[];
+}
+r_Transforms;

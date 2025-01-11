@@ -1,0 +1,601 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Command Line Options &#8212; Compressonator Compressonator - latest build documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GUI Tool" href="../gui_tool/index.html" />
+    <link rel="prev" title="Command Line Tool" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="command-line-options">
+<h1>Command Line Options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h1>
+<p>Usage CompressonatorCLI.exe [options] SourceFile DestFile</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mip Map Options:</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-GenGPUMipMaps</p></td>
+<td><p>When encoding with GPU this flag will enable
+mip map level generation using GPU HW</p></td>
+</tr>
+<tr class="row-odd"><td><p>-mipsize    &lt;size&gt;</p></td>
+<td><p>The size in pixels used to determine
+how many mip levels to generate</p></td>
+</tr>
+<tr class="row-even"><td><p>-miplevels  &lt;Level&gt;</p></td>
+<td><p>Sets Mips Level for output,
+(mipSize overides this option): default is 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>-nomipmap</p></td>
+<td><p>Turns off Mipmap generation</p></td>
+</tr>
+<tr class="row-even"><td><p>-UseSRGBFrames</p></td>
+<td><p>When encoding with GPU,  GL_FRAMEBUFFER_SRGB
+will be enabled else use GL_FRAMEBUFFER</p></td>
+</tr>
+<tr class="row-odd"><td><p>-FilterGamma  &lt;value&gt;</p></td>
+<td><p>Set a gamma correction value that will be
+applied after mipmap generation</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Compression Options</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-fd &lt;format&gt;</p></td>
+<td><p>Specifies the destination texture format to use</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DecodeWith</p></td>
+<td><p>GPU based decompression using OpenGL,DirectX or Vulkan
+Default is OpenGL, UseGPUDecompress is implied when
+this option is set</p></td>
+</tr>
+<tr class="row-even"><td><p>-decomp &lt;filename&gt;</p></td>
+<td><p>If the destination  file is compressed optionally
+decompress it
+to the specified file. Note the destination  must
+be compatible
+with the sources format,decompress formats are typically
+set to ARGB_8888 or ARGB_32F</p></td>
+</tr>
+<tr class="row-odd"><td><p>-doswizzle</p></td>
+<td><p>Swizzle the source images Red and Blue channels</p></td>
+</tr>
+<tr class="row-even"><td><p>-EncodeWith</p></td>
+<td><p>Compression with CPU, HPC, OCL, DXC, GPU.
+Default is CPU.
+GPU will use GL Compress Extensions
+OCL &amp; DXC is only available on Windows Version</p></td>
+</tr>
+<tr class="row-odd"><td><p>-UseGPUDecompress</p></td>
+<td><p>By default decompression is done using CPU,
+when set OpenGL will be used by default, this can be
+changed to DirectX or Vulkan using DecodeWith setting</p></td>
+</tr>
+<tr class="row-even"><td><p>-UseMangledFileNames</p></td>
+<td><p>Turns on name mangling, meaning processed files will have
+codec information appended to the end of the file name.
+Useful if you want to process multiple files with the same
+file name but different extensions.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-ff  &lt;ext&gt;,…,&lt;ext&gt;</p></td>
+<td><p>File filters used for selecting a subset of files in a
+directory folder for processing. The subset will contain
+only files that match any of the extensions given.
+Supported &lt;ext&gt; are any of the following combinations:
+DDS,KTX,TGA,EXR,PNG,BMP,HDR,JPG,TIFF,PPM,BRLG</p></td>
+</tr>
+<tr class="row-even"><td><p>-fx  &lt;ext&gt;</p></td>
+<td><p>Specifies the file extension to use for output files.
+Supported &lt;ext&gt; are any of the following values:
+DDS,KTX,TGA,EXR,PNG,BMP,HDR,JPG,TIFF,PPM,BRLG</p></td>
+</tr>
+<tr class="row-odd"><td><p>-InExposure  &lt;value&gt;</p></td>
+<td><p>Set exposure tonemap property for float to non-float
+compression</p></td>
+</tr>
+<tr class="row-even"><td><p>-InDefog  &lt;value&gt;</p></td>
+<td><p>Set defog tonemap property for float to non-float
+compression</p></td>
+</tr>
+<tr class="row-odd"><td><p>-InKneeLow  &lt;value&gt;</p></td>
+<td><p>Set knee low tonemap property for float to non-float
+compression</p></td>
+</tr>
+<tr class="row-even"><td><p>-InKneeHigh  &lt;value&gt;</p></td>
+<td><p>Set knee high tonemap property for float to non-float
+compression</p></td>
+</tr>
+<tr class="row-odd"><td><p>-Gamma  &lt;value&gt;</p></td>
+<td><p>Set gamma tonemap property for float to non-float
+compression</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Channel Formats</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ARGB_8888</p></td>
+<td><p>ARGB format with 8-bit fixed channels</p></td>
+</tr>
+<tr class="row-odd"><td><p>ARGB_16F</p></td>
+<td><p>ARGB format with 16-bit floating-point channels</p></td>
+</tr>
+<tr class="row-even"><td><p>ARGB_32F</p></td>
+<td><p>ARGB format with 32-bit floating-point channels</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Compression Formats</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ATC_RGB</p></td>
+<td><p>Compressed RGB format</p></td>
+</tr>
+<tr class="row-odd"><td><p>ATC_RGBA_Explicit</p></td>
+<td><p>ARGB format with explicit alpha</p></td>
+</tr>
+<tr class="row-even"><td><p>ATC_RGBA_Interpolated</p></td>
+<td><p>ARGB format with interpolated alpha</p></td>
+</tr>
+<tr class="row-odd"><td><p>ATI1N</p></td>
+<td><p>Single component compression format using the same
+technique as DXT5 alpha. Four bits per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>ATI2N</p></td>
+<td><p>Two component compression format using the same
+technique as DXT5 alpha. Designed for compression object
+space normal maps. Eight bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>ATI2N_XY</p></td>
+<td><p>Two component compression format using the same technique
+as DXT5 alpha. The same as ATI2N but with the channels
+swizzled.Eight bits per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>ATI2N_DXT5</p></td>
+<td><p>An ATI2N like format using DXT5. Intended for use on GPUs
+that do not natively support ATI2N. Eight bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>BC1</p></td>
+<td><p>Four component opaque (or 1-bit alpha) compressed texture
+format. Four bit per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>BC2</p></td>
+<td><p>Four component compressed texture format with explicit
+alpha.  Eight bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>BC3</p></td>
+<td><p>Four component compressed texture format with interpolated
+alpha.  Eight bits per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>BC4</p></td>
+<td><p>Single component (red channel)compressed texture format</p></td>
+</tr>
+<tr class="row-odd"><td><p>BC4_S</p></td>
+<td><p>Signed Channel compression using BC4 format</p></td>
+</tr>
+<tr class="row-even"><td><p>BC5</p></td>
+<td><p>Two component (reg and green channels) compressed format</p></td>
+</tr>
+<tr class="row-odd"><td><p>BC5_S</p></td>
+<td><p>Signed Channel compression using BC5 format</p></td>
+</tr>
+<tr class="row-even"><td><p>BC6H</p></td>
+<td><p>High-Dynamic Range  compression format</p></td>
+</tr>
+<tr class="row-odd"><td><p>BC7</p></td>
+<td><p>High-quality compression of RGB and RGBA data</p></td>
+</tr>
+<tr class="row-even"><td><p>DXT1</p></td>
+<td><p>An opaque (or 1-bit alpha) DXTC compressed texture format.
+Four bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>DXT3</p></td>
+<td><p>DXTC compressed texture format with explicit alpha.
+Eight bits per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>DXT5</p></td>
+<td><p>DXTC compressed texture format with interpolated alpha.
+Eight bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>DXT5_xGBR</p></td>
+<td><p>DXT5 with the red component swizzled into the alpha channel
+Eight bits per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>DXT5_RxBG</p></td>
+<td><p>Swizzled DXT5 format with the green component swizzled
+into the alpha channel. Eight bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>DXT5_RBxG</p></td>
+<td><p>Swizzled DXT5 format with the green component swizzled
+into the alpha channel &amp; the blue component swizzled into
+the green channel. Eight bits per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>DXT5_xRBG</p></td>
+<td><p>Swizzled DXT5 format with the green component swizzled
+into the alpha channel &amp; the red component swizzled into
+the green channel. Eight bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>DXT5_RGxB</p></td>
+<td><p>Swizzled DXT5 format with the blue component swizzled
+into the alpha channel. Eight bits per pixel</p></td>
+</tr>
+<tr class="row-even"><td><p>DXT5_xGxR</p></td>
+<td><p>Two-component swizzled DXT5 format with the red component
+swizzled into the alpha channel &amp; the green component in
+the green channel. Eight bits per pixel</p></td>
+</tr>
+<tr class="row-odd"><td><p>ETC_RGB</p></td>
+<td><p>Ericsson Texture Compression - Compressed RGB format.</p></td>
+</tr>
+<tr class="row-even"><td><p>ETC2_RGB</p></td>
+<td><p>Ericsson Texture Compression 2 - RGB format</p></td>
+</tr>
+<tr class="row-odd"><td><p>ETC2_RGBA</p></td>
+<td><p>RGB with 8 bit alpha</p></td>
+</tr>
+<tr class="row-even"><td><p>ETC2_RGBA1</p></td>
+<td><p>RGB with 1 bit alpha</p></td>
+</tr>
+<tr class="row-odd"><td><p>BRLG</p></td>
+<td><p>Lossless compression using Brotli-G</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Codec Options</p></th>
+<th class="head"><p>Reference developer SDK documentation for range of values</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-AlphaRestrict &lt;value&gt;</p></td>
+<td><p>This setting is a quality tuning setting for BC7
+which may be necessary for some textures</p></td>
+</tr>
+<tr class="row-odd"><td><p>-AlphaThreshold &lt;value&gt;</p></td>
+<td><p>The alpha threshold to use when compressing
+to DXT1 &amp; BC1 with DXT1UseAlpha
+Texels with an alpha value less than the threshold
+are treated as transparent
+value is in the range of 0 to 255, default is 128</p></td>
+</tr>
+<tr class="row-even"><td><p>-Analysis &lt;image1&gt; &lt;image2&gt;</p></td>
+<td><p>Generate analysis metric like SSIM, PSNR values
+between 2 images with same size. Analysis_Result.xml file
+will be generated.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-ColourRestrict &lt;value&gt;</p></td>
+<td><p>This setting is a quality tuning setting for BC7
+which may be necessary for convenience in some
+applications</p></td>
+</tr>
+<tr class="row-even"><td><p>-CompressionSpeed &lt;value&gt;</p></td>
+<td><p>The trade-off between compression speed &amp; quality
+This setting is not used in BC6H and BC7</p></td>
+</tr>
+<tr class="row-odd"><td><p>-diff_image &lt;image1&gt; &lt;image2&gt;</p></td>
+<td><p>Generate difference between 2 images with same size
+A .bmp file will be generated. Please use compressonator
+GUI to increase the contrast to view the diff pixels.</p></td>
+</tr>
+<tr class="row-even"><td><p>-DXT1UseAlpha &lt;value&gt;</p></td>
+<td><p>Encode single-bit alpha data.
+Only valid when compressing to DXT1 &amp; BC1</p></td>
+</tr>
+<tr class="row-odd"><td><p>-imageprops &lt;image&gt;</p></td>
+<td><p>Print image properties of image files specifies.</p></td>
+</tr>
+<tr class="row-even"><td><p>-log</p></td>
+<td><p>Logs process information to a process_results.txt file
+containing file info, performance data,SSIM,PSNR and MSE.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-logcsv</p></td>
+<td><p>Logs process information to a process_results.csv file
+containing file info, performance data,SSIM,PSNR and MSE.</p></td>
+</tr>
+<tr class="row-even"><td><p>-log &lt;filename&gt;</p></td>
+<td><p>Logs process information to a user defined text file</p></td>
+</tr>
+<tr class="row-odd"><td><p>-logcsv &lt;filename&gt;</p></td>
+<td><p>Logs process information to a user defined csv file</p></td>
+</tr>
+<tr class="row-even"><td><p>-ModeMask &lt;value&gt;</p></td>
+<td><p>Mode to set BC7 to encode blocks using any of 8
+different block modes in order to obtain the
+highest quality</p></td>
+</tr>
+<tr class="row-odd"><td><p>-NumThreads &lt;value&gt;</p></td>
+<td><p>Number of threads to initialize for BC6H and BC7
+encoding (Max up to 128). Default set to 0 (Auto)</p></td>
+</tr>
+<tr class="row-even"><td><p>-Performance &lt;value&gt;</p></td>
+<td><p>Sets performance of encoding for BC7</p></td>
+</tr>
+<tr class="row-odd"><td><p>-PageSize &lt;value&gt;</p></td>
+<td><p>Page size, in bytes, to use for Brotli-G compression</p></td>
+</tr>
+<tr class="row-even"><td><p>-Quality &lt;value&gt;</p></td>
+<td><p>Sets quality of encoding for BC7</p></td>
+</tr>
+<tr class="row-odd"><td><p>-RefineSteps &lt;value&gt;</p></td>
+<td><p>Adds extra steps in encoding for BC1
+to improve quality over performance.
+Step values are 1 and 2.</p></td>
+</tr>
+<tr class="row-even"><td><p>-Signed &lt;value&gt;</p></td>
+<td><p>Used for BC6H only, Default BC6H format disables
+use of a sign bit in the 16-bit floating point
+channels, with a value set to 1 BC6H format will
+use a sign bit</p></td>
+</tr>
+<tr class="row-odd"><td><p>-UseChannelWeighting &lt;value&gt;</p></td>
+<td><p>Use channel weightings</p></td>
+</tr>
+<tr class="row-even"><td><p>-WeightR &lt;value&gt;</p></td>
+<td><p>The weighting of the Red or X Channel</p></td>
+</tr>
+<tr class="row-odd"><td><p>-WeightG &lt;value&gt;</p></td>
+<td><p>The weighting of the Green or Y Channel</p></td>
+</tr>
+<tr class="row-even"><td><p>-WeightB &lt;value&gt;</p></td>
+<td><p>The weighting of the Blue or Z Channel</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Output Options</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-noprogress</p></td>
+<td><p>Disables showing of compression progress messages</p></td>
+</tr>
+<tr class="row-odd"><td><p>-performance</p></td>
+<td><p>Shows various performance stats</p></td>
+</tr>
+<tr class="row-even"><td><p>-silent</p></td>
+<td><p>Disable print messages</p></td>
+</tr>
+</tbody>
+</table>
+<section id="example-compression">
+<h2>Example Compression<a class="headerlink" href="#example-compression" title="Permalink to this headline">¶</a></h2>
+<p><cite>CompressonatorCLI.exe -fd BC7  -EncodeWith HPC image.bmp result.dds</cite> <br />
+<cite>CompressonatorCLI.exe -fd BC7  image.bmp result.dds</cite> <br />
+<cite>CompressonatorCLI.exe -fd BC7  -NumTheads 16 image.bmp result.dds</cite> <br />
+<cite>CompressonatorCLI.exe -fd BC6H image.exr result.dds</cite> <br /></p>
+</section>
+<section id="example-compression-using-gpu">
+<h2>Example Compression using GPU<a class="headerlink" href="#example-compression-using-gpu" title="Permalink to this headline">¶</a></h2>
+<p><cite>CompressonatorCLI.exe  -fd BC1 -EncodeWith GPU image.bmp result.dds</cite> <br />
+<cite>CompressonatorCLI.exe  -fd BC1 -EncodeWith OCL image.bmp result.dds</cite> <br />
+<cite>CompressonatorCLI.exe  -fd BC1 -EncodeWith DXC image.bmp result.dds</cite> <br /></p>
+</section>
+<section id="example-decompression-from-compressed-image-using-cpu">
+<h2>Example Decompression from compressed image using CPU<a class="headerlink" href="#example-decompression-from-compressed-image-using-cpu" title="Permalink to this headline">¶</a></h2>
+<p><cite>CompressonatorCLI.exe  result.dds image.bmp</cite></p>
+</section>
+<section id="compression-followed-by-decompression">
+<h2>Compression Followed by Decompression<a class="headerlink" href="#compression-followed-by-decompression" title="Permalink to this headline">¶</a></h2>
+<p>(Useful for qualitative analysis)</p>
+<p><cite>CompressonatorCLI.exe -fd BC7  image.bmp result.bmp</cite></p>
+</section>
+<section id="gpu-based-decompression">
+<h2>GPU Based Decompression<a class="headerlink" href="#gpu-based-decompression" title="Permalink to this headline">¶</a></h2>
+<p><cite>compressonatorCLI.exe  -DecodeWith OpenGL result.dds image.bmp</cite></p>
+</section>
+<section id="mesh-optimization">
+<h2>Mesh Optimization<a class="headerlink" href="#mesh-optimization" title="Permalink to this headline">¶</a></h2>
+<p>(Only supports glTF and obj files)</p>
+<p>The following uses default settings that optimizes vertices with cache size = 16, overdraw with ACMR Threshold = 1.05 and vertices fetch. <br /></p>
+<p><cite>compressonatorcli.exe -meshopt source.gltf dest.gltf</cite></p>
+<p><cite>compressonatorcli.exe -meshopt source.obj dest.obj</cite></p>
+<p>Specifies settings:</p>
+<p><cite>compressonatorcli.exe -meshopt -optVCacheSize  32 -optOverdrawACMRThres  1.03 -optVFetch 0 source.gltf dest.gltf</cite></p>
+<p>CLI mesh optimization has the following settings:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 74%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>-optVCacheSize &lt;value&gt;</p></td>
+<td><p>optimize vertices with hardware cache size in the value specified
+Default is enabled with cache size = 16</p></td>
+</tr>
+<tr class="row-even"><td><p>-optVCacheFIFOSize &lt;value&gt;</p></td>
+<td><p>optimize vertices with hardware FIFO cache size in the value specified
+Default is disabled</p></td>
+</tr>
+<tr class="row-odd"><td><p>-optOverdrawACMRThres &lt;value&gt;</p></td>
+<td><p>optimize overdraw with ACMR (average cache miss ratio) threshold value
+specified (value range 1-3) default is enabled with ACMR
+value = 1.05 (i.e. 5% worse)</p></td>
+</tr>
+<tr class="row-even"><td><p>-optVFetch &lt;boolean value&gt;</p></td>
+<td><p>optimize vertices fetch . boolean value 0 - disabled, 1-enabled. -default is enabled.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-simplifyMeshLOD &lt;value&gt;</p></td>
+<td><p>simplify mesh using LOD (Level of Details) value specified.
+(value range 1- no limit as it allows users to simplify the mesh until the level
+they desired. Higher level means less triangles drawn, less details.)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="test-analysis-logging-features-and-file-filters">
+<h2>Test Analysis Logging Features and File Filters<a class="headerlink" href="#test-analysis-logging-features-and-file-filters" title="Permalink to this headline">¶</a></h2>
+<p>(Windows OS only)</p>
+<p>CLI will generate an output “process_results.txt” when -log is added to the compression command line options, users can change the default log file using the command -logfile, the log captures details of the source and destination files along with statistical data on performance and quality.</p>
+<p>Example:</p>
+<p><img alt="image127" src="../_images/image127.png" /></p>
+<p>Generates a “process_results.txt”  file with content:</p>
+<p><img alt="image128" src="../_images/image128.png" /></p>
+<p>Multiple processes will append results to this file with a dash line separator. The option is valid only for compressing images and not for 3D models or image transcoding.</p>
+<p>In addition to the -log and -logfile two  command-line options are avilable to output analysis data into comma-separated file format. use -logcsv or -logcsvfile to generate a .csv file suitable to use in any application that supports viewing these files in a table as shown in this sample:</p>
+<p><img alt="image432" src="../_images/image2020-3-17_13-39-6.png" /></p>
+<p>The CLI also support processing image files from a folder, without the need to specify a file name. Using a file filter, specific files types can also be selected for compression as needed.</p>
+<p>Examples:</p>
+<p><img alt="image129" src="../_images/image129.png" /></p>
+<p>Processes all image file with BC7 Compression into results folder</p>
+<p><img alt="image130" src="../_images/image130.png" /></p>
+<p>Processes only images with extension bmp, png and exr.  Notice that BC7 compression is been applied to HDR images, this is an automatic Adaptive Channel Format feature (ACF) that transcodes the image half float channels to byte prior to processing.</p>
+</section>
+<section id="csv-file-update-to-support-automation">
+<h2>CSV File Update to Support Automation<a class="headerlink" href="#csv-file-update-to-support-automation" title="Permalink to this headline">¶</a></h2>
+<p>An error code field is added to log the state of a processed image when using the command-line application option “-logcsv”.</p>
+<p><img alt="image433" src="../_images/csvfilesupport.png" /></p>
+<p>The error code will be 0 for processed images, else a value is set to indicate any errors encountered while the image was processed.</p>
+<p>For a list of the most recent codes look for AnalysisErrorCodeType in the sdk file cmp_compressonatorlib/common.h</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/acompress-128.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">Compressonator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../developer_sdk/index.html">Developer SDK</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Command Line Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gui_tool/index.html">GUI Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build_from_source/build_instructions.html">Build from GitHub Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../revisions.html">Revision History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/contact.html">Contact and Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Command Line Tool</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Command Line Tool</a></li>
+      <li>Next: <a href="../gui_tool/index.html" title="next chapter">GUI Tool</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017 to 2023, AMD Developer Tools.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,84 @@
+# Binaries
+**/bin/
+!vendor/bin/premake/
+!Beyond/vendor/assimp/bin
+!Beyond/vendor/mono/bin
+bin-int/
+obj/
+**/cache/**
+**/Cache/**
+Beyond/vendor/VulkanSDK
+Editor/Resources/Scripts/ScriptCore.dll
+Editor/Resources/Scripts/ScriptCore.pdb
+Editor/Editor
+Intermediates/
+Binaries
+Editor/Resources/Scripts/
+__pycache__
+
+Editor/SandboxProject/Assets/Scripts/Binaries/**
+Editor/SandboxProject/Assets/SoundBank.hsb
+
+# Editor ApplicationSettings
+Editor/Config/ApplicationSettings.yaml
+
+# Editor Folders
+Editor/Captures/
+Editor/Screenshots/
+Editor/Tools/JoltViewer
+
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
+**.nsight-gfxproj
+**.DotSettings
+**.user
+
+.idea/
+Makefile
+*.make
+*.a
+
+Editor/EditorLayout.yaml
+Editor/Config/EditorApplicationSettings.yaml
+
+# LFS Folders
+lfs/
+hooks/
+
+# Meta Files
+**.meta
+
+# Log files
+**.log
+
+# Auto saves
+*.auto
+
+# Dumps
+*.nvdbg
+*.nv-gpudmp
+*gpudmp.json
+
+# Folder Exceptions
+!Editor/SandboxProject/Assets/Scripts/Binaries
+
+# System DLLs
+Editor/SandboxProject/Assets/Scripts/Binaries/System*.dll
+Editor/SandboxProject/Assets/Scripts/Binaries/Microsoft*.dll
+
+# File Exceptions
+!AssetRegistryCache.hzr
+/Beyond/vendor/mono/lib/Dist
+/Editor/Intel® VTune™ Profiler Results
+/DawnCache
+/GPUCache
+/Beyond/vendor/mono/lib/windows/Dist
+/Editor/Intel® VTune™ Profiler Results/Editor/Editor.vtuneproj
+Editor/SandboxProject/**/*.dds
+
+!Editor/SandboxProject/Assets/Meshes/Source/Bistro_v5_2/**/**.dds

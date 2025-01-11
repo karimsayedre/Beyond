@@ -1,0 +1,620 @@
+Scene: ""
+Entities:
+  - Entity: 466082638510154969
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [20.0687046, 10.110446, -9.50675392]
+      Rotation: [4.71238899, 1.57079637, 0]
+      Scale: [81.7528687, 0.999999225, 39.0629692]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 5717913345001425079
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 8771468380418429139
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 815455451767737159
+    TagComponent:
+      Tag: CheckerboardBox
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-3.06970119, 10.2559986, 15.0516996]
+      Rotation: [0, 0, 0]
+      Scale: [28.6500778, 15.2228718, 0.0229256079]
+    StaticMeshComponent:
+      AssetID: 979575316774197515
+      MaterialTable:
+        0: 0
+      Visible: true
+  - Entity: 1014130219094815812
+    TagComponent:
+      Tag: bunny
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.400071025, 2.98999095, 20.8503475]
+      Rotation: [3.14159274, -1.39147782, 3.14159274]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 7463961973123765961
+      MaterialTable:
+        0: 1561346292037904914
+      Visible: true
+  - Entity: 1116822493057415325
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 8.15775967, 27.6007595]
+      Rotation: [4.71238899, 0, 0]
+      Scale: [41.259243, 0.99999994, 21.3027534]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 3067266531766851022
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 3721706045982795815
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 1597746993664551399
+    TagComponent:
+      Tag: bunny
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.91122222, 2.13909888, 23.5481663]
+      Rotation: [3.14159274, -1.33977306, 3.14159274]
+      Scale: [1.92999995, 1.93000007, 1.92999995]
+    StaticMeshComponent:
+      AssetID: 7463961973123765961
+      MaterialTable:
+        0: 3553587418656609513
+      Visible: true
+  - Entity: 2261981507165649914
+    TagComponent:
+      Tag: hexagons3
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-3.63339281, 7.75961971, 27.1492386]
+      Rotation: [0, 1.57079637, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 488141970285270760
+      MaterialTable:
+        0: 0
+        1: 16727975345353611397
+        2: 1162716615310863507
+        3: 8987586188804361884
+        4: 0
+      Visible: true
+  - Entity: 2496830862820763580
+    TagComponent:
+      Tag: Sphere
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-5.44367886, 3.64693403, 21.027092]
+      Rotation: [2.99652969e-09, -2.42187923e-07, -2.58256971e-08]
+      Scale: [1.35359991, 1.35359967, 1.35359991]
+    StaticMeshComponent:
+      AssetID: 14924744775604793321
+      MaterialTable:
+        0: 12694338993765337386
+      Visible: true
+    SphereColliderComponent:
+      Radius: 0.5
+      Offset: [0, 0, 0]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 2588751311040421155
+    TagComponent:
+      Tag: hexagons3
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-3.63339281, 16.0927944, 21.7800694]
+      Rotation: [1.57079637, 0, -1.57079637]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 488141970285270760
+      MaterialTable:
+        0: 0
+      Visible: true
+  - Entity: 2916384090586766270
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.00855178e-10, 8.157794, 5.66107655]
+      Rotation: [7.85398531, 0, 15.707962]
+      Scale: [41.259243, 0.99999994, 21.3027534]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 12387183670818522676
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 10706240180880449915
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 2943750064570269688
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [5.02283631e-11, 8.157794, -5.33434296]
+      Rotation: [7.85398531, 0, 15.707962]
+      Scale: [41.259243, 0.99999994, 21.3027496]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 12387183670818522676
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 5258832381386861404
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 3859580968163745284
+    TagComponent:
+      Tag: Cube
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.410427868, 16.3324471, 0]
+      Rotation: [0, 0, 0]
+      Scale: [3.22844505, 0.100433171, 2.57153392]
+    StaticMeshComponent:
+      AssetID: 16704718035390383336
+      MaterialTable:
+        0: 0
+      Visible: true
+    BoxColliderComponent:
+      Offset: [0, 0, 0]
+      HalfSize: [0.5, 0.5, 0.5]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 3995808250346121862
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.0215327144, 16.4637337, 5.08447613e-07]
+      Rotation: [3.14159274, 0, 0]
+      Scale: [41.259243, 1, 61.1192894]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 5717913345001425079
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 16790736238225034738
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 4917163667162059301
+    TagComponent:
+      Tag: Directional Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.39626336, 0.17453292, 0]
+      Scale: [1, 1, 1]
+    DirectionalLightComponent:
+      Intensity: 29
+      Radiance: [0.920000017, 0.910000026, 0.99000001]
+      SourceSize: 0.75
+      SoftShadows: true
+      CastShadows: true
+      ShadowAmount: 1
+  - Entity: 5021506036491232343
+    TagComponent:
+      Tag: Tumbler_02
+    Parent: 9459909373956189089
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.144952118, 0.00101529062, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 14878784386352600981
+      SubmeshIndex: 2
+      MaterialTable:
+        0: 12694338993765337386
+        1: 12694338993765337386
+        2: 12694338993765337386
+        3: 12694338993765337386
+      Visible: true
+  - Entity: 5069572065315992537
+    TagComponent:
+      Tag: Bottle
+    Parent: 9459909373956189089
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 556457642732129601
+      SubmeshIndex: 0
+      MaterialTable:
+        0: 12694338993765337386
+      Visible: true
+  - Entity: 5626840018341033026
+    TagComponent:
+      Tag: bunny
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-4.9481163, 2.18305326, 24.4027386]
+      Rotation: [3.14159274, -1.33977306, 3.14159274]
+      Scale: [1.92999995, 1.93000007, 1.92999995]
+    StaticMeshComponent:
+      AssetID: 7463961973123765961
+      MaterialTable:
+        0: 12694338993765337386
+      Visible: true
+  - Entity: 6281595215045945819
+    TagComponent:
+      Tag: Tumbler_01
+    Parent: 9459909373956189089
+    Children:
+      []
+    TransformComponent:
+      Position: [0.172984809, -2.60770321e-06, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 17125206576962398340
+      SubmeshIndex: 1
+      MaterialTable:
+        0: 0
+        1: 12694338993765337386
+      Visible: true
+  - Entity: 6364693811221718121
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 8.15775967, 15.7112179]
+      Rotation: [4.71238899, 0, 0]
+      Scale: [41.259243, 0.99999994, 21.3027534]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 3067266531766851022
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 6631256038029356402
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 6592108508799695552
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.48513937e-10, 8.15781975, 16.0119801]
+      Rotation: [7.85398531, 0, 15.707962]
+      Scale: [41.259243, 0.99999994, 21.3027534]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 12387183670818522676
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 5691838080437978678
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 6716408623638594697
+    TagComponent:
+      Tag: Spot Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-4.89296103, 10.9588232, 20.3310318]
+      Rotation: [-0.336955339, -1.3153224, 14.4640369]
+      Scale: [1, 1, 1]
+    SpotLightComponent:
+      Radiance: [1, 1, 1]
+      Angle: 142.100006
+      AngleAttenuation: 5
+      CastShadows: true
+      SoftShadows: true
+      Falloff: 1
+      Intensity: 0
+      Range: 105.599998
+      SourceSize: 17.7000008
+  - Entity: 6765411021880414769
+    TagComponent:
+      Tag: Spot Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.369992614, 16.5330086, 11.1546164]
+      Rotation: [0, 0, 1.57079637]
+      Scale: [1, 1, 1]
+    SpotLightComponent:
+      Radiance: [0.572580636, 0.572580636, 0.572580636]
+      Angle: 180
+      AngleAttenuation: 16.3899994
+      CastShadows: true
+      SoftShadows: true
+      Falloff: 1
+      Intensity: 0
+      Range: 75.4000015
+      SourceSize: 0
+  - Entity: 6877300796726690727
+    TagComponent:
+      Tag: Spot Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.369992614, 16.5330086, -0.251880169]
+      Rotation: [0, 0, 1.57079637]
+      Scale: [1, 1, 1]
+    SpotLightComponent:
+      Radiance: [0.572580636, 0.572580636, 0.572580636]
+      Angle: 180
+      AngleAttenuation: 16.3899994
+      CastShadows: true
+      SoftShadows: true
+      Falloff: 1
+      Intensity: 0
+      Range: 75.4000015
+      SourceSize: 0
+  - Entity: 7172192185630227607
+    TagComponent:
+      Tag: lucy
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [6.40511513, 2.14563942, 19.750246]
+      Rotation: [0, 0.0018270975, 0]
+      Scale: [0.00999999978, 0.00999999978, 0.00999999978]
+    StaticMeshComponent:
+      AssetID: 10059446532611641490
+      MaterialTable:
+        0: 12694338993765337386
+      Visible: true
+  - Entity: 9355438852484801816
+    TagComponent:
+      Tag: Spot Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [11.2214775, 16.4388523, 21.7906399]
+      Rotation: [0, 0, 1.57079637]
+      Scale: [1, 1, 1]
+    SpotLightComponent:
+      Radiance: [1, 1, 1]
+      Angle: 180
+      AngleAttenuation: 16.3899994
+      CastShadows: true
+      SoftShadows: true
+      Falloff: 1
+      Intensity: 0
+      Range: 75.4000015
+      SourceSize: 31.5
+  - Entity: 9459909373956189089
+    TagComponent:
+      Tag: Bottle & Tumbler
+    Parent: 0
+    Children:
+      - Handle: 5069572065315992537
+      - Handle: 6281595215045945819
+      - Handle: 5021506036491232343
+      - Handle: 12015745906638914611
+    TransformComponent:
+      Position: [0, 2.23441243, 21.9261131]
+      Rotation: [0, 0, 0]
+      Scale: [9.32058239, 9.32058239, 9.32058239]
+  - Entity: 9880079262695811649
+    TagComponent:
+      Tag: Cube
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-3.30020356, 8.4156971, 5.22480822]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1.20871675, 1]
+    StaticMeshComponent:
+      AssetID: 16704718035390383336
+      MaterialTable:
+        0: 1162716615310863507
+      Visible: true
+    BoxColliderComponent:
+      Offset: [0, 0, 0]
+      HalfSize: [0.5, 0.5, 0.5]
+      Friction: 0.5
+      Restitution: 0.150000006
+  - Entity: 11059690016552430650
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-19.6712322, 10.110446, 1.10894918]
+      Rotation: [4.71238899, -1.57079637, 0]
+      Scale: [63.0471115, 0.999999821, 21.3027515]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 5717913345001425079
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 12372271542062975861
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 11179038317060884796
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 8.15775967, -5.51220608]
+      Rotation: [4.71238899, 0, 0]
+      Scale: [41.259243, 0.99999994, 21.3027534]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 3067266531766851022
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 3381287853024352862
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 12015745906638914611
+    TagComponent:
+      Tag: Tumbler_03
+    Parent: 9459909373956189089
+    Children:
+      []
+    TransformComponent:
+      Position: [0.120566599, -4.24683094e-06, -0.0843501091]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 2744466549945532665
+      SubmeshIndex: 3
+      MaterialTable:
+        0: 0
+        1: 12694338993765337386
+        2: 12694338993765337386
+        3: 12694338993765337386
+      Visible: true
+  - Entity: 12138395349660962068
+    TagComponent:
+      Tag: Sky Light
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SkyLightComponent:
+      EnvironmentMap: 0
+      Intensity: 1.19000006
+      Lod: 0
+      DynamicSky: true
+      TurbidityAzimuthInclination: [2, 0, 0]
+  - Entity: 13461783466299295157
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 2.22880936, 0]
+      Rotation: [0, 0, 0]
+      Scale: [41.259243, 1, 56.2216492]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 5717913345001425079
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 3021427612979583495
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 14591266923544625561
+    TagComponent:
+      Tag: Plane
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 8.15775967, 5.35494709]
+      Rotation: [4.71238899, 0, 0]
+      Scale: [41.259243, 0.99999994, 21.3027534]
+    StaticMeshComponent:
+      AssetID: 17810696831416626779
+      MaterialTable:
+        0: 3067266531766851022
+      Visible: true
+    MeshColliderComponent:
+      ColliderHandle: 13232165524132731217
+      UseSharedShape: false
+      Friction: 0.5
+      Restitution: 0.150000006
+      CollisionComplexity: "\x00"
+  - Entity: 15965587319891127545
+    TagComponent:
+      Tag: bunny
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.08293843, 2.13909888, 18.9129257]
+      Rotation: [3.14159274, -1.33977306, 3.14159274]
+      Scale: [1.92999995, 1.93000007, 1.92999995]
+    StaticMeshComponent:
+      AssetID: 7463961973123765961
+      MaterialTable:
+        0: 16782731815207911125
+      Visible: true
+SceneAudio:
+  MasterReverb:
+    Pre-delay: 44
+    Room size: 0.49999994
+    Damping: 0.5
+    Width: 1

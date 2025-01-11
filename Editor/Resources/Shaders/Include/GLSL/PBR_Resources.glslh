@@ -1,0 +1,26 @@
+#pragma once
+
+ #if defined(__FRAGMENT_STAGE__)
+#extension GL_EXT_nonuniform_qualifier : enable
+
+// PBR texture inputs
+layout(set = 4, binding = 0) uniform sampler2D bls_MaterialTextures[];
+
+#define GetTex(index) bls_MaterialTextures[nonuniformEXT((index))]
+    
+
+
+// Shadow maps
+layout(set = 1, binding = 2) uniform sampler2DArray u_ShadowMapTexture;
+layout(set = 1, binding = 3) uniform sampler2D u_SpotShadowTexture;
+
+
+ #endif //defined(__FRAGMENT_STAGE__)
+
+// Environment maps
+layout(set = 1, binding = 0) uniform samplerCube u_EnvRadianceTex;
+layout(set = 1, binding = 1) uniform samplerCube u_EnvIrradianceTex;
+
+// TODO: move to header
+// BRDF LUT
+layout(set = 2, binding = 8) uniform sampler2D u_BRDFLUTTexture;

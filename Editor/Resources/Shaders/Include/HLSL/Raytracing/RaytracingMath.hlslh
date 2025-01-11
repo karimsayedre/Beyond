@@ -1,0 +1,119 @@
+#pragma once
+
+// From the Ray Tracing Gems book.
+// Normal points outward for rays exiting the surface, else is flipped.
+float3 OffsetRay(const float3 p, const float3 n)
+{
+	const float origin = 1.0f / 32.0f;
+	const float floatScale = 1.0f / 65536.0f;
+	const float intScale = 265.0f;
+
+	int3 of_i = int3((int)(intScale * n.x), (int)(intScale * n.y), (int)(intScale * n.z));
+
+	float3 p_i = float3(asfloat(asint(p.x) + ((p.x < 0) ? -of_i.x : of_i.x)), asfloat(asint(p.y) + ((p.y < 0) ? -of_i.y : of_i.y)), asfloat(asint(p.z) + ((p.z < 0) ? -of_i.z : of_i.z)));
+
+	return float3(abs(p.x) < origin ? p.x + floatScale * n.x : p_i.x, abs(p.y) < origin ? p.y + floatScale * n.y : p_i.y, abs(p.z) < origin ? p.z + floatScale * n.z : p_i.z);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Avoiding self intersections
+//-----------------------------------------------------------------------
+float3 offsetRay(in float3 p, in float3 n)
+{
+	// Smallest epsilon that can be added without losing precision is 1.19209e-07, but we play safe
+	const float epsilon = 1.0F / 65536.0F; // Safe epsilon
+
+	float magnitude = length(p);
+	float offset = epsilon * magnitude;
+	// multiply the direction vector by the smallest offset
+	float3 offsetVector = n * offset;
+	// add the offset vector to the starting point
+	float3 offsetPoint = p + offsetVector;
+
+	return offsetPoint;
+}
+
+float3 TangentToWorld(float3 sampleDir, float3 N)
+{
+	float3 up = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
+	float3 T = normalize(cross(up, N));
+	float3 B = cross(N, T);
+
+	return normalize(sampleDir.x * T + sampleDir.y * B + sampleDir.z * N);
+}
+
+// Outputs world space
+float3 SampleHemisphereCosine(float2 xi, float3 normal)
+{
+	// Generate the cosine-weighted direction in local coordinates
+	float phi = 6.28318530718f * xi.x; // 2 * PI
+	float cosTheta = sqrt(1.0f - xi.y);
+	float sinTheta = sqrt(xi.y);
+
+	// Local sample direction
+	float3 localDir = float3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
+
+	// Align with normal using a simple transformation
+	float3 up = abs(normal.z) < 0.999f ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
+	float3 tangent = normalize(cross(up, normal));
+	float3 bitangent = cross(normal, tangent);
+
+	// Transform localDir to world space
+	return tangent * localDir.x + bitangent * localDir.y + normal * localDir.z;
+}
+
+//-----------------------------------------------------------------------
+// Building an Orthonormal Basis, Revisited
+// by Tom Duff, James Burgess, Per Christensen, Christophe Hery, Andrew Kensler, Max Liani, Ryusuke Villemin
+// https://graphics.pixar.com/library/OrthonormalB/
+//-----------------------------------------------------------------------
+void orthonormalBasis(in float3 normal, out float3 tangent, out float3 bitangent)
+{
+	if (normal.z < -0.99998796F) // Handle the singularity
+	{
+		tangent = float3(0.0F, -1.0F, 0.0F);
+		bitangent = float3(-1.0F, 0.0F, 0.0F);
+		return;
+	}
+	float a = 1.0F / (1.0F + normal.z);
+	float b = -normal.x * normal.y * a;
+	tangent = float3(1.0F - normal.x * normal.x * a, b, -normal.x);
+	bitangent = float3(b, 1.0f - normal.y * normal.y * a, -normal.y);
+}
+
+bool Refract(float3 I, float3 N, float eta, out float3 L)
+{
+	float cosi = dot(I, N);
+	// float etai = 1.0; // IOR of air or vacuum
+	// float etat = ior; // IOR of the material
+
+	// If the ray is exiting the material, swap etai and etat, and invert the normal
+	float3 normal = N;
+	if (cosi < 0)
+	{
+		cosi = -cosi;
+	}
+	else
+	{
+		// Exiting the material, so swap IORs and invert the normal
+		// swap(etai, etat);
+		// normal = -N;
+	}
+
+	// Compute the ratio of indices of refraction
+	// float eta = etai / etat;
+	float k = 1.0 - eta * eta * (1.0 - cosi * cosi);
+
+	// If k is negative, there is total internal reflection
+	if (k < 0.0)
+	{
+		return false;
+	}
+	else
+	{
+		// Compute the refracted direction
+		L = eta * I + (eta * cosi - sqrt(k)) * normal;
+		L = normalize(L);
+		return true;
+	}
+}
