@@ -76,7 +76,7 @@ namespace Beyond {
 
 		virtual void AddDrawCommand(const StaticDrawCommand& dc, const MaterialAsset* material, const glm::mat3x4& transform) = 0;
 		virtual void AddDrawCommand(const DrawCommand& dc, const MaterialAsset* material, const glm::mat3x4& transform) = 0;
-		virtual void AddInstancedDrawCommand(const StaticDrawCommand& dc, Ref<RaytracingPass> pass, const glm::mat3x4& transform) = 0;
+		virtual void AddInstancedDrawCommand(const StaticDrawCommand& dc, const glm::mat3x4& transform) = 0;
 		virtual const eastl::vector<ObjDesc>& GetObjDescs() const = 0;
 		virtual eastl::vector<ObjDesc>& GetObjDescs() = 0;
 		virtual const std::vector<MaterialBuffer>& GetMaterials() const = 0;

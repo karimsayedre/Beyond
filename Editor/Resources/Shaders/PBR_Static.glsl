@@ -320,7 +320,6 @@ void main()
 
 	// Final color
 	o_Color = vec4(iblContribution + lightContribution, 1.0);
-	// o_Color = vec4(u_SceneData.EnvironmentMapIntensity.xxx, 1.0);
 
 	// TODO: Temporary bug fix.
 	if (u_SceneData.DirectionalLights.Intensity <= 0.0f) shadowScale = 0.0f;

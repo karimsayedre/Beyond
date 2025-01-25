@@ -160,28 +160,28 @@ namespace Beyond {
 			VK_CHECK_RESULT(vkCreateDescriptorPool(device, &pool_info, nullptr, &s_VulkanRendererData->DDGIDescriptorPool));
 			VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Vulkan Renderer DDGI Descriptor Pool", s_VulkanRendererData->DDGIDescriptorPool);
 
-			//const auto& probeBlendingDistance = Renderer::GetShaderLibrary()->Get("ProbeBlendingDistanceCS").As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
-			//const auto& probeBlendingIrradiance = Renderer::GetShaderLibrary()->Get("ProbeBlendingIrradianceCS").As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeBlendingDistance = Renderer::GetShaderLibrary()->Get("ProbeBlendingDistanceCS").As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeBlendingIrradiance = Renderer::GetShaderLibrary()->Get("ProbeBlendingIrradianceCS").As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
 
-			//const auto& probeClassificationUpdate = Renderer::GetShaderLibrary()->Get("ProbeClassificationCS", 0).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
-			//const auto& probeClassificationReset = Renderer::GetShaderLibrary()->Get("ProbeClassificationCS", 1).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeClassificationUpdate = Renderer::GetShaderLibrary()->Get("ProbeClassificationCS", 0).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeClassificationReset = Renderer::GetShaderLibrary()->Get("ProbeClassificationCS", 1).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
 
-			//const auto& probeRelocationUpdate = Renderer::GetShaderLibrary()->Get("ProbeRelocationCS", 0).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
-			//const auto& probeRelocationReset = Renderer::GetShaderLibrary()->Get("ProbeRelocationCS", 1).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeRelocationUpdate = Renderer::GetShaderLibrary()->Get("ProbeRelocationCS", 0).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeRelocationReset = Renderer::GetShaderLibrary()->Get("ProbeRelocationCS", 1).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
 
-			//const auto& probeReductionUpdate = Renderer::GetShaderLibrary()->Get("ReductionCS", 0).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
-			//const auto& probeReductionReset = Renderer::GetShaderLibrary()->Get("ReductionCS", 1).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeReductionUpdate = Renderer::GetShaderLibrary()->Get("ReductionCS", 0).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
+			const auto& probeReductionReset = Renderer::GetShaderLibrary()->Get("ReductionCS", 1).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
 
-			//auto& ddgi = s_VulkanRendererData->DDGIResources;
-			//ddgi.managed.enabled = true;
-			//ddgi.managed.device = device;
-			//ddgi.managed.physicalDevice = VulkanContext::GetCurrentDevice()->GetPhysicalDevice()->GetVulkanPhysicalDevice();
-			//ddgi.managed.descriptorPool = s_VulkanRendererData->DDGIDescriptorPool;
-			//ddgi.managed.probeBlendingIrradianceCS = { probeBlendingIrradiance.data(), probeBlendingIrradiance.size() * sizeof(uint32_t) };
-			//ddgi.managed.probeBlendingDistanceCS = { probeBlendingDistance.data(), probeBlendingDistance.size() * sizeof(uint32_t) };
-			//ddgi.managed.probeRelocation = { {probeRelocationUpdate.data(), probeRelocationUpdate.size() * sizeof(uint32_t)}, {probeRelocationReset.data(), probeRelocationReset.size() * sizeof(uint32_t)} };
-			//ddgi.managed.probeClassification = { {probeClassificationUpdate.data(), probeClassificationUpdate.size() * sizeof(uint32_t)}, {probeClassificationReset.data(), probeClassificationReset.size() * sizeof(uint32_t)} };
-			//ddgi.managed.probeVariability = { {probeReductionUpdate.data(), probeReductionUpdate.size() * sizeof(uint32_t)}, {probeReductionReset.data(), probeReductionReset.size() * sizeof(uint32_t)} };
+			auto& ddgi = s_VulkanRendererData->DDGIResources;
+			ddgi.managed.enabled = true;
+			ddgi.managed.device = device;
+			ddgi.managed.physicalDevice = VulkanContext::GetCurrentDevice()->GetPhysicalDevice()->GetVulkanPhysicalDevice();
+			ddgi.managed.descriptorPool = s_VulkanRendererData->DDGIDescriptorPool;
+			ddgi.managed.probeBlendingIrradianceCS = { probeBlendingIrradiance.data(), probeBlendingIrradiance.size() * sizeof(uint32_t) };
+			ddgi.managed.probeBlendingDistanceCS = { probeBlendingDistance.data(), probeBlendingDistance.size() * sizeof(uint32_t) };
+			ddgi.managed.probeRelocation = { {probeRelocationUpdate.data(), probeRelocationUpdate.size() * sizeof(uint32_t)}, {probeRelocationReset.data(), probeRelocationReset.size() * sizeof(uint32_t)} };
+			ddgi.managed.probeClassification = { {probeClassificationUpdate.data(), probeClassificationUpdate.size() * sizeof(uint32_t)}, {probeClassificationReset.data(), probeClassificationReset.size() * sizeof(uint32_t)} };
+			ddgi.managed.probeVariability = { {probeReductionUpdate.data(), probeReductionUpdate.size() * sizeof(uint32_t)}, {probeReductionReset.data(), probeReductionReset.size() * sizeof(uint32_t)} };
 
 		});
 
@@ -769,7 +769,7 @@ namespace Beyond {
 		});
 	}
 
-	void VulkanRenderer::CopyImage(Ref<RenderCommandBuffer> commandBuffer, Ref<Image2D> sourceImage, Ref<Image2D> destinationImage)
+	void VulkanRenderer::CopyImage(Ref<RenderCommandBuffer> commandBuffer, Ref<Image2D> destinationImage, Ref<Image2D> sourceImage)
 	{
 		Renderer::Submit([commandBuffer, src = sourceImage.As<VulkanImage2D>(), dst = destinationImage.As<VulkanImage2D>()]
 		{
@@ -915,13 +915,6 @@ namespace Beyond {
 			// Set the destination offsets
 			region.dstOffsets[0] = { 0, 0, 0 };
 			region.dstOffsets[1] = { static_cast<int32_t>(dstSize.x), static_cast<int32_t>(dstSize.y), 1 };
-
-			//// Ensure the offsets are correct even if src is smaller than dst
-			//if (srcSize.x < dstSize.x || srcSize.y < dstSize.y)
-			//{
-			//	region.dstOffsets[1].x = std::min(static_cast<int32_t>(srcSize.x), static_cast<int32_t>(dstSize.x));
-			//	region.dstOffsets[1].y = std::min(static_cast<int32_t>(srcSize.y), static_cast<int32_t>(dstSize.y));
-			//}
 
 			VkImageLayout srcImageLayout = src->GetVulkanDescriptorInfo().imageLayout;
 			VkImageLayout dstImageLayout = dst->GetVulkanDescriptorInfo().imageLayout;
@@ -1540,10 +1533,11 @@ namespace Beyond {
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetVulkanPipelineLayout(), vulkanRenderPass->GetFirstSetIndex(), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, nullptr);
 			}
 
-			if (s_VulkanRendererData->BindlessDescriptorSetManager.HasDescriptorSets(renderPass->GetPipeline()->GetShader()))
+			Ref<VulkanShader> shader = vulkanPipeline->GetShader();
+			if (s_VulkanRendererData->BindlessDescriptorSetManager.HasDescriptorSets(shader))
 			{
-				const auto& descriptorSets = s_VulkanRendererData->BindlessDescriptorSetManager.GetDescriptorSets(vulkanRenderPass->GetPipeline()->GetShader(), frameIndex);
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetVulkanPipelineLayout(), s_VulkanRendererData->BindlessDescriptorSetManager.GetFirstSetIndex(vulkanPipeline->GetShader()->GetRootSignature()), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, nullptr);
+				const auto& descriptorSets = s_VulkanRendererData->BindlessDescriptorSetManager.GetDescriptorSets(shader->GetRootSignature(), frameIndex);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetVulkanPipelineLayout(), s_VulkanRendererData->BindlessDescriptorSetManager.GetFirstSetIndex(shader->GetRootSignature()), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, nullptr);
 			}
 		});
 	}
@@ -1593,10 +1587,11 @@ namespace Beyond {
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline->GetLayout(), vulkanComputePass->GetFirstSetIndex(), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, 0);
 			}
 
+			Ref<VulkanShader> shader = pipeline->GetShader();
 			if (s_VulkanRendererData->BindlessDescriptorSetManager.HasDescriptorSets(vulkanComputePass->GetPipeline()->GetShader()))
 			{
-				const auto& descriptorSets = s_VulkanRendererData->BindlessDescriptorSetManager.GetDescriptorSets(vulkanComputePass->GetShader(), frameIndex);
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline->GetLayout(), s_VulkanRendererData->BindlessDescriptorSetManager.GetFirstSetIndex(vulkanComputePass->GetShader()->GetRootSignature()), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, nullptr);
+				const auto& descriptorSets = s_VulkanRendererData->BindlessDescriptorSetManager.GetDescriptorSets(shader->GetRootSignature(), frameIndex);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline->GetLayout(), s_VulkanRendererData->BindlessDescriptorSetManager.GetFirstSetIndex(shader->GetRootSignature()), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, nullptr);
 			}
 		});
 	}
@@ -1934,7 +1929,6 @@ namespace Beyond {
 					uint32_t srcOffset = (bufferOffset + volumeOffset);
 
 					resourceIndices->RT_SetData(&gpuDescIndices, sizeof(rtxgi::DDGIVolumeResourceIndices), srcOffset);
-
 				}
 			}
 		});
@@ -1967,10 +1961,11 @@ namespace Beyond {
 			}
 
 
-			if (s_VulkanRendererData->BindlessDescriptorSetManager.HasDescriptorSets(vulkanRaytracingPass->GetPipeline()->GetShader()))
+			Ref<VulkanShader> shader = pipeline->GetShader();
+			if (s_VulkanRendererData->BindlessDescriptorSetManager.HasDescriptorSets(shader))
 			{
-				const auto& descriptorSets = s_VulkanRendererData->BindlessDescriptorSetManager.GetDescriptorSets(vulkanRaytracingPass->GetPipeline()->GetShader(), frameIndex);
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, pipeline->GetLayout(), s_VulkanRendererData->BindlessDescriptorSetManager.GetFirstSetIndex(vulkanRaytracingPass->GetShader()->GetRootSignature()), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, nullptr);
+				const auto& descriptorSets = s_VulkanRendererData->BindlessDescriptorSetManager.GetDescriptorSets(shader->GetRootSignature(), frameIndex);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, pipeline->GetLayout(), s_VulkanRendererData->BindlessDescriptorSetManager.GetFirstSetIndex(shader->GetRootSignature()), (uint32_t)descriptorSets.size(), descriptorSets.data(), 0, nullptr);
 			}
 		});
 	}

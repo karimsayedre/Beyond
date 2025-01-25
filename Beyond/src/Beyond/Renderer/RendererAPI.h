@@ -85,7 +85,7 @@ namespace Beyond {
 		virtual void RenderGeometry(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<RasterPipeline> pipeline, Ref<Material> material, Ref<VertexBuffer> vertexBuffer, Ref<IndexBuffer> indexBuffer, const glm::mat4& transform, uint32_t indexCount = 0) = 0;
 
 		virtual void ClearImage(Ref<RenderCommandBuffer> commandBuffer, Ref<Image2D> image, const ImageClearValue& clearValue, ImageSubresourceRange subresourceRange) = 0;
-		virtual void CopyImage(Ref<RenderCommandBuffer> commandBuffer, Ref<Image2D> sourceImage, Ref<Image2D> destinationImage) = 0;
+		virtual void CopyImage(Ref<RenderCommandBuffer> commandBuffer, Ref<Image2D> destinationImage, Ref<Image2D> sourceImage) = 0;
 		virtual void BlitDepthImage(Ref<RenderCommandBuffer> commandBuffer, Ref<Image2D> sourceImage, Ref<Image2D> destinationImage) = 0;
 		virtual void CopyBuffer(Ref<RenderCommandBuffer> renderCommandBuffer, void* dest, Ref<StorageBuffer> storageBuffer) = 0;
 

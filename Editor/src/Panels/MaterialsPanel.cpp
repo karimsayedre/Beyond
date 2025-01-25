@@ -340,10 +340,8 @@ namespace Beyond {
 		auto material = materialAsset->GetMaterial();
 		auto shader = material->GetShader();
 
-		Ref<Shader> transparentShader = Renderer::GetShaderLibrary()->Get("PBR_Transparent");
-		bool transparent = shader == transparentShader;
 
-		eastl::string name = material->GetName().c_str();
+		eastl::string name = eastl::string(material->GetName().c_str(), material->GetName().size());
 		if (name.empty())
 			name = "Unnamed Material";
 
@@ -369,7 +367,6 @@ namespace Beyond {
 				if (UI::Property("Blend", blend))
 				{
 					materialAsset->SetBlending(blend);
-					transparent = blend;
 					changed = true;
 				}
 				if (UI::Property("Translucency", translucent))

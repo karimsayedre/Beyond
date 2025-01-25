@@ -49,21 +49,6 @@ namespace eastl {
 
 namespace Beyond {
 
-	struct RayMesh
-	{
-		glm::mat3x4 Transform;
-		//VkDeviceAddress VertexAddress;
-		//VkDeviceAddress IndexAddress;
-
-		uint32_t VertexBufferIndex;
-		uint32_t IndexBufferIndex;
-
-		uint32_t InstanceCount;
-		uint32_t FirstVertex;
-		uint32_t FirstIndex;
-		Buffer MaterialBuffer;
-		uint8_t InstanceMask = 0xff;
-	};
 
 	struct VulkanBufferResources
 	{
@@ -83,7 +68,7 @@ namespace Beyond {
 		void AddDrawCommand(const StaticDrawCommand& dc, const MaterialAsset* material, const glm::mat3x4& transform) override;
 		void AddDrawCommand(const DrawCommand& dc, const MaterialAsset* material, const glm::mat3x4& transform) override;
 
-		void AddInstancedDrawCommand(const StaticDrawCommand& dc, Ref<RaytracingPass> pass, const glm::mat3x4& transform) override;
+		void AddInstancedDrawCommand(const StaticDrawCommand& dc, const glm::mat3x4& transform) override;
 
 	private:
 		void BuildTlas(Ref<RenderCommandBuffer> commandBuffer) override;
@@ -118,6 +103,7 @@ namespace Beyond {
 
 
 	private:
+		Ref<MaterialAsset> m_DefaultMaterial;
 
 		eastl::unordered_map<AssetHandle, VulkanBufferResources> m_VulkanBuffers;
 		mutable uint32_t m_DynamicBufferIndex = 0;

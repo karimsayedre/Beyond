@@ -198,58 +198,84 @@ namespace Beyond {
 		//);
 	}
 
-	void VulkanRaytracer::AddInstancedDrawCommand(const StaticDrawCommand& dc, Ref<RaytracingPass> pass, const glm::mat3x4& transform)
+	void VulkanRaytracer::AddInstancedDrawCommand(const StaticDrawCommand& dc, const glm::mat3x4& transform)
 	{
-		BEY_CORE_VERIFY(false);
-		Renderer::Submit([dc, transform, instance = Ref(this), pass]() mutable
+		//Renderer::Submit([dc, transform, instance = Ref(this), pass]() mutable
 		{
-			//BEY_PROFILE_SCOPE("VulkanRaytracer::AddInstancedDrawCommand()");
-			//VkDevice device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
+			BEY_PROFILE_SCOPE("VulkanRaytracer::AddInstancedDrawCommand()");
+			VkDevice device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
 
-			//Ref<MeshSource> meshAsset = dc.StaticMesh->GetMeshSource();
-			//if (!dc.StaticMesh->IsReady())
-			//	return;
-			//const auto& meshAssetSubmeshes = meshAsset->GetSubmeshes();
-			//const Submesh& submesh = meshAssetSubmeshes[dc.SubmeshIndex];
+			const MeshSource* meshAsset = dc.StaticMesh->GetMeshSourceRaw();
+			if (!dc.StaticMesh->IsReady())
+				return;
+			const auto& meshAssetSubmeshes = meshAsset->GetSubmeshes();
+			const Submesh& submesh = meshAssetSubmeshes[dc.SubmeshIndex];
 
-			//Ref<MaterialTable> materialTable = dc.MaterialTable;
-			//Ref<MaterialTable> meshMaterialTable = dc.StaticMesh->GetMaterials();
-			//// NOTE: probably should not involve Asset Manager at this stage
-			//AssetHandle materialHandle = materialTable->HasMaterial(submesh.MaterialIndex) ? materialTable->GetMaterial(submesh.MaterialIndex) : meshMaterialTable->GetMaterial(submesh.MaterialIndex);
-			//Ref<MaterialAsset> material = AssetManager::GetAsset<MaterialAsset>(materialHandle);
-			//Ref<VulkanMaterial> vulkanMaterial = material->GetMaterial().As<VulkanMaterial>();
+			auto& vulkanBuffers = m_VulkanBuffers[meshAsset->Handle];
+			if (!vulkanBuffers.VertexBuffer) // No need to check the other
+			{
+				vulkanBuffers.VertexBuffer = meshAsset->GetVertexBuffer();
+				vulkanBuffers.IndexBuffer = meshAsset->GetIndexBuffer();
 
-			//const Buffer materialBuffer = vulkanMaterial->GetUniformStorageBuffer();
+				{
+					RenderPassInput input;
+					input.Name = "ByteAddrBuffer";
+					vulkanBuffers.VertexIndex = m_DynamicBufferIndex++;
+					input.Input[vulkanBuffers.VertexIndex] = vulkanBuffers.VertexBuffer;
+					input.Type = RenderPassResourceType::VertexBuffer;
+					Renderer::AddBindlessDescriptor(std::move(input));
+				}
+
+				{
+
+					RenderPassInput input;
+					input.Name = "ByteAddrBuffer";
+					vulkanBuffers.IndexIndex = m_DynamicBufferIndex++;
+					input.Input[vulkanBuffers.IndexIndex] = vulkanBuffers.IndexBuffer;
+					input.Type = RenderPassResourceType::IndexBuffer;
+					Renderer::AddBindlessDescriptor(std::move(input));
+				}
+			}
+
+			constexpr int blasFlags = AllowCompaction | PreferFastTrace;
+
+			const auto blasKey = BLASKey(meshAsset, false, false);
+			Ref<VulkanBLAS>& blas = m_BLASes[blasKey];
+			if (!blas)
+				blas = Ref<VulkanBLAS>::Create();
 
 
-			//RayMesh rayMesh{};
-
-			//Ref<VulkanVertexBuffer> vertexBuffer = dc.StaticMesh->GetMeshSource()->GetVertexBuffer().As<VulkanVertexBuffer>();
-			//Ref<VulkanVertexBuffer> indexBuffer = dc.StaticMesh->GetMeshSource()->GetIndexBuffer().As<VulkanIndexBuffer>();
-
-			//rayMesh.MaterialBuffer = materialBuffer;
-			//rayMesh.InstanceCount = dc.InstanceCount;
-			//rayMesh.Transform = transform;
-			//rayMesh.VertexAddress = vertexBuffer->GetBufferDeviceAddress(device);
-			//rayMesh.IndexAddress = indexBuffer->GetBufferDeviceAddress(device);
-			//rayMesh.FirstVertex = submesh.BaseVertex;
-			//rayMesh.FirstIndex = submesh.BaseIndex;
-
-			//rayMesh.InstanceMask = 0x2;
+			blas->GetOrCreate(meshAsset, m_DefaultMaterial.Raw(), blasFlags);
 
 
-			//int blasFlags = AllowCompaction | PreferFastTrace;
+			for (uint32_t instance = 0; instance < dc.InstanceCount; instance++)
+			{
 
-			//const auto blasKey = BLASKey(meshAsset, material->IsTranslucent(), material->IsTwoSided());
-			//Ref<VulkanBLAS>& blas = instance->m_BLASes[blasKey];
-			//if (!blas)
-			//	blas = Ref<VulkanBLAS>::Create();
+				m_SceneInstances.emplace_back(transform, instance);
 
-			//blas->GetOrCreate(meshAsset, material, blasFlags);
+				VkAccelerationStructureInstanceKHR rayInst{};
+				rayInst.transform = std::bit_cast<VkTransformMatrixKHR>(transform);
+				rayInst.instanceCustomIndex = instance;               // gl_InstanceCustomIndexEXT
+				//rayInst.instanceCustomIndex |= (uint8_t)volume->GetIndex() << 16;  // volume index in last 8 bits
+				rayInst.mask = 0x2;
+				rayInst.accelerationStructureReference = blas->GetBLASAddress(dc.SubmeshIndex);
+				rayInst.flags = 0x00; // TODO
+				rayInst.instanceShaderBindingTableRecordOffset = 0;  // We will use the same hit group for all objects
+				m_VulkanInstances.emplace_back(rayInst);
 
-			//for (uint32_t i = 0; i < dc.InstanceCount; i++)
-			//	instance->RT_AddObjDescs(rayMesh, blas->GetBLASAddress(dc.SubmeshIndex));
-		});
+
+				//ObjDesc desc;
+				//desc.VertexBufferIndex = vulkanBuffers.VertexIndex;
+				//desc.IndexBufferIndex = vulkanBuffers.IndexIndex;
+				//desc.FirstVertex = submesh.BaseVertex;
+				//desc.FirstIndex = submesh.BaseIndex;
+				//desc.MaterialIndex = instance;
+
+				//m_objDesc.emplace_back(desc);
+			}
+
+		}
+		//);
 	}
 
 	void VulkanRaytracer::BuildTlas(Ref<RenderCommandBuffer> commandBuffer)

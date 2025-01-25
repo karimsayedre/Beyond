@@ -307,7 +307,7 @@ namespace Beyond {
 
 		bool HasDescriptorSets(Ref<VulkanShader> shader) const;
 		uint32_t GetFirstSetIndex(const RootSignature rootSignature) const;
-		std::vector<VkDescriptorSet> GetDescriptorSets(Ref<VulkanShader> shader, uint32_t frameIndex)const;
+		std::vector<VkDescriptorSet> GetDescriptorSets(RootSignature rootSignature, uint32_t frameIndex)const;
 		void OnShaderReloaded();
 
 		void AllocateDescriptorSets();

@@ -227,18 +227,7 @@ namespace Beyond {
 				resetDLSS |= UI::Property("Base Sample Count", m_Context->m_DLSSSettings.BasePhases, 0, 32, "Samples before repeating the jitter sequence.");
 				resetDLSS |= UI::Property("Use Quadrant Jitter", m_Context->m_DLSSSettings.UseQuadrants);
 				resetDLSS |= UI::Property("Quadrant", m_Context->m_DLSSSettings.Quadrant, 0, 4, "4 is a cycle between quadrants.");
-				resetDLSS |= UI::Property("Jittered Motion Vectors", m_Context->m_DLSSSettings.JitteredMotionVectors);
-
-
-				/*
-				 *     NVSDK_NGX_PerfQuality_Value_MaxPerf,
-	NVSDK_NGX_PerfQuality_Value_Balanced,
-	NVSDK_NGX_PerfQuality_Value_MaxQuality,
-	// Extended PerfQuality modes
-	NVSDK_NGX_PerfQuality_Value_UltraPerformance,
-	NVSDK_NGX_PerfQuality_Value_UltraQuality,
-	NVSDK_NGX_PerfQuality_Value_DLAA,
-				 */
+				//resetDLSS |= UI::Property("Jittered Motion Vectors", m_Context->m_DLSSSettings.JitteredMotionVectors); // Debug
 
 				const static char* modes[] = { "Max Performance", "Balanced", "Max Quality", "Ultra Performance", "DLAA" };
 
@@ -261,7 +250,7 @@ namespace Beyond {
 			else
 				UI::ShiftCursorY(headerSpacingOffset);
 
-			if (UI::PropertyGridHeader("Dynamic-Diffuse Global Illumination", false))
+			if (UI::PropertyGridHeader("Dynamic-Diffuse Global Illumination"))
 			{
 				UI::BeginPropertyGrid();
 
@@ -273,8 +262,8 @@ namespace Beyond {
 				{
 					if (UI::BeginTreeNode("Texture Visualization"))
 					{
-						UI::Property("Instance Offset", m_Context->m_DDGITextureVisSettings.InstanceOffset);
-						UI::Property("Probe Type", m_Context->m_DDGITextureVisSettings.ProbeType);
+						//UI::Property("Instance Offset", m_Context->m_DDGITextureVisSettings.InstanceOffset);
+						//UI::Property("Probe Type", m_Context->m_DDGITextureVisSettings.ProbeType);
 						UI::Property("Probe Radius", m_Context->m_DDGITextureVisSettings.ProbeRadius);
 						UI::Property("Distance Divisor", m_Context->m_DDGITextureVisSettings.DistanceDivisor);
 						UI::Property("Ray Data Texture Scale", m_Context->m_DDGITextureVisSettings.RayDataTextureScale);
@@ -308,8 +297,8 @@ namespace Beyond {
 					ImGui::Text("VRAM Heap Budget: %s", Utils::BytesToString(vramStats.TotalAvailable).c_str());
 					ImGui::Text("VRAM Buffer Allocation Count: %d", vramStats.BufferAllocationCount);
 					ImGui::Text("VRAM Buffer Allocation Size: %s", Utils::BytesToString(vramStats.BufferAllocationSize).c_str());
-					ImGui::Text("VRAM Image Allocation Count: %d", vramStats.ImageAllocationSize);
-					ImGui::Text("VRAM Image Allocation Size: %s", Utils::BytesToString(vramStats.ImageAllocationCount).c_str());
+					ImGui::Text("VRAM Image Allocation Count: %d", vramStats.ImageAllocationCount);
+					ImGui::Text("VRAM Image Allocation Size: %s", Utils::BytesToString(vramStats.ImageAllocationSize).c_str());
 					UI::EndTreeNode();
 				}
 				else
@@ -327,6 +316,8 @@ namespace Beyond {
 					ImGui::Text("Light Culling Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.LightCullingPassQuery));
 					ImGui::Text("Geometry Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.GeometryPassQuery));
 					ImGui::Text("Ray tracing Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.RaytracingQuery));
+					ImGui::Text("DDGI Ray tracing Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.DDGIRaytraceQuery));
+					ImGui::Text("DDGI Irradiance Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.DDGIIrradianceQuery));
 					ImGui::Text("Pre-Convoluted Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.PreConvolutionQuery));
 					ImGui::Text("GTAO Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.GTAOPassQuery));
 					ImGui::Text("GTAO Denoise Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.GTAODenoisePassQuery));

@@ -197,11 +197,13 @@ namespace Beyond {
 			inline bool CompareShaderDescriptorSets(const ShaderDescriptorSet& set1, const ShaderDescriptorSet& set2) const
 			{
 				// Compare UniformBuffers
+				bool result = true;
 				for (const auto& [binding, buffer1] : set1.UniformBuffers)
 				{
 					if (!set2.UniformBuffers.contains(binding))
 					{
-						BEY_CORE_ERROR("Uniform Buffer with binding {} with name : {} at stage: {} not found in set2.", binding, buffer1.Name, ShaderUtils::ShaderStageToString(buffer1.ShaderStage));
+						BEY_CORE_ERROR("Uniform Buffer with binding {} with name : {} at stage: {} not found in set2.", binding, buffer1.Name, ShaderUtils::ShaderStagesToString(buffer1.ShaderStage));
+						result = false;
 						continue;
 					}
 
@@ -218,7 +220,8 @@ namespace Beyond {
 				{
 					if (!set2.StorageBuffers.contains(binding))
 					{
-						BEY_CORE_ERROR("Storage Buffer with binding {} with name : {} at stage: {} not found in set2.", binding, buffer1.Name, ShaderUtils::ShaderStageToString(buffer1.ShaderStage));
+						BEY_CORE_ERROR("Storage Buffer with binding {} with name : {} at stage: {} not found in set2.", binding, buffer1.Name, ShaderUtils::ShaderStagesToString(buffer1.ShaderStage));
+						result = false;
 						continue;
 					}
 
@@ -235,7 +238,8 @@ namespace Beyond {
 				{
 					if (!set2.AccelerationStructures.contains(binding))
 					{
-						BEY_CORE_ERROR("Storage Buffer with binding {} with name : {} at stage: {} not found in set2.", binding, buffer1.Name, ShaderUtils::ShaderStageToString(buffer1.ShaderStage));
+						BEY_CORE_ERROR("Storage Buffer with binding {} with name : {} at stage: {} not found in set2.", binding, buffer1.Name, ShaderUtils::ShaderStagesToString(buffer1.ShaderStage));
+						result = false;
 						continue;
 					}
 
@@ -252,7 +256,8 @@ namespace Beyond {
 				{
 					if (!set2.ImageSamplers.contains(binding))
 					{
-						BEY_CORE_ERROR("ImageSamplers with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStageToString(sampler1.ShaderStage));
+						BEY_CORE_ERROR("ImageSamplers with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStagesToString(sampler1.ShaderStage));
+						result = false;
 						continue;
 					}
 
@@ -269,7 +274,8 @@ namespace Beyond {
 				{
 					if (!set2.SeparateTextures.contains(binding))
 					{
-						BEY_CORE_ERROR("SeparateTextures with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStageToString(sampler1.ShaderStage));
+						BEY_CORE_ERROR("SeparateTextures with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStagesToString(sampler1.ShaderStage));
+						result = false;
 						continue;
 					}
 
@@ -286,7 +292,8 @@ namespace Beyond {
 				{
 					if (!set2.ImageSamplers.contains(binding))
 					{
-						BEY_CORE_ERROR("StorageImages with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStageToString(sampler1.ShaderStage));
+						BEY_CORE_ERROR("StorageImages with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStagesToString(sampler1.ShaderStage));
+						result = false;
 						continue;
 					}
 
@@ -294,6 +301,7 @@ namespace Beyond {
 					if (!CompareImageSamplers(sampler1, sampler2))
 					{
 						BEY_CORE_ERROR("ImageSampler (Texture) mismatch for binding {}.", binding);
+						result = false;
 						return false;
 					}
 				}
@@ -303,7 +311,8 @@ namespace Beyond {
 				{
 					if (!set2.ImageSamplers.contains(binding))
 					{
-						BEY_CORE_ERROR("SeparateSamplers with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStageToString(sampler1.ShaderStage));
+						BEY_CORE_ERROR("SeparateSamplers with binding {} with name : {} at stage: {} not found in set2.", binding, sampler1.Name, ShaderUtils::ShaderStagesToString(sampler1.ShaderStage));
+						result = false;
 						continue;
 					}
 
@@ -316,7 +325,7 @@ namespace Beyond {
 				}
 
 				// If everything matches, return true
-				return true;
+				return result;
 			}
 
 			// Custom comparison function

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2019-2023, NVIDIA CORPORATION.  All rights reserved.
+ * Copyright (c) 2019-2023, NVIDIA CORPORATION.  All rights reserved.
  *
  * NVIDIA CORPORATION and its licensors retain all intellectual property
  * and proprietary rights in and to this software, related documentation
@@ -13,13 +13,14 @@
 
 #include <Raytracing/Descriptors.hlslh>
 
-#include "rtxgi/ddgi/DDGIVolumeDescGPU.h"
 #include "Types.h"
+#include "rtxgi/ddgi/DDGIVolumeDescGPU.h"
+
 // #include "rtxgi/Types.h"
 #include <RTXGI/Platform.hlsl>
 
-#define VK_BINDING(x, y)    [[vk::binding(x, y)]]
-#define VK_PUSH_CONST       [[vk::push_constant]]
+#define VK_BINDING(x, y) [[vk::binding(x, y)]]
+#define VK_PUSH_CONST [[vk::push_constant]]
 
 #define RTXGI_BINDLESS_TYPE_RESOURCE_ARRAYS 0
 #define RTXGI_BINDLESS_TYPE_DESCRIPTOR_HEAP 1
@@ -28,13 +29,14 @@
 #error Required define RTXGI_BINDLESS_TYPE is not defined!
 #endif
 
-struct TLASInstance {
+struct TLASInstance
+{
 #pragma pack_matrix(row_major)
     float3x4 transform;
 #pragma pack_matrix(column_major)
-    uint     instanceID24_Mask8;
-    uint     instanceContributionToHitGroupIndex24_Flags8;
-    uint2    blasAddress;
+    uint instanceID24_Mask8;
+    uint instanceContributionToHitGroupIndex24_Flags8;
+    uint2 blasAddress;
 };
 
 // Global Root / Push Constants ------------------------------------------------------------------------------------
@@ -69,16 +71,16 @@ struct TLASInstance {
 // VK_BINDING(2, 0) StructuredBuffer<PointLight>                     Lights              : register(t2, space0);
 // VK_BINDING(3, 0) StructuredBuffer<Material>                  Materials           : register(t3, space0);
 // VK_BINDING(4, 0) StructuredBuffer<TLASInstance>              TLASInstances       : register(t4, space0);
-VK_BINDING(5, 2) StructuredBuffer<DDGIVolumeDescGPUPacked>   DDGIVolumes         : register(t5, space0);
-VK_BINDING(6, 1) StructuredBuffer<DDGIVolumeResourceIndices> DDGIVolumeBindless  : register(t6, space0);
+VK_BINDING(5, 2) StructuredBuffer<DDGIVolumeDescGPUPacked> DDGIVolumes : register(t5, space0);
+VK_BINDING(6, 2) StructuredBuffer<DDGIVolumeResourceIndices> DDGIVolumeBindless : register(t6, space0);
 
-VK_BINDING(9, 3) RWStructuredBuffer<TLASInstance>            RWTLASInstances     : register(u5, space0);
+VK_BINDING(9, 3) RWStructuredBuffer<TLASInstance> RWTLASInstances : register(u5, space0);
 
 // Bindless Resources ---------------------------------------------------------------------------------------
 
 // VK_BINDING(3, 2) RWTexture2D<float4>                         GBufferB;
-VK_BINDING(1, 4) RWTexture2DArray<float4>                    RWTex2DArray[]      : register(u6, space1);
-VK_BINDING(2, 4) Texture2DArray                             Tex2DArray[]        : register(t7, space2);
+VK_BINDING(1, 4) RWTexture2DArray<float4> RWTex2DArray[] : register(u6, space1);
+VK_BINDING(2, 4) Texture2DArray Tex2DArray[] : register(t7, space2);
 
 // VK_BINDING(11, 4) Texture2D                                  Tex2D[]             : register(t7, space1);
 
@@ -113,8 +115,8 @@ VK_BINDING(2, 4) Texture2DArray                             Tex2DArray[]        
 
 // void GetGeometryData(uint meshIndex, uint geometryIndex, out GeometryData geometry)
 // {
-//     uint address = ByteAddrBuffer[MESH_OFFSETS_INDEX].Load(meshIndex * 4); // address of the Mesh in the GeometryData buffer
-//     address += geometryIndex * 12; // offset to mesh primitive geometry, GeometryData stride is 12 bytes
+//     uint address = ByteAddrBuffer[MESH_OFFSETS_INDEX].Load(meshIndex * 4); // address of the Mesh in the GeometryData
+//     buffer address += geometryIndex * 12; // offset to mesh primitive geometry, GeometryData stride is 12 bytes
 
 //     geometry.materialIndex = ByteAddrBuffer[GEOMETRY_DATA_INDEX].Load(address);
 //     geometry.indexByteAddress = ByteAddrBuffer[GEOMETRY_DATA_INDEX].Load(address + 4);
@@ -122,18 +124,22 @@ VK_BINDING(2, 4) Texture2DArray                             Tex2DArray[]        
 // }
 // Material GetMaterial(GeometryData geometry) { return Materials[geometry.materialIndex]; }
 
-StructuredBuffer<DDGIVolumeDescGPUPacked> GetDDGIVolumeConstants(uint index) {
+StructuredBuffer<DDGIVolumeDescGPUPacked> GetDDGIVolumeConstants(uint index)
+{
     return DDGIVolumes;
 }
-StructuredBuffer<DDGIVolumeResourceIndices> GetDDGIVolumeResourceIndices(uint index) {
+StructuredBuffer<DDGIVolumeResourceIndices> GetDDGIVolumeResourceIndices(uint index)
+{
     return DDGIVolumeBindless;
 }
 
-RWStructuredBuffer<TLASInstance> GetDDGIProbeVisTLASInstances() {
+RWStructuredBuffer<TLASInstance> GetDDGIProbeVisTLASInstances()
+{
     return RWTLASInstances;
 }
 
-RaytracingAccelerationStructure GetAccelerationStructure(uint index) {
+RaytracingAccelerationStructure GetAccelerationStructure(uint index)
+{
     return TLAS;
 }
 
@@ -141,16 +147,19 @@ RaytracingAccelerationStructure GetAccelerationStructure(uint index) {
 // ByteAddressBuffer GetSphereVertexBuffer() { return ByteAddrBuffer[SPHERE_VERTEX_BUFFER_INDEX]; }
 
 // ByteAddressBuffer GetIndexBuffer(uint meshIndex) { return ByteAddrBuffer[GEOMETRY_BUFFERS_INDEX + (meshIndex * 2)]; }
-// ByteAddressBuffer GetVertexBuffer(uint meshIndex) { return ByteAddrBuffer[GEOMETRY_BUFFERS_INDEX + (meshIndex * 2) + 1]; }
+// ByteAddressBuffer GetVertexBuffer(uint meshIndex) { return ByteAddrBuffer[GEOMETRY_BUFFERS_INDEX + (meshIndex * 2) +
+// 1]; }
 
 // Bindless Resource Array Accessors ------------------------------------------------------------------------
 
 // RWTexture2D<float4> GetRWTex2D(uint index) { return RWTex2D[index]; }
 
-RWTexture2DArray<float4> GetRWTex2DArray(uint index) {
+RWTexture2DArray<float4> GetRWTex2DArray(uint index)
+{
     return RWTex2DArray[index];
 }
-Texture2DArray<float4> GetTex2DArray(uint index) {
+Texture2DArray<float4> GetTex2DArray(uint index)
+{
     return Tex2DArray[index];
 }
 

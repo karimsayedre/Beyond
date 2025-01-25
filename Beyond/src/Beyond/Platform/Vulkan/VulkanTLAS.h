@@ -11,6 +11,7 @@ namespace Beyond {
 	{
 	public:
 		VulkanTLAS(bool motion, eastl::string name);
+		void RT_CreateOrResizeInstancesBuffer(uint32_t instanceCount, bool hostVisible);
 		void RT_CreateAccelerationStructure(const VkAccelerationStructureMotionInfoNV& motionInfo, const VkAccelerationStructureBuildSizesInfoKHR& sizeInfo);
 		void RT_BuildTlas(Ref<VulkanRenderCommandBuffer> commandBuffer, const eastl::vector<VkAccelerationStructureInstanceKHR>& instances, VkBuildAccelerationStructureFlagsKHR flags);
 		void RT_BuildTlas(Ref<VulkanRenderCommandBuffer> renderCommandBuffer, Ref<VulkanStorageBuffer> storageBuffer, VkBuildAccelerationStructureFlagsKHR flags);
@@ -20,17 +21,21 @@ namespace Beyond {
 		const nvvk::AccelKHR& GetTLAS() const { return m_TLAS; }
 		nvvk::AccelKHR& GetTLAS() { return m_TLAS; }
 		bool IsReady() override { return m_TLAS.buffer.buffer != VK_NULL_HANDLE; }
-		void Release();
+		void Release(bool fullRelease = false);
 		~VulkanTLAS() override;
 
 	private:
-		void RT_BuildTLAS(Ref<VulkanRenderCommandBuffer> commandBuffer, nvvk::Buffer instancesBuffer, uint32_t instancesCount, VkBuildAccelerationStructureFlagsKHR flags);
+		void RT_BuildTLAS(Ref<VulkanRenderCommandBuffer> commandBuffer, uint32_t instancesCount, VkBuildAccelerationStructureFlagsKHR flags);
+		void ReleaseInstancesBuffer();
 
 		bool m_Motion = false;
 
-		nvvk::AccelKHR m_TLAS;  // Top-level acceleration structure
+		VulkanAllocator m_Allocator { "Tlas Allocator" };
 
+		nvvk::AccelKHR m_TLAS;  // Top-level acceleration structure
 		nvvk::Buffer m_ScratchBuffer;
+		nvvk::Buffer m_InstancesBuffer;
+		uint32_t m_InstanceCount = 0; // tied to m_InstancesBuffer
 
 		// At the class level, add a new member variable
 		bool m_IsBuilt = false;

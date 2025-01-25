@@ -39,14 +39,15 @@
 
 // #include "include/Common.hlsl"
 
+#include "RTXGI/ddgi/include/Descriptors.hlsl"
 #include <Buffers.hlslh>
 #include <HostDevice.hlslh>
-#include "RTXGI/ddgi/include/Descriptors.hlsl"
-
 
 VK_BINDING(0, 3) Texture2D<float4> AlbedoTexture;
-[[vk::combinedImageSampler]] VK_BINDING(1, 3) Texture2D<float4> DepthTexture;
-[[vk::combinedImageSampler]] VK_BINDING(1, 3) SamplerState SamplerPointClamp;
+[[vk::combinedImageSampler]]
+VK_BINDING(1, 3) Texture2D<float4> DepthTexture;
+[[vk::combinedImageSampler]]
+VK_BINDING(1, 3) SamplerState SamplerPointClamp;
 VK_BINDING(2, 3) Texture2D<float4> NormalTexture;
 VK_BINDING(3, 3) RWTexture2D<float4> OutputTexture;
 
@@ -54,7 +55,8 @@ struct GTAOConstants
 {
     float2 HZBUVFactor;
 };
-[[vk::push_constant]] ConstantBuffer<GTAOConstants> u_GTAOConsts;
+[[vk::push_constant]]
+ConstantBuffer<GTAOConstants> u_GTAOConsts;
 
 #include "RTXGI/ddgi/include/Irradiance.hlsl"
 
@@ -80,8 +82,9 @@ float3 SRGBToLinear(float3 rgb)
 
 // ---[ Compute Shader ]---
 
-[numthreads(THGP_DIM_X, THGP_DIM_Y, 1)] void main(uint3 DispatchThreadID
-                                                  : SV_DispatchThreadID) {
+[numthreads(THGP_DIM_X, THGP_DIM_Y, 1)]
+void main(uint3 DispatchThreadID: SV_DispatchThreadID)
+{
     float3 color = float3(0.f, 0.f, 0.f);
     DispatchID = DispatchThreadID.xy;
 
@@ -100,11 +103,13 @@ float3 SRGBToLinear(float3 rgb)
         // Load the world position, hit distance, and normal
         float4 positionSS = float4((DispatchThreadID.xy + 0.5) * u_ScreenData.InvFullResolution, 0.0, 1.0);
         positionSS.z = DepthTexture.SampleLevel(Samplers[0], positionSS.xy * u_GTAOConsts.HZBUVFactor, 0.0).r;
-        positionSS.xy = positionSS.xy * 2.0 - 1.0; 
+        positionSS.xy = positionSS.xy * 2.0 - 1.0;
         float4 positionWS = mul(u_Camera.InverseViewProjectionMatrix, positionSS);
         positionWS.xyz /= positionWS.w;
 
-        float3 normal = normalize(mul((float3x3)(u_Camera.InverseViewMatrix), float3(NormalTexture.Load(DispatchThreadID.xyz).xyz))).xyz;
+        float3 normal =
+            normalize(mul((float3x3)(u_Camera.InverseViewMatrix), float3(NormalTexture.Load(DispatchThreadID.xyz).xyz)))
+                .xyz;
 
         // Compute indirect lighting
         float3 irradiance = 0.f;
@@ -145,7 +150,6 @@ float3 SRGBToLinear(float3 rgb)
 
         // Compute final color
         color = (albedo.rgb / RTXGI_PI) * irradiance;
-
     }
 
     float3 old_color = OutputTexture.Load(DispatchThreadID.xy).xyz;

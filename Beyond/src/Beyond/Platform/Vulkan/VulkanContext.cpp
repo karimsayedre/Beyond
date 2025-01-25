@@ -159,7 +159,7 @@ namespace Beyond {
 				break;
 		}
 		//[[maybe_unused]] const auto& imageRefs = VulkanImage2D::GetImageRefs();
-		return VK_FALSE;
+ 		return VK_FALSE;
 	}
 
 	static bool CheckDriverAPIVersionSupport(uint32_t minimumSupportedVersion)

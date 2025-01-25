@@ -29,8 +29,27 @@ namespace Beyond {
 		//});
 	}
 
-	void VulkanTLAS::RT_CreateAccelerationStructure(const VkAccelerationStructureMotionInfoNV& motionInfo,
-																			 const VkAccelerationStructureBuildSizesInfoKHR& sizeInfo)
+	void VulkanTLAS::RT_CreateOrResizeInstancesBuffer(uint32_t instanceCount, bool hostVisible)
+	{
+		if (instanceCount > m_InstanceCount)
+		{
+			if (m_InstancesBuffer.buffer)
+				ReleaseInstancesBuffer();
+
+			// Allocate the scratch buffers holding the temporary data of the acceleration structure builder
+			VkDevice device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
+			VkBufferCreateInfo bci{};
+			bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+			bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+			bci.size = instanceCount * sizeof(VkAccelerationStructureInstanceKHR);
+			bci.usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | (hostVisible ? 0 : VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+			m_InstancesBuffer.memHandle = m_Allocator.AllocateBuffer(bci, hostVisible ? VMA_MEMORY_USAGE_CPU_TO_GPU : VMA_MEMORY_USAGE_GPU_ONLY, m_InstancesBuffer.buffer);
+			VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_BUFFER, fmt::eastl_format("Tlas instance buffer: {}", m_Name), m_InstancesBuffer.buffer);
+			m_InstanceCount = instanceCount;
+		}
+	}
+
+	void VulkanTLAS::RT_CreateAccelerationStructure(const VkAccelerationStructureMotionInfoNV& motionInfo, const VkAccelerationStructureBuildSizesInfoKHR& sizeInfo)
 	{
 		Release();
 		m_IsBuilt = false;
@@ -74,29 +93,15 @@ namespace Beyond {
 	void VulkanTLAS::RT_BuildTlas(Ref<VulkanRenderCommandBuffer> commandBuffer, const eastl::vector<VkAccelerationStructureInstanceKHR>& instances,
 														   VkBuildAccelerationStructureFlagsKHR flags = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR)
 	{
-		Ref<VulkanDevice> device = VulkanContext::GetCurrentDevice();
-		VkDevice vkDevice = device->GetVulkanDevice();
-
-		VulkanAllocator allocator("Tlas Allocator");
-
-		// Create a buffer holding the actual instance data (matrices++) for use by the AS builder
-		nvvk::Buffer instancesBuffer;  // Buffer of instances containing the matrices and BLAS ids
 		if (!instances.empty())
 		{
-			// Allocate the scratch buffers holding the temporary data of the acceleration structure builder
-			VkBufferCreateInfo bci{};
-			bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-			bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			bci.size = instances.size() * sizeof(VkAccelerationStructureInstanceKHR);
-			bci.usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
-			instancesBuffer.memHandle = allocator.AllocateBuffer(bci, VMA_MEMORY_USAGE_CPU_TO_GPU, instancesBuffer.buffer);
-			VKUtils::SetDebugUtilsObjectName(vkDevice, VK_OBJECT_TYPE_BUFFER, fmt::eastl_format("Tlas instance buffer: {}", m_Name), instancesBuffer.buffer);
+			RT_CreateOrResizeInstancesBuffer((uint32_t)instances.size(), true);
 
-			auto* mappedData = allocator.MapMemory<VkAccelerationStructureInstanceKHR>(instancesBuffer.memHandle);
+			auto* mappedData = m_Allocator.MapMemory<VkAccelerationStructureInstanceKHR>(m_InstancesBuffer.memHandle);
 			memcpy(mappedData, instances.data(), instances.size() * sizeof(VkAccelerationStructureInstanceKHR));
-			allocator.UnmapMemory(instancesBuffer.memHandle);
+			m_Allocator.UnmapMemory(m_InstancesBuffer.memHandle);
 
-			RT_BuildTLAS(commandBuffer, instancesBuffer, (uint32_t)instances.size(), flags);
+			RT_BuildTLAS(commandBuffer, (uint32_t)instances.size(), flags);
 		}
 	}
 
@@ -107,49 +112,38 @@ namespace Beyond {
 		uint32_t countInstance = static_cast<uint32_t>(storageBuffer->GetSize() / sizeof(VkAccelerationStructureInstanceKHR));
 
 		Ref<VulkanDevice> device = VulkanContext::GetCurrentDevice();
-		VkDevice vkDevice = device->GetVulkanDevice();
 
 		VulkanAllocator allocator("Tlas Allocator");
 
-		// Create a buffer holding the actual instance data (matrices++) for use by the AS builder
-		nvvk::Buffer instancesBuffer;  // Buffer of instances containing the matrices and BLAS ids
-		{
-			// Allocate the scratch buffers holding the temporary data of the acceleration structure builder
-			VkBufferCreateInfo bci{};
-			bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-			bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			bci.size = countInstance * sizeof(VkAccelerationStructureInstanceKHR);
-			bci.usage = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
-			instancesBuffer.memHandle = allocator.AllocateBuffer(bci, VMA_MEMORY_USAGE_GPU_ONLY, instancesBuffer.buffer);
-			VKUtils::SetDebugUtilsObjectName(vkDevice, VK_OBJECT_TYPE_BUFFER, fmt::eastl_format("Tlas instance buffer: {}", m_Name), instancesBuffer.buffer);
+		RT_CreateOrResizeInstancesBuffer(countInstance, false);
 
-			VkBufferCopy region{ 0, 0, bci.size };
-			vkCmdCopyBuffer(renderCommandBuffer->GetActiveCommandBuffer(), storageBuffer->GetVulkanBuffer(), instancesBuffer.buffer, 1, &region);
+		VkBufferCopy region{ 0, 0, m_InstanceCount * sizeof(VkAccelerationStructureInstanceKHR) };
+		vkCmdCopyBuffer(renderCommandBuffer->GetActiveCommandBuffer(), storageBuffer->GetVulkanBuffer(), m_InstancesBuffer.buffer, 1, &region);
 
 
-			VkBufferMemoryBarrier2 copyBarrier{};
-			copyBarrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER_2;
-			copyBarrier.srcStageMask = VK_PIPELINE_STAGE_2_TRANSFER_BIT;
-			copyBarrier.srcAccessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT;
-			copyBarrier.dstStageMask = VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR;
-			copyBarrier.dstAccessMask = VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR;
-			copyBarrier.buffer = instancesBuffer.buffer;
-			copyBarrier.offset = 0;
-			copyBarrier.size = VK_WHOLE_SIZE;
+		VkBufferMemoryBarrier2 copyBarrier{};
+		copyBarrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER_2;
+		copyBarrier.srcStageMask = VK_PIPELINE_STAGE_2_TRANSFER_BIT;
+		copyBarrier.srcAccessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT;
+		copyBarrier.dstStageMask = VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR;
+		copyBarrier.dstAccessMask = VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR;
+		copyBarrier.buffer = m_InstancesBuffer.buffer;
+		copyBarrier.offset = 0;
+		copyBarrier.size = VK_WHOLE_SIZE;
 
-			VkDependencyInfo copyDepInfo{};
-			copyDepInfo.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-			copyDepInfo.bufferMemoryBarrierCount = 1;
-			copyDepInfo.pBufferMemoryBarriers = &copyBarrier;
+		VkDependencyInfo copyDepInfo{};
+		copyDepInfo.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+		copyDepInfo.bufferMemoryBarrierCount = 1;
+		copyDepInfo.pBufferMemoryBarriers = &copyBarrier;
 
-			vkCmdPipelineBarrier2(renderCommandBuffer->GetActiveCommandBuffer(), &copyDepInfo);
-		}
+		vkCmdPipelineBarrier2(renderCommandBuffer->GetActiveCommandBuffer(), &copyDepInfo);
 
-		RT_BuildTLAS(renderCommandBuffer, instancesBuffer, countInstance, flags);
+
+		RT_BuildTLAS(renderCommandBuffer, countInstance, flags);
 	}
 
 
-	void VulkanTLAS::RT_BuildTLAS(Ref<VulkanRenderCommandBuffer> commandBuffer, nvvk::Buffer instancesBuffer, uint32_t instancesCount, VkBuildAccelerationStructureFlagsKHR flags = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR)
+	void VulkanTLAS::RT_BuildTLAS(Ref<VulkanRenderCommandBuffer> commandBuffer, uint32_t instancesCount, VkBuildAccelerationStructureFlagsKHR flags = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR)
 	{
 		BEY_SCOPE_PERF("VulkanTLAS::RT_BuildTLAS");
 		BEY_PROFILE_SCOPE_DYNAMIC("VulkanTLAS::RT_BuildTLAS");
@@ -165,7 +159,7 @@ namespace Beyond {
 
 		Ref<VulkanDevice> device = VulkanContext::GetCurrentDevice();
 		VkDevice vkDevice = device->GetVulkanDevice();
-		VkBufferDeviceAddressInfo instanceBufferAddressInfo{ VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO, nullptr, instancesBuffer.buffer };
+		VkBufferDeviceAddressInfo instanceBufferAddressInfo{ VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO, nullptr, m_InstancesBuffer.buffer };
 		VkDeviceAddress           instBufferAddr = vkGetBufferDeviceAddress(vkDevice, &instanceBufferAddressInfo);
 
 		VkCommandBuffer   cmdBuf = commandBuffer ? commandBuffer->GetActiveCommandBuffer() : device->CreateCommandBuffer(m_Name, false, true);
@@ -273,25 +267,33 @@ namespace Beyond {
 		depInfo.pMemoryBarriers = &postBarrier;
 		vkCmdPipelineBarrier2(cmdBuf, &depInfo);
 
-		Renderer::SubmitResourceFree([instancesBuffer]() mutable
+
+		m_IsBuilt = true;
+	}
+
+	void VulkanTLAS::ReleaseInstancesBuffer()
+	{
+		Renderer::SubmitResourceFree([instancesBuffer = m_InstancesBuffer]() mutable
 		{
 			//Finalizing and destroying temporary data
 			VulkanAllocator allocator("Tlas Allocator");
 			allocator.DestroyBuffer(instancesBuffer.buffer, instancesBuffer.memHandle);
 		});
-		m_IsBuilt = true;
 	}
 
-	void VulkanTLAS::Release()
+	void VulkanTLAS::Release(bool fullRelease)
 	{
 		if (m_TLAS.accel == VK_NULL_HANDLE)
 			return;
-		Renderer::SubmitResourceFree([tlas = m_TLAS, scratchBuffer = m_ScratchBuffer]() mutable
+		Renderer::SubmitResourceFree([fullRelease, tlas = m_TLAS, scratchBuffer = m_ScratchBuffer, instancesBuffer = m_InstancesBuffer]() mutable
 		{
 			VulkanAllocator allocator("Tlas De-Allocator");
-			allocator.DestroyAS(tlas);
+			if (tlas.accel)
+				allocator.DestroyAS(tlas);
 			if (scratchBuffer.buffer)
 				allocator.DestroyBuffer(scratchBuffer.buffer, scratchBuffer.memHandle);
+			if (fullRelease && instancesBuffer.buffer)
+				allocator.DestroyBuffer(instancesBuffer.buffer, instancesBuffer.memHandle);
 		});
 		m_TLAS = {};
 		m_ScratchBuffer = {};
@@ -299,7 +301,7 @@ namespace Beyond {
 
 	VulkanTLAS::~VulkanTLAS()
 	{
-		Release();
+		Release(true);
 	}
 }
 

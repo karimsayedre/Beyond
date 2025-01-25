@@ -5,256 +5,294 @@
 #include <Common.hlslh>
 #include <PBR.hlslh>
 #include <Raytracing/GGX.hlslh>
-#include <Raytracing/RaytracingPayload.hlslh>
 #include <Raytracing/RayQuery.hlslh>
+#include <Raytracing/RaytracingPayload.hlslh>
 
 // Generates a sample for GGX importance sampling given a roughness value and random numbers
 float3 ImportanceSampleGGX(float2 xi, float roughness, float3 N)
 {
-	// Transform roughness to alpha (squared roughness)
-	float alpha = roughness * roughness;
+    // Transform roughness to alpha (squared roughness)
+    float alpha = roughness * roughness;
 
-	// Compute theta and phi using GGX distribution
-	float phi = 2.0 * 3.14159265359 * xi.x; // Uniformly distributed angle around the hemisphere
-	float cosThetaDenominator = 1.0 + (alpha * alpha - 1.0) * xi.y;
+    // Compute theta and phi using GGX distribution
+    float phi = 2.0 * 3.14159265359 * xi.x; // Uniformly distributed angle around the hemisphere
+    float cosThetaDenominator = 1.0 + (alpha * alpha - 1.0) * xi.y;
 
-	// Prevent negative or zero values in the cosTheta calculation
-	float cosTheta = sqrt(max(0.0, (1.0 - xi.y) / cosThetaDenominator));
+    // Prevent negative or zero values in the cosTheta calculation
+    float cosTheta = sqrt(max(0.0, (1.0 - xi.y) / cosThetaDenominator));
 
-	// Clamp cosTheta to the valid range [0, 1] before computing sinTheta
-	cosTheta = clamp(cosTheta, 0.0, 1.0);
-	float sinTheta = sqrt(max(0.0, 1.0 - cosTheta * cosTheta));
+    // Clamp cosTheta to the valid range [0, 1] before computing sinTheta
+    cosTheta = clamp(cosTheta, 0.0, 1.0);
+    float sinTheta = sqrt(max(0.0, 1.0 - cosTheta * cosTheta));
 
-	// Convert polar to Cartesian coordinates for sampled half-vector H
-	float3 H;
-	H.x = sinTheta * cos(phi);
-	H.y = sinTheta * sin(phi);
-	H.z = cosTheta;
+    // Convert polar to Cartesian coordinates for sampled half-vector H
+    float3 H;
+    H.x = sinTheta * cos(phi);
+    H.y = sinTheta * sin(phi);
+    H.z = cosTheta;
 
-	// Transform the normal to align with the surface normal N
-	float3 up = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
-	float3 tangentX = normalize(cross(up, N));
-	float3 tangentY = cross(N, tangentX);
+    // Transform the normal to align with the surface normal N
+    float3 up = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
+    float3 tangentX = normalize(cross(up, N));
+    float3 tangentY = cross(N, tangentX);
 
-	// Rotate H to align with the shading normal
-	return normalize(tangentX * H.x + tangentY * H.y + N * H.z);
+    // Rotate H to align with the shading normal
+    return normalize(tangentX * H.x + tangentY * H.y + N * H.z);
 }
 
-float3 IBL(float3 F0, float3 Lr, float envMapRotation, float3 albedo, float3 normal, float roughness, float metalness, float NdotV)
+float3 IBL(float3 F0, float3 Lr, float envMapRotation, float3 albedo, float3 normal, float roughness, float metalness,
+           float NdotV)
 {
-	float3 irradiance = u_EnvIrradianceTex.SampleLevel(GetBilinearWrapSampler(), normal, 0.0).rgb;
-	float3 F = FresnelSchlickRoughness(F0, NdotV, roughness);
-	float3 kd = (1.0 - F) * (1.0 - metalness);
-	float3 diffuseIBL = albedo * irradiance;
+    float3 irradiance = u_EnvIrradianceTex.SampleLevel(GetBilinearWrapSampler(), normal, 0.0).rgb;
+    float3 F = FresnelSchlickRoughness(F0, NdotV, roughness);
+    float3 kd = (1.0 - F) * (1.0 - metalness);
+    float3 diffuseIBL = albedo * irradiance;
 
-	uint width, height, levels;
-	u_EnvRadianceTex.GetDimensions(0, width, height, levels);
-	float3 specularIrradiance = u_EnvRadianceTex.SampleLevel(GetBilinearWrapSampler(), RotateVectorAboutY(envMapRotation, Lr), roughness * levels).rgb;
+    uint width, height, levels;
+    u_EnvRadianceTex.GetDimensions(0, width, height, levels);
+    float3 specularIrradiance =
+        u_EnvRadianceTex
+            .SampleLevel(GetBilinearWrapSampler(), RotateVectorAboutY(envMapRotation, Lr), roughness * levels)
+            .rgb;
 
-	float2 specularBRDF = u_BRDFLUTTexture.SampleLevel(GetBilinearWrapSampler(), float2(NdotV, roughness), 0).rg;
-	float3 specularIBL = specularIrradiance * (F0 * specularBRDF.x + specularBRDF.y);
+    float2 specularBRDF = u_BRDFLUTTexture.SampleLevel(GetBilinearWrapSampler(), float2(NdotV, roughness), 0).rg;
+    float3 specularIBL = specularIrradiance * (F0 * specularBRDF.x + specularBRDF.y);
 
-	return kd * diffuseIBL + specularIBL;
+    return kd * diffuseIBL + specularIBL;
 }
 
 float3 EnvironmentSample(float3 F0, float3 rayDirection, uint bounceIndex, PbrMaterial params)
 {
-	if (bounceIndex == 0)
-	{
-		return u_EnvRadianceTex.SampleLevel(GetBilinearWrapSampler(), rayDirection, u_SceneData.EnvironmentMapLod).rgb * u_SceneData.EnvironmentMapIntensity;
-	}
-	else
-	{
-		return IBL(F0, rayDirection, 0.0, params.baseColor.rgb, params.N, params.roughness.r, params.metallic, max(dot(params.Ng, rayDirection), 0.0)) * u_SceneData.EnvironmentMapIntensity;
-	}
+    if (bounceIndex == 0)
+    {
+        return u_EnvRadianceTex.SampleLevel(GetBilinearWrapSampler(), rayDirection, u_SceneData.EnvironmentMapLod).rgb *
+               u_SceneData.EnvironmentMapIntensity;
+    }
+    else
+    {
+        return IBL(F0, rayDirection, 0.0, params.baseColor.rgb, params.N, params.roughness.r, params.metallic,
+                   max(dot(params.Ng, rayDirection), 0.0)) *
+               u_SceneData.EnvironmentMapIntensity;
+    }
 }
 
 /**
-* Computes the visibility factor for a given vector to a light.
-*/
-float LightVisibility(inout uint seed, uint shadowRays, PbrMaterial payload, float3 lightVector, float tmax, float lightRadius, RaytracingAccelerationStructure bvh)
+ * Computes the visibility factor for a given vector to a light.
+ */
+float LightVisibility(uint seed, uint shadowRays, PbrMaterial payload, float3 lightVector, float tmax,
+                      float lightRadius, inout RaytracingAccelerationStructure bvh)
 {
-	float biasFactor = 1e-4;
-	float shadowBias = biasFactor * max(1.0f, payload.HitT);
+    float biasFactor = 1e-4;
+    float shadowBias = biasFactor * max(1.0f, payload.HitT);
 
-	RayDesc ray;
-	ray.Origin = payload.WorldPosition + (payload.N * shadowBias); // TODO: not using viewBias!
-	ray.TMin = shadowBias;
-	ray.TMax = tmax - shadowBias;
+    RayDesc ray;
+    ray.Origin = payload.WorldPosition + (payload.N * shadowBias); // TODO: not using viewBias!
+    ray.TMin = 0.0f;
+    ray.TMax = tmax - shadowBias;
 
-	// Trace a visibility rays
-	// Skip the CHS to avoid evaluating materials
-	const uint samples = shadowRays;
-	float visibility = 0.0f;
-	[unroll] for (uint i = 0; i < samples; i++)
-	{
-		// Randomize the ray direction within a disk oriented towards the light source
-		float3 randomDirection = RandomDirectionInDisk(seed, lightVector, lightRadius * 0.001);
-		ray.Direction = normalize(randomDirection);
+    // Trace a visibility rays
+    // Skip the CHS to avoid evaluating materials
+    const uint samples = shadowRays;
+    float visibility = 0.0f;
+    [unroll]
+    for (uint i = 0; i < samples; i++)
+    {
+        // Randomize the ray direction within a disk oriented towards the light source
+        float3 randomDirection = RandomDirectionInDisk(seed, lightVector, lightRadius * 0.001);
+        ray.Direction = normalize(randomDirection);
 
 #if BEY_SER == 1
-		packedPayload = (RayPackedPayload)0;
-		HitObjectNV hObj;
-		hitObjectRecordEmptyNV(hObj);
+        packedPayload = (RayPackedPayload)0;
+        HitObjectNV hObj;
+        hitObjectRecordEmptyNV(hObj);
 
-		hitObjectTraceRayNV(hObj, TLAS, RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_SKIP_CLOSEST_HIT_SHADER | RAY_FLAG_CULL_BACK_FACING_TRIANGLES | RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES, 0xFF,
-		                    0, 0, 0, ray.Origin, ray.TMin, ray.Direction, ray.TMax, packedPayload);
-		reorderThreadWithHitObjectNV(hObj);
-		visibility += !hitObjectIsHitNV(hObj);
+        hitObjectTraceRayNV(hObj, TLAS,
+                            RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_SKIP_CLOSEST_HIT_SHADER |
+                                RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES,
+                            0xFF, 0, 0, 0, ray.Origin, ray.TMin, ray.Direction, ray.TMax, packedPayload);
+        reorderThreadWithHitObjectNV(hObj);
+        visibility += !hitObjectIsHitNV(hObj);
 #elif BEY_SER == 2
-		RayPackedPayload packedPayload = (RayPackedPayload)0;
-		TraceRay(bvh, RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_SKIP_CLOSEST_HIT_SHADER | RAY_FLAG_CULL_BACK_FACING_TRIANGLES, 0xFF, 0, 0, 0, ray, packedPayload);
-		visibility += (packedPayload.HitT < 0.f);
+        RayPackedPayload packedPayload = (RayPackedPayload)0;
+        TraceRay(bvh,
+                 RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_SKIP_CLOSEST_HIT_SHADER |
+                     RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES,
+                 0xFF, 0, 0, 0, ray, packedPayload);
+        visibility += (packedPayload.HitT < 0.f);
 
 #else
-		// Initialize the ray query
-		RayQuery<RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_CULL_BACK_FACING_TRIANGLES | RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES> rayQuery;
+        // Initialize the ray query
+        RayQuery<RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES |
+                 RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES> rayQuery;
 
-		rayQuery.TraceRayInline(bvh, RAY_FLAG_NONE, 0xFF, ray);
-		if (rayQuery.Proceed())
-		{
-			if (rayQuery.CandidateType() == CANDIDATE_NON_OPAQUE_TRIANGLE)
-			{
-				if (!AnyHitRayQuery(rayQuery, seed, true)) 
-					continue;
-				rayQuery.CommitNonOpaqueTriangleHit();
-			}
-		}
+        rayQuery.TraceRayInline(bvh, RAY_FLAG_NONE, 0xFF, ray);
+        if (rayQuery.Proceed())
+        {
+            if (rayQuery.CandidateType() == CANDIDATE_NON_OPAQUE_TRIANGLE)
+            {
+                if (!AnyHitRayQuery(rayQuery, seed, true))
+                    continue;
+                rayQuery.CommitNonOpaqueTriangleHit();
+            }
+        }
 
-		visibility += float(rayQuery.CommittedStatus() == COMMITTED_NOTHING);
+        visibility += float(rayQuery.CommittedStatus() == COMMITTED_NOTHING);
 #endif
-	}
-	return (visibility / samples);
+    }
+    return (visibility / samples);
 }
 
 /**
-* Computes the reflection of light off the given surface (direct lighting).
-*/
-float3 DirectLighting(uint seed, float3 F0, PbrMaterial material, float3 view, uint shadowRays, RaytracingAccelerationStructure bvh, float lightSizeMultiplier = 1.0f)
+ * Computes the reflection of light off the given surface (direct lighting).
+ * returns the color of the light reflected off the surface.
+ * float4.a = dir light visibility
+ */
+float4 DirectLighting(uint seed, float3 F0, PbrMaterial material, float3 view, uint shadowRays,
+                      inout RaytracingAccelerationStructure bvh, float lightSizeMultiplier = 1.0f)
 {
-	// float3 brdf = (material.Albedo.rgb / PI);
-	float3 lighting = 0.f;
+    // float3 brdf = (material.Albedo.rgb / PI);
+    float4 lighting = 0.f;
 
-	float NoV = max(0.0, dot(material.Ng, view));
+    float NoV = max(0.0, dot(material.Ng, view));
 
-	for (uint i = 0; i < 1; i++)
-	{
-		DirectionalLight light = u_SceneData.DirectionalLights;
+    for (uint i = 0; i < 1; i++)
+    {
+        DirectionalLight light = u_SceneData.DirectionalLights;
 
-		if (light.Intensity == 0.0) continue;
+        if (light.Intensity == 0.0)
+            continue;
 
-		float3 Lradiance = light.Radiance * light.Intensity;
-		if (dot(light.Direction, material.Ng) < 0.0) continue;
+        float3 Lradiance = light.Radiance * light.Intensity;
+        if (dot(light.Direction, material.Ng) < 0.0)
+            continue;
 
-		float visibility = light.CastsShadows ? LightVisibility(seed, shadowRays, material, light.Direction, 1e27f, light.LightSize * lightSizeMultiplier, bvh) : 1.0;
+        lighting.a = light.CastsShadows ? LightVisibility(seed, shadowRays, material, light.Direction, 1e27f,
+                                                          light.LightSize * lightSizeMultiplier, bvh)
+                                        : 1.0;
 
-		// Early out, the light isn't visible from the surface
-		if (visibility <= 0.f) continue;
+        // Early out, the light isn't visible from the surface
+        if (lighting.a <= 0.f)
+            continue;
 
-		BsdfEvaluateData evalData;
-		evalData.k1 = view;
-		evalData.k2 = light.Direction;
-		evalData.xi = RandomFloat3(seed);
+        BsdfEvaluateData evalData;
+        evalData.k1 = view;
+        evalData.k2 = light.Direction;
+        evalData.xi = RandomFloat3(seed);
 
-		bsdfEvaluate(evalData, material);
-		if (evalData.pdf > 0.0)
-		{
-			// const float mis_weight = (directLight.pdf == DIRAC) ? 1.0F : directLight.pdf / (directLight.pdf + evalData.pdf);
+        bsdfEvaluate(evalData, material);
+        if (evalData.pdf > 0.0)
+        {
+            // const float mis_weight = (directLight.pdf == DIRAC) ? 1.0F : directLight.pdf / (directLight.pdf +
+            // evalData.pdf);
 
-			// sample weight
-			const float3 w = Lradiance; // * directLight.radianceOverPdf * mis_weight;
-			lighting += w * evalData.bsdf_diffuse;
-			lighting += w * evalData.bsdf_glossy;
-		}
-	}
+            // sample weight
+            const float3 w = Lradiance; // * directLight.radianceOverPdf * mis_weight;
+            lighting.rgb += w * evalData.bsdf_diffuse;
+            lighting.rgb += w * evalData.bsdf_glossy;
+        }
+    }
 
-	for (uint i = 0; i < u_PointLights.LightCount; i++)
-	{
-		uint lightIndex = i;
-		// uint lightIndex = GetPointLightBufferIndex(i, fragCoord);
-		// if (lightIndex == -1)
-		// 	break;
+    for (uint i = 0; i < u_PointLights.LightCount; i++)
+    {
+        uint lightIndex = i;
+        // uint lightIndex = GetPointLightBufferIndex(i, fragCoord);
+        // if (lightIndex == -1)
+        // 	break;
 
-		PointLight light = u_PointLights.Lights[lightIndex];
-		float3 lightVector = (light.Position - material.WorldPosition);
-		if (dot(lightVector, material.Ng) < 0.0) continue;
-		float lightDistance = length(lightVector);
+        PointLight light = u_PointLights.Lights[lightIndex];
+        float3 lightVector = (light.Position - material.WorldPosition);
+        if (dot(lightVector, material.Ng) < 0.0)
+            continue;
+        float lightDistance = length(lightVector);
 
-		if (lightDistance > light.Radius) continue;
+        if (lightDistance > light.Radius)
+            continue;
 
-		float attenuation = clamp(1.0 - (lightDistance * lightDistance) / (light.Radius * light.Radius), 0.0, 1.0);
-		attenuation *= lerp(attenuation, 1.0, light.Falloff);
+        float attenuation = clamp(1.0 - (lightDistance * lightDistance) / (light.Radius * light.Radius), 0.0, 1.0);
+        attenuation *= lerp(attenuation, 1.0, light.Falloff);
 
-		float3 Lradiance = light.Radiance * light.Intensity * attenuation;
+        float3 Lradiance = light.Radiance * light.Intensity * attenuation;
 
-		float3 Li = normalize(light.Position - material.WorldPosition);
-		float visibility = light.CastsShadows ? LightVisibility(seed, shadowRays, material, Li, lightDistance, light.SourceSize, bvh) : 1.0;
+        float3 Li = normalize(light.Position - material.WorldPosition);
+        float visibility = light.CastsShadows
+                               ? LightVisibility(seed, shadowRays, material, Li, lightDistance, light.SourceSize, bvh)
+                               : 1.0;
 
-		// Early out, the light isn't visible from the surface
-		if (visibility <= 0.f) continue;
-		BsdfEvaluateData evalData;
-		evalData.k1 = view;
-		evalData.k2 = normalize(lightVector);
-		evalData.xi = RandomFloat3(seed);
+        // Early out, the light isn't visible from the surface
+        if (visibility <= 0.f)
+            continue;
+        BsdfEvaluateData evalData;
+        evalData.k1 = view;
+        evalData.k2 = normalize(lightVector);
+        evalData.xi = RandomFloat3(seed);
 
-		bsdfEvaluate(evalData, material);
-		if (evalData.pdf > 0.0)
-		{
-			// const float mis_weight = (directLight.pdf == DIRAC) ? 1.0F : directLight.pdf / (directLight.pdf + evalData.pdf);
+        bsdfEvaluate(evalData, material);
+        if (evalData.pdf > 0.0)
+        {
+            // const float mis_weight = (directLight.pdf == DIRAC) ? 1.0F : directLight.pdf / (directLight.pdf +
+            // evalData.pdf);
 
-			// sample weight
-			const float3 w = Lradiance; // * directLight.radianceOverPdf * mis_weight;
-			lighting += w * evalData.bsdf_diffuse;
-			lighting += w * evalData.bsdf_glossy;
-		}
-	}
+            // sample weight
+            const float3 w = Lradiance; // * directLight.radianceOverPdf * mis_weight;
+            lighting.rgb += w * evalData.bsdf_diffuse;
+            lighting.rgb += w * evalData.bsdf_glossy;
+        }
+    }
 
-	for (uint i = 0; i < u_SpotLights.LightCount; i++)
-	{
-		uint lightIndex = i;
-		// uint lightIndex = GetSpotLightBufferIndex(i, fragCoord);
-		// if (lightIndex == -1)
-		// 	break;
+    for (uint i = 0; i < u_SpotLights.LightCount; i++)
+    {
+        uint lightIndex = i;
+        // uint lightIndex = GetSpotLightBufferIndex(i, fragCoord);
+        // if (lightIndex == -1)
+        // 	break;
 
-		SpotLight light = u_SpotLights.Lights[lightIndex];
-		float3 Li = normalize(light.Position - material.WorldPosition);
-		if (dot(Li, material.Ng) < 0.0) continue;
+        SpotLight light = u_SpotLights.Lights[lightIndex];
+        float3 Li = normalize(light.Position - material.WorldPosition);
+        if (dot(Li, material.Ng) < 0.0)
+            continue;
 
-		float lightDistance = length(light.Position - material.WorldPosition);
+        float lightDistance = length(light.Position - material.WorldPosition);
 
-		if (lightDistance > light.Range) continue;
+        if (lightDistance > light.Range)
+            continue;
 
-		float cutoff = cos(radians(light.Angle * 0.5f));
-		float scos = max(dot(Li, light.Direction), cutoff);
-		float rim = (1.0 - scos) / (1.0 - cutoff);
+        float cutoff = cos(radians(light.Angle * 0.5f));
+        float scos = max(dot(Li, light.Direction), cutoff);
+        float rim = (1.0 - scos) / (1.0 - cutoff);
 
-		float attenuation = clamp(1.0 - (lightDistance * lightDistance) / (light.Range * light.Range), 0.0, 1.0);
-		attenuation *= lerp(attenuation, 1.0, light.Falloff);
-		attenuation *= 1.0 - pow(max(rim, 0.001), light.AngleAttenuation);
-		if (attenuation < 0.001) continue;
+        float attenuation = clamp(1.0 - (lightDistance * lightDistance) / (light.Range * light.Range), 0.0, 1.0);
+        attenuation *= lerp(attenuation, 1.0, light.Falloff);
+        attenuation *= 1.0 - pow(max(rim, 0.001), light.AngleAttenuation);
+        if (attenuation < 0.001)
+            continue;
 
-		float3 Lradiance = light.Radiance * light.Intensity * attenuation;
+        float3 Lradiance = light.Radiance * light.Intensity * attenuation;
 
-		float visibility = light.CastsShadows ? LightVisibility(seed, shadowRays, material, Li, lightDistance, light.SourceSize, bvh) : 1.0;
+        float visibility = light.CastsShadows
+                               ? LightVisibility(seed, shadowRays, material, Li, lightDistance,
+                                                 lerp(0.0f, light.SourceSize, (float)light.SoftShadows), bvh)
+                               : 1.0;
 
-		// Early out, the light isn't visible from the surface
-		if (visibility <= 0.f) continue;
-		BsdfEvaluateData evalData;
-		evalData.k1 = view;
-		evalData.k2 = Li;
-		evalData.xi = RandomFloat3(seed);
+        // Early out, the light isn't visible from the surface
+        if (visibility <= 0.f)
+            continue;
+        BsdfEvaluateData evalData;
+        evalData.k1 = view;
+        evalData.k2 = Li;
+        evalData.xi = RandomFloat3(seed);
 
-		bsdfEvaluate(evalData, material);
-		if (evalData.pdf > 0.0)
-		{
-			// const float mis_weight = (directLight.pdf == DIRAC) ? 1.0F : directLight.pdf / (directLight.pdf + evalData.pdf);
+        bsdfEvaluate(evalData, material);
+        if (evalData.pdf > 0.0)
+        {
+            // const float mis_weight = (directLight.pdf == DIRAC) ? 1.0F : directLight.pdf / (directLight.pdf +
+            // evalData.pdf);
 
-			// sample weight
-			const float3 w = Lradiance; // * directLight.radianceOverPdf * mis_weight;
-			lighting += w * evalData.bsdf_diffuse;
-			lighting += w * evalData.bsdf_glossy;
-		}
-	}
+            // sample weight
+            const float3 w = Lradiance; // * directLight.radianceOverPdf * mis_weight;
+            lighting.rgb += w * evalData.bsdf_diffuse;
+            lighting.rgb += w * evalData.bsdf_glossy;
+        }
+    }
 
-	return (lighting);
+    return (lighting);
 }

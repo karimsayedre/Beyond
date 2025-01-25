@@ -681,10 +681,10 @@ namespace Beyond {
 		return m_DescriptorSets.at(rootSignature).begin()->first;
 	}
 
-	std::vector<VkDescriptorSet> BindlessDescriptorSetManager::GetDescriptorSets(Ref<VulkanShader> shader, uint32_t frameIndex) const
+	std::vector<VkDescriptorSet> BindlessDescriptorSetManager::GetDescriptorSets(RootSignature rootSignature, uint32_t frameIndex) const
 	{
 		BEY_CORE_ASSERT(!m_DescriptorSets.empty());
-		const auto& shaderSets = m_DescriptorSets.at(shader->GetRootSignature());
+		const auto& shaderSets = m_DescriptorSets.at(rootSignature);
 
 		std::vector<VkDescriptorSet> sets;
 		sets.reserve(shaderSets.size());

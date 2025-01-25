@@ -31,7 +31,7 @@ namespace Beyond {
 	// The fewer, the better
 	enum class RootSignature
 	{
-		None, Draw, RaytracingHLSL, DDGI, DDGICompute, DDGIRaytrace, ComputeGLSL, ComputeHLSL
+		None, Draw, RaytracingHLSL, DDGIVis, DDGICompute, DDGIRaytrace, ComputeGLSL, ComputeHLSL
 	};
 
 	inline bool IsRootSignatureHLSL(RootSignature rootSignature)
@@ -39,7 +39,7 @@ namespace Beyond {
 		switch (rootSignature)
 		{
 			case RootSignature::ComputeHLSL:
-			case RootSignature::DDGI:
+			case RootSignature::DDGIVis:
 			case RootSignature::DDGIRaytrace:
 			case RootSignature::DDGICompute:
 			case RootSignature::RaytracingHLSL: return true;

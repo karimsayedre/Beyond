@@ -66,6 +66,13 @@ namespace Beyond {
 		m_DescriptorInfo.offset = 0;
 		m_DescriptorInfo.range = m_Size;
 
+		//if (!m_Specification.GPUOnly)
+		{
+			VmaAllocationInfo info{};
+			vmaGetAllocationInfo(VulkanAllocator::GetVMAAllocator(), m_MemoryAlloc, &info);
+			m_UploadMemory = info.deviceMemory;
+		}
+
 #if 0
 		VkBufferCreateInfo stagingBufferInfo = {};
 		stagingBufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;

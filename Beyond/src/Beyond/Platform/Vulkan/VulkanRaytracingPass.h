@@ -23,6 +23,7 @@ namespace Beyond {
 		virtual void SetInput(const eastl::string&name, Ref<Texture2D> texture) override;
 		virtual void SetInput(const eastl::string&name, Ref<TextureCube> textureCube) override;
 		virtual void SetInput(const eastl::string&name, Ref<Image2D> image) override;
+		virtual void SetInput(const eastl::string& name, Ref<ImageView> image, uint32_t index) override;
 		virtual void SetInput(const eastl::string&name, Ref<Sampler> sampler) override;
 		virtual void SetInput(const eastl::string&name, Ref<Sampler> sampler, uint32_t index) override;
 
@@ -43,6 +44,7 @@ namespace Beyond {
 
 		bool IsInputValid(eastl::string_view name) const;
 		const RenderPassInputDeclaration* GetInputDeclaration(eastl::string_view name) const;
+
 	private:
 		RaytracingPassSpecification m_Specification;
 		Ref<DescriptorSetManager> m_DescriptorSetManager;

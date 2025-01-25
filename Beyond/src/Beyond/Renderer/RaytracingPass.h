@@ -34,6 +34,7 @@ namespace Beyond {
 		virtual void SetInput(const eastl::string& name, Ref<Texture2D> texture) = 0;
 		virtual void SetInput(const eastl::string& name, Ref<TextureCube> textureCube) = 0;
 		virtual void SetInput(const eastl::string& name, Ref<Image2D> image) = 0;
+		virtual void SetInput(const eastl::string& name, Ref<ImageView> image, uint32_t index = 0) = 0;
 		virtual void SetInput(const eastl::string& name, Ref<Sampler> sampler) = 0;
 		virtual void SetInput(const eastl::string& name, Ref<Sampler> sampler, uint32_t index) = 0;
 

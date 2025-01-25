@@ -16,7 +16,7 @@ from colorama import Style
 
 VULKAN_SDK = os.environ.get('VULKAN_SDK')
 BEYOND_REQUIRED_VULKAN_VERSION = '1.3.' # Any 1.3 version is fine
-BEYOND_INSTALL_VULKAN_VERSION = '1.3.268.0' # Specifically install this one if no 1.3 version is present
+BEYOND_INSTALL_VULKAN_VERSION = '1.3.296.0' # Specifically install this one if no 1.3 version is present
 VULKAN_SDK_INSTALLER_URL = f'https://sdk.lunarg.com/sdk/download/{BEYOND_INSTALL_VULKAN_VERSION}/windows/VulkanSDK-{BEYOND_INSTALL_VULKAN_VERSION}-Installer.exe'
 VULKAN_SDK_LOCAL_PATH = 'Beyond/vendor/VulkanSDK'
 VULKAN_SDK_EXE_PATH = f'{VULKAN_SDK_LOCAL_PATH}/VulkanSDK.exe'

@@ -593,7 +593,8 @@ namespace Beyond {
 		else
 		{
 			UnavailableInputResources[eastl::string(name)].Set(image, name, index);
-			BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] Input Image {} Index: {} not found", m_Specification.DebugName, name, index);
+			if (name != "Bey_DebugImage")
+				BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] Input Image {} Index: {} not found", m_Specification.DebugName, name, index);
 		}
 	}
 
@@ -686,7 +687,7 @@ namespace Beyond {
 				const auto& resource = setInputResources.at(binding);
 				if (!IsCompatibleInput(resource.Type, wd.descriptorType))
 				{
-					BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] Required resource is wrong type! {} but needs {}", m_Specification.DebugName, resource.Type, wd.descriptorType);
+					BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] Required resource named: {} is wrong type! {} but needs {}", m_Specification.DebugName, resource.Name, resource.Type, wd.descriptorType);
 					return false;
 				}
 

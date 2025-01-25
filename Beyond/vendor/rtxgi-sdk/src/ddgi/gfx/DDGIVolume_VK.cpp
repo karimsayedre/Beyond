@@ -1261,32 +1261,32 @@ namespace rtxgi
             //vkDestroyPipeline(m_device, m_probeVariabilityExtraReductionPipeline, nullptr);
 
             // Texture Arrays
-            vkDestroyImage(m_device, m_probeRayData, nullptr);
-            vkDestroyImageView(m_device, m_probeRayDataView, nullptr);
-            vkFreeMemory(m_device, m_probeRayDataMemory, nullptr);
+            //vkDestroyImage(m_device, m_probeRayData, nullptr);
+            //vkDestroyImageView(m_device, m_probeRayDataView, nullptr);
+            //vkFreeMemory(m_device, m_probeRayDataMemory, nullptr);
 
-            vkDestroyImage(m_device, m_probeIrradiance, nullptr);
-            vkDestroyImageView(m_device, m_probeIrradianceView, nullptr);
-            vkFreeMemory(m_device, m_probeIrradianceMemory, nullptr);
+            //vkDestroyImage(m_device, m_probeIrradiance, nullptr);
+            //vkDestroyImageView(m_device, m_probeIrradianceView, nullptr);
+            //vkFreeMemory(m_device, m_probeIrradianceMemory, nullptr);
 
-            vkDestroyImage(m_device, m_probeDistance, nullptr);
-            vkDestroyImageView(m_device, m_probeDistanceView, nullptr);
-            vkFreeMemory(m_device, m_probeDistanceMemory, nullptr);
+            //vkDestroyImage(m_device, m_probeDistance, nullptr);
+            //vkDestroyImageView(m_device, m_probeDistanceView, nullptr);
+            //vkFreeMemory(m_device, m_probeDistanceMemory, nullptr);
 
-            vkDestroyImage(m_device, m_probeData, nullptr);
-            vkDestroyImageView(m_device, m_probeDataView, nullptr);
-            vkFreeMemory(m_device, m_probeDataMemory, nullptr);
+            //vkDestroyImage(m_device, m_probeData, nullptr);
+            //vkDestroyImageView(m_device, m_probeDataView, nullptr);
+            //vkFreeMemory(m_device, m_probeDataMemory, nullptr);
 
-            vkDestroyImage(m_device, m_probeVariability, nullptr);
-            vkDestroyImageView(m_device, m_probeVariabilityView, nullptr);
-            vkFreeMemory(m_device, m_probeVariabilityMemory, nullptr);
+            //vkDestroyImage(m_device, m_probeVariability, nullptr);
+            //vkDestroyImageView(m_device, m_probeVariabilityView, nullptr);
+            //vkFreeMemory(m_device, m_probeVariabilityMemory, nullptr);
 
-            vkDestroyImage(m_device, m_probeVariabilityAverage, nullptr);
-            vkDestroyImageView(m_device, m_probeVariabilityAverageView, nullptr);
-            vkFreeMemory(m_device, m_probeVariabilityAverageMemory, nullptr);
+            //vkDestroyImage(m_device, m_probeVariabilityAverage, nullptr);
+            //vkDestroyImageView(m_device, m_probeVariabilityAverageView, nullptr);
+            //vkFreeMemory(m_device, m_probeVariabilityAverageMemory, nullptr);
 
-            vkDestroyBuffer(m_device, m_probeVariabilityReadback, nullptr);
-            vkFreeMemory(m_device, m_probeVariabilityReadbackMemory, nullptr);
+            //vkDestroyBuffer(m_device, m_probeVariabilityReadback, nullptr);
+            //vkFreeMemory(m_device, m_probeVariabilityReadbackMemory, nullptr);
 
             //m_descriptorSetLayout = nullptr;
             //m_descriptorPool = nullptr;

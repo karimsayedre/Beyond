@@ -1232,7 +1232,7 @@ namespace Beyond::UI {
 	template<typename TEnum, typename TUnderlying = int32_t>
 	static bool PropertyDropdown(const char* label, const char** options, int32_t optionCount, TEnum& selected, const char* helpText = "")
 	{
-		TUnderlying selectedIndex = (TUnderlying)selected;
+		TUnderlying selectedIndex = static_cast<TUnderlying>(selected);
 
 		const char* current = options[selectedIndex];
 		ShiftCursor(10.0f, 9.0f);
@@ -1249,17 +1249,54 @@ namespace Beyond::UI {
 		ImGui::PushItemWidth(-1);
 
 		bool modified = false;
+		ImGui::BeginGroup();
 
-		const eastl::string id = "##" + eastl::string(label);
-		if (UI::BeginCombo(id.c_str(), current))
+
+		// Generate unique IDs for this instance's states
+		ImGuiID id = ImGui::GetID(label);
+		ImGuiID hoverId = ImGui::GetID((eastl::string(label) + "_hover").c_str());
+
+		// Get stored state using ImGui's storage
+		ImGuiStorage* storage = ImGui::GetStateStorage();
+		int currentItem = storage->GetInt(id, 0);
+		bool wasHovered = storage->GetBool(hoverId, false);
+
+		const eastl::string labelID = "##" + eastl::string(label);
+		bool dropdownOpen = UI::BeginCombo(labelID.c_str(), current);
+		ImGui::SetItemUsingMouseWheel();
+
+
+		bool isHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+
+		// Check for scroll input when the dropdown is hovered
+		if (isHovered && wasHovered)
 		{
+			float wheelDelta = ImGui::GetIO().MouseWheel;
+			if (wheelDelta != 0.0f)
+			{
+				// Prevent the parent container from scrolling
+
+				selectedIndex += (wheelDelta > 0.0f) ? -1 : 1; // Scroll up decreases index, scroll down increases
+				selectedIndex = (selectedIndex + optionCount) % optionCount; // Wrap around
+				selected = static_cast<TEnum>(selectedIndex);
+				modified = true;
+			}
+		}
+
+		storage->SetBool(hoverId, isHovered);
+
+
+		if (dropdownOpen)
+		{
+
+
 			for (int i = 0; i < optionCount; i++)
 			{
 				const bool is_selected = (current == options[i]);
 				if (ImGui::Selectable(options[i], is_selected))
 				{
 					current = options[i];
-					selected = (TEnum)i;
+					selected = static_cast<TEnum>(i);
 					modified = true;
 				}
 				if (is_selected)
@@ -1272,8 +1309,12 @@ namespace Beyond::UI {
 		ImGui::NextColumn();
 		Draw::Underline();
 
+		ImGui::EndGroup();
+
+
 		return modified;
 	}
+
 
 	static bool PropertyDropdown(const char* label, const char** options, int32_t optionCount, int32_t* selected, const char* helpText = "")
 	{

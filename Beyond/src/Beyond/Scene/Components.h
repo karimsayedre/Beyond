@@ -29,7 +29,6 @@
 // 5) ditto Scene::CreatePrefabEntity()
 // 6) ditto Prefab::CreatePrefabFromEntity()
 // 7) ditto Scene::CopyTo()
-// 8) If the component is to be accessible from C# go to https://docs.hazelengine.com/Scripting/Extending/ExposingComponents.html and follow the steps outlined there
 
 
 namespace Beyond {

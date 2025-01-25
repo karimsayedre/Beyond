@@ -1,3 +1,17 @@
 {
-    "slang.format.clangFormatLocation": ""
+    "slang.additionalSearchPaths": [
+        "${workspaceFolder}/Include/Common/",
+        "${workspaceFolder}/Include/HLSL/",
+    ],
+    "files.associations": {
+        "*.hlslh": "slang",
+        "*.hlsl": "slang",
+        "*.slh": "slang",
+        "*.glslh": "glsl",
+        "xtr1common": "cpp"
+    },
+    "slang.format.clangFormatStyle": "file:${workspaceFolder}/.clang-format",
+    "clang-format.style": "file",
+    "clang-format.fallbackStyle": "none",
+    "clang-format.configurationPath": "${workspaceFolder}/.clang-format"
 }

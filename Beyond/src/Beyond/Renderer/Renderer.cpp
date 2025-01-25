@@ -201,8 +201,6 @@ namespace Beyond {
 
 	void Renderer::LoadDDGIShaders()
 	{
-
-
 		std::vector<std::pair<std::wstring, std::wstring>> defines{
 			{ L"HLSL", L"1" },
 			{ L"__spirv__", L"1" },
@@ -240,15 +238,15 @@ namespace Beyond {
 		probeShaderDefines.emplace_back(L"RTXGI_PUSH_CONSTS_FIELD_DDGI_REDUCTION_INPUT_SIZE_X_NAME", L"ddgi_reductionInputSizeX");
 		probeShaderDefines.emplace_back(L"RTXGI_PUSH_CONSTS_FIELD_DDGI_REDUCTION_INPUT_SIZE_Y_NAME", L"ddgi_reductionInputSizeY");
 		probeShaderDefines.emplace_back(L"RTXGI_PUSH_CONSTS_FIELD_DDGI_REDUCTION_INPUT_SIZE_Z_NAME", L"ddgi_reductionInputSizeZ");*/
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/DDGIIrradiance.hlsl", false, false, true, L"main", L"cs_6_6", probeShaderDefines);
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/DDGITexVis.hlsl", false, false, true, L"main", L"cs_6_6", probeShaderDefines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/DDGIIrradiance.hlsl", false, false, true, L"main", L"cs_6_6", probeShaderDefines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/DDGITexVis.hlsl", false, false, true, L"main", L"cs_6_6", probeShaderDefines);
 
 
-
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/DDGIVis.hlsl", false, false, false, L"main", L"lib_6_3", defines);
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/DDGIProbeUpdate.hlsl", false, false, false, L"main", L"lib_6_3", defines);
 
 		Renderer::GetShaderLibrary()->Load(RootSignature::DDGIRaytrace, "Resources/Shaders/DDGIRaytrace.hlsl", false, false, false, L"main", L"lib_6_3", probeShaderDefines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGIVis, "Resources/Shaders/DDGIVis.hlsl", false, false, false, L"main", L"lib_6_3", defines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/DDGIProbeUpdate.hlsl", false, false, false, L"main", L"lib_6_3", defines);
+
 		{
 			std::vector<std::pair<std::wstring, std::wstring>> probeShaderDefines(defines);
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_BLEND_RADIANCE", L"1");
@@ -258,7 +256,7 @@ namespace Beyond {
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_BLEND_RAYS_PER_PROBE", L"256");
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_BLEND_SCROLL_SHARED_MEMORY", L"false");
 
-			Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ProbeBlendingIrradianceCS.hlsl", false, false, true, L"DDGIProbeBlendingCS", L"cs_6_6", probeShaderDefines);
+			Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ProbeBlendingIrradianceCS.hlsl", false, false, true, L"DDGIProbeBlendingCS", L"cs_6_6", probeShaderDefines);
 		}
 
 		{
@@ -269,22 +267,22 @@ namespace Beyond {
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_BLEND_SHARED_MEMORY", L"1");
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_BLEND_RAYS_PER_PROBE", L"256");
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_BLEND_SCROLL_SHARED_MEMORY", L"false");
-			Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ProbeBlendingDistanceCS.hlsl", false, false, true, L"DDGIProbeBlendingCS", L"cs_6_6", probeShaderDefines);
+			Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ProbeBlendingDistanceCS.hlsl", false, false, true, L"DDGIProbeBlendingCS", L"cs_6_6", probeShaderDefines);
 		}
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ProbeRelocationCS.hlsl", false, false, true, L"DDGIProbeRelocationCS", L"cs_6_6", defines);
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ProbeRelocationCS.hlsl", false, false, true, L"DDGIProbeRelocationResetCS", L"cs_6_6", defines);
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ProbeClassificationCS.hlsl", false, false, true, L"DDGIProbeClassificationCS", L"cs_6_6", defines);
-		Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ProbeClassificationCS.hlsl", false, false, true, L"DDGIProbeClassificationResetCS", L"cs_6_6", defines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ProbeRelocationCS.hlsl", false, false, true, L"DDGIProbeRelocationCS", L"cs_6_6", defines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ProbeRelocationCS.hlsl", false, false, true, L"DDGIProbeRelocationResetCS", L"cs_6_6", defines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ProbeClassificationCS.hlsl", false, false, true, L"DDGIProbeClassificationCS", L"cs_6_6", defines);
+		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ProbeClassificationCS.hlsl", false, false, true, L"DDGIProbeClassificationResetCS", L"cs_6_6", defines);
 
 		{
 			std::vector<std::pair<std::wstring, std::wstring>> probeShaderDefines(defines);
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_PROBE_NUM_INTERIOR_TEXELS", L"6");
-			Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ReductionCS.hlsl", false, false, true, L"DDGIReductionCS", L"cs_6_6", probeShaderDefines);
+			Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ReductionCS.hlsl", false, false, true, L"DDGIReductionCS", L"cs_6_6", probeShaderDefines);
 		}
 		{
 			std::vector<std::pair<std::wstring, std::wstring>> probeShaderDefines(defines);
 			probeShaderDefines.emplace_back(L"RTXGI_DDGI_PROBE_NUM_INTERIOR_TEXELS", L"6");
-			Renderer::GetShaderLibrary()->Load(RootSignature::DDGI, "Resources/Shaders/RTXGI/ddgi/ReductionCS.hlsl", false, false, true, L"DDGIExtraReductionCS", L"cs_6_6", probeShaderDefines);
+			Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/RTXGI/ddgi/ReductionCS.hlsl", false, false, true, L"DDGIExtraReductionCS", L"cs_6_6", probeShaderDefines);
 		}
 	}
 
@@ -315,7 +313,7 @@ namespace Beyond {
 			Renderer::GetShaderLibrary()->Load(RootSignature::RaytracingHLSL, "Resources/Shaders/Raytracing.hlsl");
 		}
 
-		//LoadDDGIShaders();
+		LoadDDGIShaders();
 
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/PBR_Transparent.glsl");
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/PBR_Static.glsl");
@@ -741,9 +739,9 @@ namespace Beyond {
 		s_RendererAPI->ClearImage(renderCommandBuffer, image, clearValue, subresourceRange);
 	}
 
-	void Renderer::CopyImage(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<Image2D> sourceImage, Ref<Image2D> destinationImage)
+	void Renderer::CopyImage(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<Image2D> destinationImage, Ref<Image2D> sourceImage)
 	{
-		s_RendererAPI->CopyImage(renderCommandBuffer, sourceImage, destinationImage);
+		s_RendererAPI->CopyImage(renderCommandBuffer, destinationImage, sourceImage);
 	}
 
 	void Renderer::BlitDepthImage(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<Image2D> sourceImage, Ref<Image2D> destinationImage)

@@ -2,75 +2,75 @@
 
 struct DirectionalLight
 {
-	float3 Direction; // Offset = 0
-	float Intensity;  // Offset = 12
+    float3 Direction; // Offset = 0
+    float Intensity;  // Offset = 12
 
-	float3 Radiance; // Offset = 16
-	float LightSize; // Offset = 28
+    float3 Radiance; // Offset = 16
+    float LightSize; // Offset = 28
 
-	bool SoftShadows;   // Offset = 32
-	bool CastsShadows;  // Offset = 36
-	float ShadowAmount; // Offset = 40
-	float Padding;      // Offset = 44
+    bool SoftShadows;   // Offset = 32
+    bool CastsShadows;  // Offset = 36
+    float ShadowAmount; // Offset = 40
+    float Padding;      // Offset = 44
 };
 
 struct SceneData_t
 {
-	DirectionalLight DirectionalLights;
-	float3 CameraPosition; // Offset = 44 + 8 (Padding)
-	uint FrameIndex;
-	float3 PrevCameraPosition;
-	float MipBias;
-	float EnvironmentMapLod;
-	float EnvironmentMapIntensity;
-	float2 Padding2;
+    DirectionalLight DirectionalLights;
+    float3 CameraPosition; // Offset = 44 + 8 (Padding)
+    uint FrameIndex;
+    float3 PrevCameraPosition;
+    float MipBias;
+    float EnvironmentMapLod;
+    float EnvironmentMapIntensity;
+    float2 Padding2;
 };
 
 [[vk::binding(10, 1)]] ConstantBuffer<SceneData_t> u_SceneData;
 
 struct PointLight
 {
-	float3 Position;
-	float Intensity;
-	float3 Radiance;
-	float Radius;
-	float Falloff;
-	float SourceSize;
-	bool CastsShadows;
-	bool SoftShadows;
+    float3 Position;
+    float Intensity;
+    float3 Radiance;
+    float Radius;
+    float Falloff;
+    float SourceSize;
+    bool CastsShadows;
+    bool SoftShadows;
 };
 
 struct PointLightData
 {
-	uint LightCount;
-	PointLight Lights[1000];
+    uint LightCount;
+    PointLight Lights[1000];
 };
 [[vk::binding(9, 1)]] ConstantBuffer<PointLightData> u_PointLights;
 
 struct SpotLight
 {
-	float3 Position;
-	float Intensity;
+    float3 Position;
+    float Intensity;
 
-	float3 Radiance;
-	float Range;
+    float3 Radiance;
+    float Range;
 
-	float3 Direction;
-	float Falloff;
+    float3 Direction;
+    float Falloff;
 
-	float3 Padding;
-	float SourceSize;
+    float3 Padding;
+    float SourceSize;
 
-	float Angle;
-	float AngleAttenuation;
-	bool CastsShadows;
-	bool SoftShadows;
+    float Angle;
+    float AngleAttenuation;
+    bool CastsShadows;
+    bool SoftShadows;
 };
 
 struct SpotLightData
 {
-	uint LightCount;
-	SpotLight Lights[800];
+    uint LightCount;
+    SpotLight Lights[800];
 };
 
 [[vk::binding(8, 1)]] ConstantBuffer<SpotLightData> u_SpotLights;
@@ -87,42 +87,43 @@ struct SpotLightData
 
 struct Camera
 {
-	float4x4 ReprojectionMatrix;
-	float4x4 PrevViewProjectionMatrix;
-	float4x4 ViewProjectionMatrix;
-	float4x4 InverseViewProjectionMatrix;
-	float4x4 ProjectionMatrix;
-	float4x4 InverseProjectionMatrix;
-	float4x4 ViewMatrix;
-	float4x4 InverseViewMatrix;
-	float4x4 PrevViewMatrix;
-	float2 NDCToViewMul;
-	float2 NDCToViewAdd;
-	float2 DepthUnpackConsts;
-	float2 CameraTanHalfFOV;
-	float2 CurrentJitter;
-	float2 PreviousJitter;
-	float2 ClipToRenderTargetScale;
+    float4x4 ReprojectionMatrix;
+    float4x4 PrevViewProjectionMatrix;
+    float4x4 ViewProjectionMatrix;
+    float4x4 InverseViewProjectionMatrix;
+    float4x4 ProjectionMatrix;
+    float4x4 InverseProjectionMatrix;
+    float4x4 ViewMatrix;
+    float4x4 InverseViewMatrix;
+    float4x4 PrevViewMatrix;
+    float2 NDCToViewMul;
+    float2 NDCToViewAdd;
+    float2 DepthUnpackConsts;
+    float2 CameraTanHalfFOV;
+    float2 CurrentJitter;
+    float2 PreviousJitter;
+    float2 ClipToRenderTargetScale;
 };
 [[vk::binding(0, 2)]] ConstantBuffer<Camera> u_Camera;
 
 struct ScreenData
 {
-	float2 InvFullResolution;
-	float2 FullResolution;
-	float2 InvHalfResolution;
-	float2 HalfResolution;
+    float2 InvFullResolution;
+    float2 FullResolution;
+    float2 InvHalfResolution;
+    float2 HalfResolution;
+    float2 HZBUVFactor;
 };
 [[vk::binding(2, 2)]] ConstantBuffer<ScreenData> u_ScreenData;
 
 struct TransformData
 {
-	float4 ModelMatrix[3];
-	float4 PrevModelMatrix[3];
+    float4 ModelMatrix[3];
+    float4 PrevModelMatrix[3];
 };
 
 struct Transforms
 {
-	TransformData Transform[5000];
+    TransformData Transform[5000];
 };
 [[vk::binding(5, 2)]] StructuredBuffer<Transforms> r_Transforms;

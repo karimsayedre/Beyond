@@ -77,8 +77,6 @@ namespace Beyond {
 
 			RendererDataUB.SoftShadows = tiering.ShadowQuality == ShadowQualitySetting::High;
 
-			m_Options.EnableGTAO = false;
-
 			switch (tiering.AOQuality)
 			{
 				case Tiering::Renderer::AmbientOcclusionQualitySetting::High:
@@ -116,10 +114,6 @@ namespace Beyond {
 					m_SSROptions.HalfRes = false;
 					break;
 			}
-
-
-			// OVERRIDE
-			m_Options.EnableGTAO = false;
 		}
 
 		m_CommandBuffers.reserve(CmdBuffers::Count);
@@ -183,7 +177,7 @@ namespace Beyond {
 		ImageSpecification imageSpec;
 		imageSpec.Usage = ImageUsage::Storage;
 		imageSpec.Format = ImageFormat::B10G11R11UFLOAT;
-		imageSpec.DebugName = "DebugImage";
+		imageSpec.DebugName = "Bey_DebugImage";
 		m_DebugImage = Image2D::Create(imageSpec);
 		m_DebugImage->Invalidate();
 
@@ -326,6 +320,7 @@ namespace Beyond {
 			pipelineSpec.DebugName = "DirShadowPass";
 			pipelineSpec.Shader = shadowPassShader;
 			pipelineSpec.DepthOperator = DepthCompareOperator::LessOrEqual;
+			pipelineSpec.BackfaceCulling = false;
 			pipelineSpec.Layout = vertexLayout;
 			//pipelineSpec.InstanceLayout = instanceLayout;
 
@@ -390,6 +385,7 @@ namespace Beyond {
 			pipelineSpec.Shader = shadowPassShader;
 			pipelineSpec.TargetFramebuffer = Framebuffer::Create(framebufferSpec);
 			pipelineSpec.DepthOperator = DepthCompareOperator::LessOrEqual;
+			pipelineSpec.BackfaceCulling = false;
 
 			pipelineSpec.Layout = vertexLayout;
 			//pipelineSpec.InstanceLayout = {
@@ -477,6 +473,7 @@ namespace Beyond {
 				preDepthFramebufferSpec.DebugName = "PreDepth-Opaque";
 				//Linear depth, reversed device depth
 				preDepthFramebufferSpec.Attachments = { ImageFormat::RG16F, ImageFormat::DEPTH32F };
+				//preDepthFramebufferSpec.Attachments.Attachments[1].Storage = true;
 				preDepthFramebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 				preDepthFramebufferSpec.DepthClearValue = 0.0f;
 				preDepthFramebufferSpec.Transfer = true;
@@ -545,6 +542,28 @@ namespace Beyond {
 				m_PreDepthTransparentPass->Bake();
 			}
 
+			// Hierarchical Z buffer
+			{
+				TextureSpecification spec;
+				spec.Format = ImageFormat::RED32F;
+				spec.SamplerWrap = TextureWrap::ClampToEdge;
+				spec.SamplerFilter = TextureFilter::Nearest;
+				spec.Compress = false;
+				spec.DebugName = "HierarchicalZ";
+
+				m_HierarchicalDepthTexture.Texture = Texture2D::Create(spec);
+
+				Ref<Shader> shader = Renderer::GetShaderLibrary()->Get("HZB");
+
+				ComputePassSpecification hdPassSpec;
+				hdPassSpec.DebugName = "HierarchicalDepth";
+				hdPassSpec.Pipeline = PipelineCompute::Create(shader);
+				m_HierarchicalDepthPass = ComputePass::Create(hdPassSpec);
+
+				BEY_CORE_VERIFY(m_HierarchicalDepthPass->Validate());
+				m_HierarchicalDepthPass->Bake();
+			}
+
 			// Geometry
 			{
 				/*ImageSpecification imageSpec;
@@ -557,13 +576,13 @@ namespace Beyond {
 				m_GeometryPassColorAttachmentImage->Invalidate();*/
 
 				FramebufferSpecification geoFramebufferSpec;
-				geoFramebufferSpec.Attachments = { ImageFormat::B10G11R11UFLOAT, ImageFormat::A2B10R11G11UNorm, ImageFormat::RGBA, ImageFormat::RGBA, ImageFormat::DEPTH32F };
+				geoFramebufferSpec.Attachments = { ImageFormat::B10G11R11UFLOAT, ImageFormat::B10G11R11UFLOAT, ImageFormat::RGBA, ImageFormat::RGBA, ImageFormat::DEPTH32F };
 				geoFramebufferSpec.ExistingImages[4] = m_PreDepthPass->GetDepthOutput();
 				geoFramebufferSpec.Transfer = true;
 
 				// Don't clear primary color attachment (skybox pass writes into it)
 				geoFramebufferSpec.Attachments.Attachments[0].LoadOp = AttachmentLoadOp::Load;
-				geoFramebufferSpec.Attachments.Attachments[1].LoadOp = AttachmentLoadOp::Load;
+				//geoFramebufferSpec.Attachments.Attachments[1].LoadOp = AttachmentLoadOp::Load;
 				// Don't blend with luminance in the alpha channel.
 				geoFramebufferSpec.Attachments.Attachments[1].Blend = false;
 				geoFramebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -617,7 +636,7 @@ namespace Beyond {
 			{
 				FramebufferSpecification framebufferSpec;
 				framebufferSpec.DebugName = "SelectedGeometry";
-				framebufferSpec.Attachments = { ImageFormat::A2B10R11G11UNorm, ImageFormat::Depth };
+				framebufferSpec.Attachments = { ImageFormat::B10G11R11UFLOAT, ImageFormat::Depth };
 				framebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 				framebufferSpec.DepthClearValue = 1.0f;
 
@@ -777,7 +796,7 @@ namespace Beyond {
 					m_RaytracingImage = Image2D::Create(imageSpec);
 					m_RaytracingImage->Invalidate();
 
-					imageSpec.Format = ImageFormat::A2B10R11G11UNorm;
+					imageSpec.Format = ImageFormat::B10G11R11UFLOAT;
 					imageSpec.DebugName = "RaytracingNormalsStorageImage";
 					m_RaytracingNormalsImage = Image2D::Create(imageSpec);
 					m_RaytracingNormalsImage->Invalidate();
@@ -822,7 +841,6 @@ namespace Beyond {
 						m_RayTracingRenderPass->SetInput("objDescs", m_SBSObjectSpecs);
 						m_RayTracingRenderPass->SetInput("materials", m_SBSMaterialBuffer);
 						m_RayTracingRenderPass->SetInput("TLAS", m_SceneTLAS);
-						m_RayTracingRenderPass->SetInput("r_Transforms", m_SBSTransforms);
 
 
 						m_RayTracingRenderPass->SetInput("u_PointLights", m_UBSPointLights);
@@ -831,7 +849,7 @@ namespace Beyond {
 						//m_RayTracingRenderPass->SetInput("s_VisiblePointLightIndicesBuffer", m_SBSVisiblePointLightIndicesBuffer);
 						//m_RayTracingRenderPass->SetInput("s_VisibleSpotLightIndicesBuffer", m_SBSVisibleSpotLightIndicesBuffer);
 
-						m_RayTracingRenderPass->SetInput("DebugImage", m_DebugImage);
+						m_RayTracingRenderPass->SetInput("Bey_DebugImage", m_DebugImage);
 
 						//m_RayTracingRenderPass->SetInput("u_RendererData", m_UBSRendererData);
 
@@ -869,8 +887,6 @@ namespace Beyond {
 						m_PathTracingRenderPass->SetInput("objDescs", m_SBSObjectSpecs);
 						m_PathTracingRenderPass->SetInput("materials", m_SBSMaterialBuffer);
 						m_PathTracingRenderPass->SetInput("TLAS", m_SceneTLAS);
-						m_PathTracingRenderPass->SetInput("u_ScreenData", m_UBSScreenData);
-						m_PathTracingRenderPass->SetInput("r_Transforms", m_SBSTransforms);
 
 						m_PathTracingRenderPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
 						m_PathTracingRenderPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
@@ -883,7 +899,7 @@ namespace Beyond {
 						//m_PathTracingRenderPass->SetInput("s_VisiblePointLightIndicesBuffer", m_SBSVisiblePointLightIndicesBuffer);
 						//m_PathTracingRenderPass->SetInput("s_VisibleSpotLightIndicesBuffer", m_SBSVisibleSpotLightIndicesBuffer);
 
-						m_PathTracingRenderPass->SetInput("DebugImage", m_DebugImage);
+						m_PathTracingRenderPass->SetInput("Bey_DebugImage", m_DebugImage);
 
 
 						//m_PathTracingRenderPass->SetInput("u_RendererData", m_UBSRendererData);
@@ -924,7 +940,6 @@ namespace Beyond {
 					m_RestirRenderPass->SetInput("materials", m_SBSMaterialBuffer);
 					m_RestirRenderPass->SetInput("TLAS", m_SceneTLAS);
 					m_RestirRenderPass->SetInput("o_PrimaryHitT", m_RaytracingPrimaryHitT);
-					m_RestirRenderPass->SetInput("r_Transforms", m_SBSTransforms);
 
 					m_RestirRenderPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
 					m_RestirRenderPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
@@ -937,7 +952,7 @@ namespace Beyond {
 					//m_RestirRenderPass->SetInput("s_VisiblePointLightIndicesBuffer", m_SBSVisiblePointLightIndicesBuffer);
 					//m_RestirRenderPass->SetInput("s_VisibleSpotLightIndicesBuffer", m_SBSVisibleSpotLightIndicesBuffer);
 
-					m_RestirRenderPass->SetInput("DebugImage", m_DebugImage);
+					m_RestirRenderPass->SetInput("Bey_DebugImage", m_DebugImage);
 
 
 					//m_RestirRenderPass->SetInput("u_RendererData", m_UBSRendererData);
@@ -988,7 +1003,7 @@ namespace Beyond {
 					//m_RestirCompRenderPass->SetInput("s_VisiblePointLightIndicesBuffer", m_SBSVisiblePointLightIndicesBuffer);
 					//m_RestirCompRenderPass->SetInput("s_VisibleSpotLightIndicesBuffer", m_SBSVisibleSpotLightIndicesBuffer);
 
-					m_RestirCompRenderPass->SetInput("DebugImage", m_DebugImage);
+					m_RestirCompRenderPass->SetInput("Bey_DebugImage", m_DebugImage);
 
 
 					m_RestirCompRenderPass->SetInput("u_ScreenData", m_UBSScreenData);
@@ -1005,100 +1020,89 @@ namespace Beyond {
 				}
 
 
-				//// DDGI
-				//{
-				//	Ref<Shader> shader = Renderer::GetShaderLibrary()->Get("DDGIRaytrace");
+				// DDGI
+				{
+					Ref<Shader> shader = Renderer::GetShaderLibrary()->Get("DDGIRaytrace");
 
-				//	RaytracingPassSpecification passSpecification;
-				//	passSpecification.DebugName = "DDGI Raytracing";
-				//	passSpecification.Pipeline = RaytracingPipeline::Create(shader);
-				//	m_DDGIRayTracingRenderPass = RaytracingPass::Create(passSpecification);
+					RaytracingPassSpecification passSpecification;
+					passSpecification.DebugName = "DDGI Raytracing";
+					passSpecification.Pipeline = RaytracingPipeline::Create(shader);
+					m_DDGIRayTracingRenderPass = RaytracingPass::Create(passSpecification);
 
-				//	m_DDGIRayTracingRenderPass->SetInput("objDescs", m_SBSObjectSpecs);
-				//	m_DDGIRayTracingRenderPass->SetInput("materials", m_SBSMaterialBuffer);
-				//	m_DDGIRayTracingRenderPass->SetInput("TLAS", m_SceneTLAS);
-				//	m_DDGIRayTracingRenderPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
-				//	m_DDGIRayTracingRenderPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
-				//	m_DDGIRayTracingRenderPass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
-				//	m_DDGIRayTracingRenderPass->SetInput("DebugImage", m_DebugImage);
+					m_DDGIRayTracingRenderPass->SetInput("objDescs", m_SBSObjectSpecs);
+					m_DDGIRayTracingRenderPass->SetInput("materials", m_SBSMaterialBuffer);
+					m_DDGIRayTracingRenderPass->SetInput("TLAS", m_SceneTLAS);
+					m_DDGIRayTracingRenderPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
+					m_DDGIRayTracingRenderPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
+					m_DDGIRayTracingRenderPass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
+					m_DDGIRayTracingRenderPass->SetInput("Bey_DebugImage", m_DebugImage);
 
-				//	m_DDGIRayTracingRenderPass->SetInput("DDGIVolumes", m_SBDDGIConstants);
-				//	m_DDGIRayTracingRenderPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
+					m_DDGIRayTracingRenderPass->SetInput("DDGIVolumes", m_SBDDGIConstants);
+					m_DDGIRayTracingRenderPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
 
-				//	m_DDGIRayTracingRenderPass->SetInput("u_PointLights", m_UBSPointLights);
-				//	m_DDGIRayTracingRenderPass->SetInput("u_SpotLights", m_UBSSpotLights);
-				//	m_DDGIRayTracingRenderPass->SetInput("u_SceneData", m_UBSScene);
+					m_DDGIRayTracingRenderPass->SetInput("u_PointLights", m_UBSPointLights);
+					m_DDGIRayTracingRenderPass->SetInput("u_SpotLights", m_UBSSpotLights);
+					m_DDGIRayTracingRenderPass->SetInput("u_SceneData", m_UBSScene);
+					m_DDGIRayTracingRenderPass->SetInput("u_EnvIrradianceTex", Renderer::GetBlackCubeTexture());
 
-
-				//	BEY_CORE_VERIFY(m_DDGIRayTracingRenderPass->Validate());
-				//	m_DDGIRayTracingRenderPass->Bake();
-				//}
+					BEY_CORE_VERIFY(m_DDGIRayTracingRenderPass->Validate());
+					m_DDGIRayTracingRenderPass->Bake();
+				}
 
 				// DDGI Vis
-				//{
+				{
 
-				//	std::string filePath = (Project::GetProjectDirectory() / std::filesystem::path("Assets/Meshes/Source/Default")).string();
-				//	std::string targetFilePath = Project::GetProjectDirectory().string() + "/Assets/Meshes/Default/";
-				//	if (std::filesystem::exists(filePath / std::filesystem::path("Sphere.gltf")))
-				//	{
-				//		AssetHandle assetHandle = Project::GetEditorAssetManager()->GetAssetHandleFromFilePath("Meshes/Source/Default/Sphere.gltf");
-				//		Ref<Asset> asset = AssetManager::GetAsset<Asset>(assetHandle);
-				//		if (asset)
-				//		{
-				//			m_SphereMesh = Ref<StaticMesh>::Create(AssetManager::GetAsset<MeshSource>(assetHandle), "DDGI Vis Sphere");
+					Ref<Asset> asset = Project::GetEditorAssetManager()->GetAsset<MeshSource>("Meshes/Source/Default/Sphere.gltf");
+					if (asset)
+					{
+						m_SphereMesh = Ref<StaticMesh>::Create(asset, "DDGI Vis Sphere");
+					}
 
+					Ref<Shader> shader = Renderer::GetShaderLibrary()->Get("DDGIVis");
+					m_DDGIVisTLAS = AccelerationStructureSet::Create(false, "Probe Vis TLAS", framesInFlight);
+					m_DDGIVisRaytracer = Raytracer::Create(m_DDGIVisTLAS);
 
-				//		}
-				//	}
-				//	else
-				//		BEY_CONSOLE_LOG_WARN("Please import the default mesh source files to the following path: {0}", filePath);
+					RaytracingPassSpecification passSpecification;
+					passSpecification.DebugName = "DDGI Vis";
+					passSpecification.Pipeline = RaytracingPipeline::Create(shader);
+					m_DDGIVisRenderPass = RaytracingPass::Create(passSpecification);
 
+					m_DDGIVisRenderPass->SetInput("u_Camera", m_UBSCamera);
+					m_DDGIVisRenderPass->SetInput("TLAS", m_DDGIVisTLAS);
 
-				//	Ref<Shader> shader = Renderer::GetShaderLibrary()->Get("DDGIVis");
-				//	m_DDGIVisTLAS = AccelerationStructureSet::Create(false, "Probe Vis TLAS", framesInFlight);
-				//	m_DDGIVisRaytracer = Raytracer::Create(m_DDGIVisTLAS);
+					m_DDGIVisRenderPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
+					m_DDGIVisRenderPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
+					m_DDGIVisRenderPass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
 
-				//	RaytracingPassSpecification passSpecification;
-				//	passSpecification.DebugName = "DDGI Vis";
-				//	passSpecification.Pipeline = RaytracingPipeline::Create(shader);
-				//	m_DDGIVisRenderPass = RaytracingPass::Create(passSpecification);
+					m_DDGIVisRenderPass->SetInput("GBufferA", m_RaytracingImage);
+					m_DDGIVisRenderPass->SetInput("DepthBuffer", m_HierarchicalDepthTexture.Texture);
+					m_DDGIVisRenderPass->SetInput("Bey_DebugImage", m_DebugImage);
+					m_DDGIVisRenderPass->SetInput("u_ScreenData", m_UBSScreenData);
 
-				//	m_DDGIVisRenderPass->SetInput("u_Camera", m_UBSCamera);
-				//	m_DDGIVisRenderPass->SetInput("TLAS", m_DDGIVisTLAS);
+					m_DDGIVisRenderPass->SetInput("DDGIVolumes", m_SBDDGIConstants);
+					m_DDGIVisRenderPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
 
-				//	m_DDGIVisRenderPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
-				//	m_DDGIVisRenderPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
-				//	m_DDGIVisRenderPass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
-
-				//	m_DDGIVisRenderPass->SetInput("GBufferA", m_RaytracingImage);
-				//	m_DDGIVisRenderPass->SetInput("GBufferB", m_PreDepthPass->GetDepthOutput());
-				//	m_DDGIVisRenderPass->SetInput("DebugImage", m_DebugImage);
-
-				//	m_DDGIVisRenderPass->SetInput("DDGIVolumes", m_SBDDGIConstants);
-				//	m_DDGIVisRenderPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
-
-				//	BEY_CORE_VERIFY(m_DDGIVisRenderPass->Validate());
-				//	m_DDGIVisRenderPass->Bake();
-				//}
+					BEY_CORE_VERIFY(m_DDGIVisRenderPass->Validate());
+					m_DDGIVisRenderPass->Bake();
+				}
 
 				// DDGI Vis Probe Update
-				//{
-				//	Ref<Shader>  shader = Renderer::GetShaderLibrary()->Get("DDGIProbeUpdate");
-				//	m_VisProbeUpdatePipeline = PipelineCompute::Create(shader);
+				{
+					Ref<Shader>  shader = Renderer::GetShaderLibrary()->Get("DDGIProbeUpdate");
+					m_VisProbeUpdatePipeline = PipelineCompute::Create(shader);
 
-				//	ComputePassSpecification spec;
-				//	spec.DebugName = "Vis Probe Update";
-				//	spec.Pipeline = m_VisProbeUpdatePipeline;
-				//	m_DDGIProbeUpdatePass = ComputePass::Create(spec);
+					ComputePassSpecification spec;
+					spec.DebugName = "Vis Probe Update";
+					spec.Pipeline = m_VisProbeUpdatePipeline;
+					m_DDGIProbeUpdatePass = ComputePass::Create(spec);
 
-				//	m_DDGIProbeUpdatePass->SetInput("DDGIVolumes", m_SBDDGIConstants);
-				//	m_DDGIProbeUpdatePass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
-				//	//m_DDGIProbeUpdatePass->SetInput("DebugImage", m_DebugImage);
-
-				//	m_DDGIProbeUpdatePass->SetInput("RWTLASInstances", m_SBSDDGIProbeInstances);
-				//	BEY_CORE_VERIFY(m_DDGIProbeUpdatePass->Validate());
-				//	m_DDGIProbeUpdatePass->Bake();
-				//}
+					m_DDGIProbeUpdatePass->SetInput("DDGIVolumes", m_SBDDGIConstants);
+					m_DDGIProbeUpdatePass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
+					m_DDGIProbeUpdatePass->SetInput("Bey_DebugImage", m_DebugImage);
+					m_DDGIProbeUpdatePass->SetInput("RWTLASInstances", m_SBSDDGIProbeInstances);
+					BEY_CORE_VERIFY(m_DDGIProbeUpdatePass->Validate());
+					m_DDGIProbeUpdatePass->Bake();
+				}
 			}
 
 			{
@@ -1149,30 +1153,6 @@ namespace Beyond {
 #endif
 		}
 
-
-
-		// Hierarchical Z buffer
-		{
-			TextureSpecification spec;
-			spec.Format = ImageFormat::RED32F;
-			spec.SamplerWrap = TextureWrap::ClampToEdge;
-			spec.SamplerFilter = TextureFilter::Nearest;
-			spec.Compress = false;
-			spec.DebugName = "HierarchicalZ";
-
-			m_HierarchicalDepthTexture.Texture = Texture2D::Create(spec);
-
-			Ref<Shader> shader = Renderer::GetShaderLibrary()->Get("HZB");
-
-			ComputePassSpecification hdPassSpec;
-			hdPassSpec.DebugName = "HierarchicalDepth";
-			hdPassSpec.Pipeline = PipelineCompute::Create(shader);
-			m_HierarchicalDepthPass = ComputePass::Create(hdPassSpec);
-
-			BEY_CORE_VERIFY(m_HierarchicalDepthPass->Validate());
-			m_HierarchicalDepthPass->Bake();
-		}
-
 		// Exposure image
 		{
 			{
@@ -1197,7 +1177,7 @@ namespace Beyond {
 			//m_ExposurePass->SetInput("u_DepthMap", m_PreDepthPass->GetDepthOutput());
 			//m_ExposurePass->SetInput("u_ColorMap", m_->GetOutput(0));
 			//m_ExposurePass->SetInput("o_ResolvedMotionVectors", m_ExposureImage);
-			m_ExposurePass->SetInput("DebugImage", m_DebugImage);
+			m_ExposurePass->SetInput("Bey_DebugImage", m_DebugImage);
 			m_ExposurePass->SetInput("o_Exposure", m_ExposureImage);
 
 			BEY_CORE_VERIFY(m_ExposurePass->Validate());
@@ -1762,63 +1742,61 @@ namespace Beyond {
 			m_SSRPass->Bake();
 		}
 
-		// DDGI Irradiance
-		//{
-		//	Ref<Shader>  shader = Renderer::GetShaderLibrary()->Get("DDGIIrradiance");
-		//	m_DDGIIrradiancePipeline = PipelineCompute::Create(shader);
+		//DDGI Irradiance
+		{
+			Ref<Shader>  shader = Renderer::GetShaderLibrary()->Get("DDGIIrradiance");
+			m_DDGIIrradiancePipeline = PipelineCompute::Create(shader);
 
-		//	ImageSpecification imageSpec;
-		//	imageSpec.Usage = ImageUsage::Storage;
-		//	imageSpec.Format = ImageFormat::B10G11R11UFLOAT;
-		//	imageSpec.DebugName = "DDGI Output Storage Image";
-		//	m_DDGIOutputImage = Image2D::Create(imageSpec);
-		//	m_DDGIOutputImage->Invalidate();
+			ImageSpecification imageSpec;
+			imageSpec.Usage = ImageUsage::Storage;
+			imageSpec.Format = ImageFormat::B10G11R11UFLOAT;
+			imageSpec.Transfer = true;
+			imageSpec.DebugName = "DDGI Output Storage Image";
+			m_DDGIOutputImage = Image2D::Create(imageSpec);
+			m_DDGIOutputImage->Invalidate();
 
-		//	ComputePassSpecification spec;
-		//	spec.DebugName = "DDGI Irradiance";
-		//	spec.Pipeline = m_DDGIIrradiancePipeline;
-		//	m_DDGIIrradiancePass = ComputePass::Create(spec);
+			ComputePassSpecification spec;
+			spec.DebugName = "DDGI Irradiance";
+			spec.Pipeline = m_DDGIIrradiancePipeline;
+			m_DDGIIrradiancePass = ComputePass::Create(spec);
 
-		//	m_DDGIIrradiancePass->SetInput("DDGIVolumes", m_SBDDGIConstants);
-		//	m_DDGIIrradiancePass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
-		//	m_DDGIIrradiancePass->SetInput("u_SceneData", m_UBSScene);
-		//	m_DDGIIrradiancePass->SetInput("u_Camera", m_UBSCamera);
-		//	m_DDGIIrradiancePass->SetInput("u_ScreenData", m_UBSScreenData);
-		//	m_DDGIIrradiancePass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
-		//	m_DDGIIrradiancePass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
-		//	m_DDGIIrradiancePass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
-		//	m_DDGIIrradiancePass->SetInput("AlbedoTexture", m_AlbedoImage);
-		//	m_DDGIIrradiancePass->SetInput("DepthTexture", m_HierarchicalDepthTexture.Texture);
-		//	m_DDGIIrradiancePass->SetInput("NormalTexture", m_RaytracingNormalsImage);
-		//	m_DDGIIrradiancePass->SetInput("OutputTexture", m_DDGIOutputImage);
-		//	m_DDGIIrradiancePass->SetInput("DebugImage", m_DebugImage);
-		//	BEY_CORE_VERIFY(m_DDGIIrradiancePass->Validate());
-		//	m_DDGIIrradiancePass->Bake();
-		//}
+			m_DDGIIrradiancePass->SetInput("DDGIVolumes", m_SBDDGIConstants);
+			m_DDGIIrradiancePass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
+			m_DDGIIrradiancePass->SetInput("u_SceneData", m_UBSScene);
+			m_DDGIIrradiancePass->SetInput("u_Camera", m_UBSCamera);
+			m_DDGIIrradiancePass->SetInput("u_ScreenData", m_UBSScreenData);
+			m_DDGIIrradiancePass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
+			m_DDGIIrradiancePass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
+			m_DDGIIrradiancePass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
+			m_DDGIIrradiancePass->SetInput("AlbedoTexture", m_AlbedoImage);
+			m_DDGIIrradiancePass->SetInput("DepthTexture", m_HierarchicalDepthTexture.Texture);
+			m_DDGIIrradiancePass->SetInput("NormalTexture", m_RaytracingNormalsImage);
+			m_DDGIIrradiancePass->SetInput("OutputTexture", m_DDGIOutputImage);
+			m_DDGIIrradiancePass->SetInput("Bey_DebugImage", m_DebugImage);
+			BEY_CORE_VERIFY(m_DDGIIrradiancePass->Validate());
+			m_DDGIIrradiancePass->Bake();
+		}
 
-		// DDGI TexVis
-		//{
-		//	Ref<Shader>  shader = Renderer::GetShaderLibrary()->Get("DDGITexVis");
-		//	m_DDGITexVisPipeline = PipelineCompute::Create(shader);
+		//DDGI TexVis
+		{
+			Ref<Shader>  shader = Renderer::GetShaderLibrary()->Get("DDGITexVis");
+			m_DDGITexVisPipeline = PipelineCompute::Create(shader);
 
-		//	ComputePassSpecification spec;
-		//	spec.DebugName = "DDGI TexVis";
-		//	spec.Pipeline = m_DDGITexVisPipeline;
-		//	m_DDGITexVisPass = ComputePass::Create(spec);
+			ComputePassSpecification spec;
+			spec.DebugName = "DDGI TexVis";
+			spec.Pipeline = m_DDGITexVisPipeline;
+			m_DDGITexVisPass = ComputePass::Create(spec);
 
-		//	m_DDGITexVisPass->SetInput("DDGIVolumes", m_SBDDGIConstants);
-		//	m_DDGITexVisPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
-		//	//m_DDGITexVisPass->SetInput("u_SceneData", m_UBSScene);
-		//	//m_DDGITexVisPass->SetInput("u_Camera", m_UBSCamera);
-		//	//m_DDGITexVisPass->SetInput("u_ScreenData", m_UBSScreenData);
-		//	m_DDGITexVisPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
-		//	m_DDGITexVisPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
-		//	m_DDGITexVisPass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
-		//	m_DDGITexVisPass->SetInput("OutputTexture", m_DDGIOutputImage);
-		//	//m_DDGITexVisPass->SetInput("DebugImage", m_DebugImage);
-		//	BEY_CORE_VERIFY(m_DDGITexVisPass->Validate());
-		//	m_DDGITexVisPass->Bake();
-		//}
+			m_DDGITexVisPass->SetInput("DDGIVolumes", m_SBDDGIConstants);
+			m_DDGITexVisPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
+			m_DDGITexVisPass->SetInput("Samplers", Renderer::GetBilinearSampler(), 0);
+			m_DDGITexVisPass->SetInput("Samplers", Renderer::GetPointSampler(), 1);
+			m_DDGITexVisPass->SetInput("Samplers", Renderer::GetAnisoSampler(), 2);
+			m_DDGITexVisPass->SetInput("OutputTexture", m_DDGIOutputImage);
+			m_DDGITexVisPass->SetInput("Bey_DebugImage", m_DebugImage);
+			BEY_CORE_VERIFY(m_DDGITexVisPass->Validate());
+			m_DDGITexVisPass->Bake();
+		}
 
 	}
 
@@ -1843,6 +1821,7 @@ namespace Beyond {
 		//Renderer::SetGlobalMacroInShaders("__BEY_GTAO_COMPUTE_BENT_NORMALS", fmt::format("{}", (int)m_Options.GTAOBentNormals));
 	}
 
+#pragma region GPUPerf
 	void SceneRenderer::InsertGPUPerfMarker(Ref<RenderCommandBuffer> renderCommandBuffer, const eastl::string& label, const glm::vec4& markerColor)
 	{
 		Renderer::Submit([=]
@@ -1866,6 +1845,7 @@ namespace Beyond {
 			Renderer::RT_EndGPUPerfMarker(renderCommandBuffer);
 		});
 	}
+#pragma endregion
 
 	void SceneRenderer::SetScene(Ref<Scene> scene)
 	{
@@ -1950,6 +1930,8 @@ namespace Beyond {
 			m_RestirCompRenderPass->SetInput("u_EnvIrradianceTex", m_SceneData.SceneEnvironment->IrradianceMap);
 			m_RestirCompRenderPass->SetInput("u_EnvRadianceTex", m_SceneData.SceneEnvironment->RadianceMap);
 
+			m_DDGIRayTracingRenderPass->SetInput("u_EnvIrradianceTex", m_SceneData.SceneEnvironment->IrradianceMap);
+
 			uint32_t ddgVolumeCount = glm::max((uint32_t)m_SceneData.SceneLightEnvironment.DDGIVolumes.size(), 1u);
 
 			m_SBDDGIConstants->RT_Resize(sizeof(rtxgi::DDGIVolumeDescGPU) * ddgVolumeCount * Renderer::GetConfig().FramesInFlight);
@@ -2020,9 +2002,9 @@ namespace Beyond {
 				m_ExposureImage->Resize({ 1, 1 });
 				m_AlbedoImage->Resize({ m_RenderWidth, m_RenderHeight });
 				m_AccumulationImage->Resize({ m_RenderWidth, m_RenderHeight });
+				m_DDGIOutputImage->Resize({ m_RenderWidth, m_RenderHeight });
 			}
 			m_DebugImage->Resize({ m_RenderWidth, m_RenderHeight });
-			//m_DDGIOutputImage->Resize({ m_RenderWidth, m_RenderHeight });
 
 			// Dependent on Geometry 
 			m_SSRCompositePass->GetTargetFramebuffer()->Resize(m_RenderWidth, m_RenderHeight);
@@ -2270,6 +2252,8 @@ namespace Beyond {
 		cameraData.NDCToViewMul = { projInfoPerspective[0], projInfoPerspective[1] };
 		cameraData.NDCToViewAdd = { projInfoPerspective[2], projInfoPerspective[3] };
 
+		screenData.HZBUVFactor = m_SSROptions.HZBUvFactor;
+
 		Ref<SceneRenderer> instance = this;
 		Renderer::Submit([instance, cameraData]() mutable
 		{
@@ -2384,6 +2368,8 @@ namespace Beyond {
 
 		s_ThreadPool.clear();
 	}
+
+#pragma region SUBMIT
 
 	void SceneRenderer::SubmitToRaytracer(const DrawCommand& dc, const MaterialAsset* material, const glm::mat3x4& transform)
 	{
@@ -2707,12 +2693,116 @@ namespace Beyond {
 
 		}
 	}
+#pragma endregion
 
 	void SceneRenderer::ClearPass(Ref<RenderPass> renderPass, bool explicitClear)
 	{
 		BEY_PROFILE_FUNC();
 		Renderer::BeginRenderPass(m_MainCommandBuffer, renderPass, explicitClear);
 		Renderer::EndRenderPass(m_MainCommandBuffer);
+	}
+
+	void SceneRenderer::PreRender()
+	{
+		BEY_PROFILE_FUNC();
+
+		uint32_t framesInFlight = Renderer::GetConfig().FramesInFlight;
+		uint32_t frameIndex = Renderer::GetCurrentFrameIndex();
+		uint32_t offset = 0;
+		{
+			for (auto& transformData : m_MeshTransformMap | std::views::values)
+			{
+				transformData.TransformIndex = offset;
+				for (const auto& transform : transformData.Transforms)
+				{
+					m_SubmeshTransformBuffers[frameIndex].Data[offset] = transform;
+					offset++;
+				}
+			}
+		}
+
+		{
+			for (uint32_t i = 0; i < offset; i++)
+			{
+				//m_TransformBuffers[frameIndex].Data[offset].CurrentMRow = m_SubmeshTransformBuffers[frameIndex].Data[offset];
+				std::memcpy(m_TransformBuffers[frameIndex].Data[i].CurrentMRow, m_SubmeshTransformBuffers[frameIndex].Data[i].MRow, 48);
+				std::memcpy(m_TransformBuffers[frameIndex].Data[i].PreviousMRow, m_SubmeshTransformBuffers[(frameIndex + framesInFlight - 1) % framesInFlight].Data[i].MRow, 48);
+				if (m_RaytracingSettings.Mode != RaytracingMode::None)
+					m_MainRaytracer->GetObjDescs()[i].TransformIndex = i;
+			}
+
+			// Update prev transform after it's consumed. 
+			for (auto& [meshKey, transformData] : m_MeshTransformMap)
+			{
+				auto& historyTransform = m_TransformHistoryMap[meshKey];
+				historyTransform = transformData;
+			}
+
+			// Upload all transforms
+			m_SBSTransforms->Get()->SetData(m_TransformBuffers[frameIndex].Data, static_cast<uint32_t>(offset * sizeof(TransformData)));
+		}
+
+		uint32_t index = 0;
+		for (auto& [meshKey, boneTransformsData] : m_MeshBoneTransformsMap)
+		{
+			boneTransformsData.BoneTransformsBaseIndex = index;
+			for (const auto& boneTransforms : boneTransformsData.BoneTransformsData)
+			{
+				m_BoneTransformsData[index++] = boneTransforms;
+			}
+		}
+
+		if (index > 0)
+		{
+			Ref<SceneRenderer> instance = this;
+			Renderer::Submit([instance, index]() mutable
+			{
+				instance->m_SBSBoneTransforms->RT_Get()->RT_SetData(instance->m_BoneTransformsData, static_cast<uint32_t>(index * sizeof(BoneTransforms)));
+			});
+		}
+
+
+	}
+
+	void SceneRenderer::BuildAccelerationStructures()
+	{
+		if (m_RaytracingSettings.Mode != RaytracingMode::None)
+		{
+			//m_GPUTimeQueries.BuildAccelerationStructuresQuery = m_MainCommandBuffer->BeginTimestampQuery();
+			m_CommandBuffers[eTLASBuild]->Begin();
+			m_MainRaytracer->BuildTlas(m_CommandBuffers[eTLASBuild]);
+			//m_MainRaytracer->BuildTlas(m_MainCommandBuffer);
+			m_CommandBuffers[eTLASBuild]->End();
+
+			//m_MainRaytracer->BuildTlas(nullptr);
+
+			m_MainRaytracer->ClearInternalInstances();
+			//m_RebuildTlas = false;
+			//m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.BuildAccelerationStructuresQuery);
+
+			Renderer::Submit([instance = Ref(this)]() mutable
+			{
+				const uint32_t frame = Renderer::RT_GetCurrentFrameIndex();
+
+				{
+					const auto& data = instance->m_MainRaytracer->GetObjDescs();
+					if (data.empty())
+						return;
+					auto storageBuffer = instance->m_SBSObjectSpecs->Get(frame);
+					storageBuffer->RT_Resize(uint32_t(instance->m_MainRaytracer->GetObjDescs().size() * sizeof(data[0])));
+					storageBuffer->RT_SetData(data.data(), uint32_t(instance->m_MainRaytracer->GetObjDescs().size() * sizeof(data[0])));
+				}
+				{
+					const auto& data = instance->m_MainRaytracer->GetMaterials();
+					if (data.empty())
+						return;
+
+					auto storageBuffer = instance->m_SBSMaterialBuffer->Get(frame);
+					storageBuffer->RT_Resize(uint32_t(instance->m_MainRaytracer->GetMaterials().size() * sizeof(data[0])));
+					storageBuffer->RT_SetData(data.data(), uint32_t(instance->m_MainRaytracer->GetMaterials().size() * sizeof(data[0])));
+				}
+			});
+		}
 	}
 
 	void SceneRenderer::ShadowMapPass()
@@ -2891,7 +2981,7 @@ namespace Beyond {
 	{
 		BEY_PROFILE_FUNC();
 
-		if (!m_Options.EnableGTAO && !m_Options.EnableSSR)
+		if (!m_Options.EnableGTAO && !m_Options.EnableSSR && !m_DDGISettings.Enable)
 			return;
 
 		m_GPUTimeQueries.HierarchicalDepthQuery = m_MainCommandBuffer->BeginTimestampQuery();
@@ -3297,8 +3387,8 @@ namespace Beyond {
 			if (m_AccumulatedPathtracingFrames > m_RaytracingSettings.MaxFrames)
 				m_AccumulatedPathtracingFrames--;
 
-			Renderer::CopyImage(m_MainCommandBuffer, m_RaytracingImage, m_SkyboxPass->GetOutput(0));
-			Renderer::CopyImage(m_MainCommandBuffer, m_RaytracingNormalsImage, m_GeometryPass->GetOutput(1));
+			Renderer::CopyImage(m_MainCommandBuffer, m_GeometryPass->GetOutput(0), m_RaytracingImage);
+			Renderer::CopyImage(m_MainCommandBuffer, m_GeometryPass->GetOutput(1), m_RaytracingNormalsImage);
 			GTAODataCB.NoiseIndex = m_AccumulatedPathtracingFrames % 64;
 			//Renderer::CopyImage(m_MainCommandBuffer, m_RaytracingMetalnessRoughnessImage, m_GeometryPass->GetOutput(2));
 		}
@@ -3309,25 +3399,15 @@ namespace Beyond {
 		});
 	}
 
-	void SceneRenderer::DLSSPass()
-	{
-		m_GPUTimeQueries.DLSSPassQuery = m_MainCommandBuffer->BeginTimestampQuery();
-		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "DLSS-Evaluate", { 0.0f, 1.0f, 0.1f, 1.0f });
-		Ref<Image2D> hitTImage = m_RaytracingSettings.Mode == RaytracingMode::Pathtracing ? m_RaytracingPrimaryHitT : nullptr;
-		if (m_DLSSSettings.Enable)
-			m_DLSS->Evaluate(m_MainCommandBuffer, m_AccumulatedFrames, m_CurrentJitter, m_TimeStep, m_DLSSImage, m_GeometryPass->GetOutput(0), hitTImage, m_ExposureImage,
-				m_PreDepthPass->GetOutput(0), m_PreDepthPass->GetDepthOutput(), m_AlbedoImage, m_RaytracingMetalnessRoughnessImage, m_RaytracingNormalsImage);
-		SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
-		m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.DLSSPassQuery);
-	}
-
 	void SceneRenderer::DDGIRaytracing()
 	{
 		auto& volumes = Renderer::GetDDGIVolumes();
 
 		Renderer::SetDDGIStorage(m_SBDDGIConstants, m_SBDDGIReourceIndices);
-		if (m_RaytracingSettings.Mode != RaytracingMode::Pathtracing && (m_RaytracingSettings.Mode != RaytracingMode::Restir) && m_DDGISettings.Enable)
+		if ((m_RaytracingSettings.Mode == RaytracingMode::None || m_RaytracingSettings.Mode == RaytracingMode::Raytracing) && m_DDGISettings.Enable)
 		{
+			m_GPUTimeQueries.DDGIRaytraceQuery = m_MainCommandBuffer->BeginTimestampQuery();
+
 			if (!volumes.empty())
 			{
 				m_DDGIRayTracingRenderPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
@@ -3346,16 +3426,17 @@ namespace Beyond {
 				uint  reductionInputSizeZ;
 			} pushConstant;
 
+			Renderer::BeginRaytracingPass(m_MainCommandBuffer, m_DDGIRayTracingRenderPass);
 			for (const auto& volume : volumes)
 			{
-				Renderer::BeginRaytracingPass(m_MainCommandBuffer, m_DDGIRayTracingRenderPass);
 				uint32_t width, height, depth;
 				volume->GetRayDispatchDimensions(width, height, depth);
 				Renderer::SetPushConstant(m_DDGIRayTracingRenderPass, { &pushConstant, sizeof(pushConstant) }, ShaderStage::RayGen);
 				Renderer::DispatchRays(m_MainCommandBuffer, m_DDGIRayTracingRenderPass, nullptr, width, height, depth);
 
-				Renderer::EndRaytracingPass(m_MainCommandBuffer, m_DDGIRayTracingRenderPass);
 			}
+			Renderer::EndRaytracingPass(m_MainCommandBuffer, m_DDGIRayTracingRenderPass);
+			m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.DDGIRaytraceQuery);
 
 			if (volumes.size())
 				Renderer::UpdateDDGIVolumes(m_MainCommandBuffer);
@@ -3365,7 +3446,7 @@ namespace Beyond {
 
 	void SceneRenderer::DDGIVis()
 	{
-		if (m_RaytracingSettings.Mode != RaytracingMode::Pathtracing && m_RaytracingSettings.Mode != RaytracingMode::Restir && m_DDGISettings.ProbeVis && m_DDGISettings.Enable)
+		if ((m_RaytracingSettings.Mode == RaytracingMode::None || m_RaytracingSettings.Mode == RaytracingMode::Raytracing) && m_DDGISettings.ProbeVis && m_DDGISettings.Enable)
 		{
 			const auto& volumes = Renderer::GetDDGIVolumes();
 
@@ -3378,7 +3459,7 @@ namespace Beyond {
 					dc.StaticMesh = m_SphereMesh;
 					dc.MaterialTable = Ref<MaterialTable>::Create(1);
 
-					m_DDGIVisRaytracer->AddInstancedDrawCommand(dc, m_DDGIVisRenderPass, glm::mat4x4(1));
+					m_DDGIVisRaytracer->AddInstancedDrawCommand(dc, glm::mat4x4(1));
 
 					Renderer::Submit([inst = Ref(this), numProbes = volume->GetNumProbes()]() mutable
 					{
@@ -3412,22 +3493,12 @@ namespace Beyond {
 				}
 
 
-				//m_DDGIVisRaytracer->BuildTlas(m_MainCommandBuffer, m_SBSDDGIProbeInstances->Get());
+				m_DDGIVisRaytracer->BuildTlas(m_MainCommandBuffer, m_SBSDDGIProbeInstances->Get());
 
 				m_DDGIVisRenderPass->SetInput("DDGIVolumeBindless", m_SBDDGIReourceIndices);
 				m_DDGIVisRenderPass->SetInput("DDGIVolumes", m_SBDDGIConstants);
 
-				//struct
-				//{
-				//	uint volumeIndex = 0;
-				//	uint volumeConstantsIndex = 0;
-				//	uint volumeResourceIndicesIndex = 0;
-				//	// Split uint3 into three uints to prevent internal padding
-				//	// while keeping these values at the end of the struct
-				//	uint  reductionInputSizeX;
-				//	uint  reductionInputSizeY;
-				//	uint  reductionInputSizeZ;
-				//} pushConstant;
+				Renderer::CopyImage(m_MainCommandBuffer, m_RaytracingImage, m_GeometryPass->GetOutput(0));
 
 				Renderer::BeginRaytracingPass(m_MainCommandBuffer, m_DDGIVisRenderPass);
 				for (const auto& volume : volumes)
@@ -3437,9 +3508,8 @@ namespace Beyond {
 
 				}
 				Renderer::EndRaytracingPass(m_MainCommandBuffer, m_DDGIVisRenderPass);
-				Renderer::CopyImage(m_MainCommandBuffer, m_RaytracingImage, m_SkyboxPass->GetOutput(0));
 
-
+				Renderer::CopyImage(m_MainCommandBuffer, m_GeometryPass->GetOutput(0), m_RaytracingImage);
 			}
 
 		}
@@ -3450,12 +3520,12 @@ namespace Beyond {
 
 	}
 
-
-
 	void SceneRenderer::DDGIIrradiance()
 	{
-		if (m_RaytracingSettings.Mode != RaytracingMode::Pathtracing && m_RaytracingSettings.Mode != RaytracingMode::Restir && !Renderer::GetDDGIVolumes().empty() && m_DDGISettings.Enable)
+		if ((m_RaytracingSettings.Mode == RaytracingMode::None || m_RaytracingSettings.Mode == RaytracingMode::Raytracing) && !Renderer::GetDDGIVolumes().empty() && m_DDGISettings.Enable)
 		{
+			m_GPUTimeQueries.DDGIIrradianceQuery = m_MainCommandBuffer->BeginTimestampQuery();
+
 			const bool rasterized = m_RaytracingSettings.Mode == RaytracingMode::None;
 			m_DDGIIrradiancePass->SetInput("NormalTexture", rasterized ? m_GeometryPass->GetOutput(1) : m_RaytracingNormalsImage);
 			m_DDGIIrradiancePass->SetInput("AlbedoTexture", rasterized ? m_GeometryPass->GetOutput(3) : m_AlbedoImage);
@@ -3469,7 +3539,7 @@ namespace Beyond {
 				else return x / y;
 			};
 
-			Renderer::CopyImage(m_MainCommandBuffer, rasterized ? m_SkyboxPass->GetOutput(0) : m_RaytracingImage, m_DDGIOutputImage);
+			Renderer::CopyImage(m_MainCommandBuffer, m_DDGIOutputImage, rasterized ? m_GeometryPass->GetOutput(0) : m_RaytracingImage);
 
 			uint32_t groupsX = DivRoundUp(m_RenderWidth, 8);
 			uint32_t groupsY = DivRoundUp(m_RenderHeight, 4);
@@ -3483,9 +3553,10 @@ namespace Beyond {
 				Renderer::BeginComputePass(m_MainCommandBuffer, m_DDGITexVisPass);
 				Renderer::DispatchCompute(m_MainCommandBuffer, m_DDGITexVisPass, nullptr, glm::uvec3(groupsX, groupsY, 1), { &m_DDGITextureVisSettings, sizeof(m_DDGITextureVisSettings) });
 				Renderer::EndComputePass(m_MainCommandBuffer, m_DDGITexVisPass);
-
 			}
-			Renderer::CopyImage(m_MainCommandBuffer, m_DDGIOutputImage, m_SkyboxPass->GetOutput(0));
+
+			m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.DDGIIrradianceQuery);
+			Renderer::CopyImage(m_MainCommandBuffer, m_GeometryPass->GetOutput(0), m_DDGIOutputImage);
 		}
 	}
 
@@ -3512,7 +3583,7 @@ namespace Beyond {
 
 		Renderer::BeginComputePass(m_MainCommandBuffer, m_PreConvolutionComputePass);
 
-		auto inputImage = m_SkyboxPass->GetOutput(0);
+		auto inputImage = m_GeometryPass->GetOutput(0);
 		workGroups = { (uint32_t)glm::ceil((float)inputImage->GetWidth() / 16.0f), (uint32_t)glm::ceil((float)inputImage->GetHeight() / 16.0f), 1 };
 		Renderer::DispatchCompute(m_MainCommandBuffer, m_PreConvolutionComputePass, m_PreConvolutionMaterials[0], workGroups, Buffer(&preConvolutionComputePushConstants, sizeof(preConvolutionComputePushConstants)));
 
@@ -3540,6 +3611,18 @@ namespace Beyond {
 		}
 
 		Renderer::EndComputePass(m_MainCommandBuffer, m_PreConvolutionComputePass);
+	}
+
+	void SceneRenderer::DLSSPass()
+	{
+		m_GPUTimeQueries.DLSSPassQuery = m_MainCommandBuffer->BeginTimestampQuery();
+		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "DLSS-Evaluate", { 0.0f, 1.0f, 0.1f, 1.0f });
+		Ref<Image2D> hitTImage = m_RaytracingSettings.Mode != RaytracingMode::None && m_RaytracingSettings.Mode != RaytracingMode::Raytracing ? m_RaytracingPrimaryHitT : nullptr;
+		if (m_DLSSSettings.Enable)
+			m_DLSS->Evaluate(m_MainCommandBuffer, m_AccumulatedFrames, m_CurrentJitter, m_TimeStep, m_DLSSImage, m_GeometryPass->GetOutput(0), hitTImage, m_ExposureImage,
+				m_PreDepthPass->GetOutput(0), m_PreDepthPass->GetDepthOutput(), m_AlbedoImage, m_RaytracingMetalnessRoughnessImage, m_RaytracingNormalsImage);
+		SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
+		m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.DLSSPassQuery);
 	}
 
 	void SceneRenderer::GTAOCompute()
@@ -3804,7 +3887,7 @@ namespace Beyond {
 			Renderer::EndRenderPass(m_MainCommandBuffer);
 
 			// Copy DOF image to composite pipeline
-			Renderer::CopyImage(m_MainCommandBuffer, m_DOFPass->GetTargetFramebuffer()->GetImage(), m_CompositePass->GetTargetFramebuffer()->GetImage());
+			Renderer::CopyImage(m_MainCommandBuffer, m_CompositePass->GetTargetFramebuffer()->GetImage(), m_DOFPass->GetTargetFramebuffer()->GetImage());
 
 			// WIP - will later be used for debugging/editor mouse picking
 #if 0
@@ -3946,7 +4029,7 @@ namespace Beyond {
 			m_MainCommandBuffer->Begin();
 			//m_CommandBuffers[CmdBuffers::eDrawRaytracing]->Begin();
 
-			//PrepareDDGIVolumes();
+			PrepareDDGIVolumes();
 
 
 			// Main render passes
@@ -3964,19 +4047,17 @@ namespace Beyond {
 				PathTracingPass();
 			//m_CommandBuffers[CmdBuffers::eDrawRaytracing]->End();
 
-			//DDGIRaytracing();
-			//DDGIIrradiance();
-			//DDGIVis();
+			DDGIRaytracing();
+			DDGIIrradiance();
+			DDGIVis();
 
 			// GTAO
-			if (m_Options.EnableGTAO)
+			if (m_Options.EnableGTAO && (m_RaytracingSettings.Mode == RaytracingMode::None || m_RaytracingSettings.Mode == RaytracingMode::Raytracing))
 			{
 				GTAOCompute();
 				GTAODenoiseCompute();
-			}
-
-			if (m_Options.EnableGTAO)
 				AOComposite();
+			}
 
 			if (VulkanContext::GetCurrentDevice()->IsDLSSSupported())
 				DLSSPass();
@@ -4045,109 +4126,6 @@ namespace Beyond {
 		m_MeshBoneTransformsMap.clear();
 	}
 
-	void SceneRenderer::PreRender()
-	{
-		BEY_PROFILE_FUNC();
-
-		uint32_t framesInFlight = Renderer::GetConfig().FramesInFlight;
-		uint32_t frameIndex = Renderer::GetCurrentFrameIndex();
-		uint32_t offset = 0;
-		{
-			for (auto& transformData : m_MeshTransformMap | std::views::values)
-			{
-				transformData.TransformIndex = offset;
-				for (const auto& transform : transformData.Transforms)
-				{
-					m_SubmeshTransformBuffers[frameIndex].Data[offset] = transform;
-					offset++;
-				}
-			}
-		}
-
-		{
-			for (uint32_t i = 0; i < offset; i++)
-			{
-				//m_TransformBuffers[frameIndex].Data[offset].CurrentMRow = m_SubmeshTransformBuffers[frameIndex].Data[offset];
-				std::memcpy(m_TransformBuffers[frameIndex].Data[i].CurrentMRow, m_SubmeshTransformBuffers[frameIndex].Data[i].MRow, 48);
-				std::memcpy(m_TransformBuffers[frameIndex].Data[i].PreviousMRow, m_SubmeshTransformBuffers[(frameIndex + framesInFlight - 1) % framesInFlight].Data[i].MRow, 48);
-				if (m_RaytracingSettings.Mode != RaytracingMode::None)
-					m_MainRaytracer->GetObjDescs()[i].TransformIndex = i;
-			}
-
-			// Update prev transform after it's consumed. 
-			for (auto& [meshKey, transformData] : m_MeshTransformMap)
-			{
-				auto& historyTransform = m_TransformHistoryMap[meshKey];
-				historyTransform = transformData;
-			}
-
-			// Upload all transforms
-			m_SBSTransforms->Get()->SetData(m_TransformBuffers[frameIndex].Data, static_cast<uint32_t>(offset * sizeof(TransformData)));
-		}
-
-		uint32_t index = 0;
-		for (auto& [meshKey, boneTransformsData] : m_MeshBoneTransformsMap)
-		{
-			boneTransformsData.BoneTransformsBaseIndex = index;
-			for (const auto& boneTransforms : boneTransformsData.BoneTransformsData)
-			{
-				m_BoneTransformsData[index++] = boneTransforms;
-			}
-		}
-
-		if (index > 0)
-		{
-			Ref<SceneRenderer> instance = this;
-			Renderer::Submit([instance, index]() mutable
-			{
-				instance->m_SBSBoneTransforms->RT_Get()->RT_SetData(instance->m_BoneTransformsData, static_cast<uint32_t>(index * sizeof(BoneTransforms)));
-			});
-		}
-
-
-	}
-
-	void SceneRenderer::BuildAccelerationStructures()
-	{
-		if (m_RaytracingSettings.Mode != RaytracingMode::None)
-		{
-			//m_GPUTimeQueries.BuildAccelerationStructuresQuery = m_MainCommandBuffer->BeginTimestampQuery();
-			m_CommandBuffers[eTLASBuild]->Begin();
-			m_MainRaytracer->BuildTlas(m_CommandBuffers[eTLASBuild]);
-			//m_MainRaytracer->BuildTlas(m_MainCommandBuffer);
-			m_CommandBuffers[eTLASBuild]->End();
-
-			//m_MainRaytracer->BuildTlas(nullptr);
-
-			m_MainRaytracer->ClearInternalInstances();
-			//m_RebuildTlas = false;
-			//m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.BuildAccelerationStructuresQuery);
-
-			Renderer::Submit([instance = Ref(this)]() mutable
-			{
-				const uint32_t frame = Renderer::RT_GetCurrentFrameIndex();
-
-				{
-					const auto& data = instance->m_MainRaytracer->GetObjDescs();
-					if (data.empty())
-						return;
-					auto storageBuffer = instance->m_SBSObjectSpecs->Get(frame);
-					storageBuffer->RT_Resize(uint32_t(instance->m_MainRaytracer->GetObjDescs().size() * sizeof(data[0])));
-					storageBuffer->RT_SetData(data.data(), uint32_t(instance->m_MainRaytracer->GetObjDescs().size() * sizeof(data[0])));
-				}
-				{
-					const auto& data = instance->m_MainRaytracer->GetMaterials();
-					if (data.empty())
-						return;
-
-					auto storageBuffer = instance->m_SBSMaterialBuffer->Get(frame);
-					storageBuffer->RT_Resize(uint32_t(instance->m_MainRaytracer->GetMaterials().size() * sizeof(data[0])));
-					storageBuffer->RT_SetData(data.data(), uint32_t(instance->m_MainRaytracer->GetMaterials().size() * sizeof(data[0])));
-				}
-			});
-		}
-	}
-
 	void SceneRenderer::CopyToBoneTransformStorage(const MeshKey& meshKey, const Ref<MeshSource>& meshSource, const std::vector<glm::mat4>& boneTransforms)
 	{
 		auto& boneTransformStorage = m_MeshBoneTransformsMap[meshKey].BoneTransformsData.emplace_back();
@@ -4167,6 +4145,7 @@ namespace Beyond {
 		}
 	}
 
+#pragma region CreateMaterials
 	void SceneRenderer::CreateBloomPassMaterials()
 	{
 		auto inputImage = m_GeometryPass->GetOutput(0);
@@ -4212,7 +4191,7 @@ namespace Beyond {
 
 	void SceneRenderer::CreatePreConvolutionPassMaterials()
 	{
-		auto inputImage = m_SkyboxPass->GetOutput(0);
+		auto inputImage = m_GeometryPass->GetOutput(0);
 
 		uint32_t mips = m_PreConvolutedTexture.Texture->GetMipLevelCount();
 		m_PreConvolutionMaterials.resize(mips);
@@ -4278,6 +4257,7 @@ namespace Beyond {
 			material->Set("u_HZB", m_HierarchicalDepthTexture.Texture);
 		}
 	}
+#pragma endregion 
 
 	void SceneRenderer::ClearPass()
 	{
@@ -4293,6 +4273,7 @@ namespace Beyond {
 		//Renderer::EndRenderPass(m_MainCommandBuffer);
 	}
 
+#pragma region MISC
 	Ref<RasterPipeline> SceneRenderer::GetFinalPipeline()
 	{
 		return m_CompositePass->GetSpecification().Pipeline;
@@ -4597,7 +4578,7 @@ namespace Beyond {
 		if (m_GeometryWireframeOnTopAnimPass)
 			m_GeometryWireframeOnTopAnimPass->GetPipeline()->GetSpecification().LineWidth = width;
 	}
-
+#pragma endregion
 	SceneRenderer::RaytracingSettings::RaytracingSettings()
 		: Mode(RaytracingMode::RestirComp), MaxFrames(500000), EnableRussianRoulette(true)
 	{}

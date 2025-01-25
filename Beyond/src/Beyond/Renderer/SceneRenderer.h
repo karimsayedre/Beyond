@@ -72,7 +72,7 @@ namespace Beyond {
 		float AOShadowTolerance = 1.0f;
 
 		// GTAO
-		bool EnableGTAO = false;
+		bool EnableGTAO = true;
 		bool GTAOBentNormals = false;
 		int GTAODenoisePasses = 4;
 
@@ -368,6 +368,7 @@ namespace Beyond {
 			glm::vec2 FullResolution;
 			glm::vec2 InvHalfResolution;
 			glm::vec2 HalfResolution;
+			glm::vec2 HZBUVFactor;
 		} m_ScreenDataUB;
 
 		struct UBShadow
@@ -785,8 +786,10 @@ namespace Beyond {
 			uint32_t MotionVectorsQuery = 0;
 			uint32_t PreIntegrationQuery = 0;
 			uint32_t LightCullingPassQuery = 0;
-			uint32_t GeometryPassQuery = 0;
 			uint32_t RaytracingQuery = 0;
+			uint32_t GeometryPassQuery = 0;
+			uint32_t DDGIRaytraceQuery = 0;
+			uint32_t DDGIIrradianceQuery = 0;
 			uint32_t PreConvolutionQuery = 0;
 			uint32_t GTAOPassQuery = 0;
 			uint32_t GTAODenoisePassQuery = 0;

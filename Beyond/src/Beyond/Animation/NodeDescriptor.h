@@ -116,7 +116,6 @@ namespace Beyond::AnimationGraph {
 							return RegisterEndpointInputsImpl(node, node->*memberPtr, name);
 						}
 
-						return true;
 					};
 
 					return (unpack(members) && ...);

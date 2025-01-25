@@ -470,7 +470,7 @@ namespace Beyond {
 
 				if (s_BindlessSetLayouts.contains(m_RootSignature) && s_BindlessSetLayouts.at(m_RootSignature).contains(set))
 				{
-					BEY_CORE_ASSERT(shaderDescriptorSet == s_BindlessSetLayouts.at(m_RootSignature).at(set).ShaderDescriptorSet, "This shader has a different bindless descriptor set layout at set {}.", set);
+					BEY_CORE_ASSERT(shaderDescriptorSet == s_BindlessSetLayouts.at(m_RootSignature).at(set).ShaderDescriptorSet, "Shader: {} has a different bindless descriptor set layout at set {}.", m_Name, set);
 					m_DescriptorSetLayouts[set] = s_BindlessSetLayouts.at(m_RootSignature).at(set).Layout;
 				}
 				else

@@ -58,6 +58,25 @@ namespace Beyond {
 			return "UNKNOWN";
 		}
 
+		inline static eastl::string ShaderStagesToString(const VkShaderStageFlagBits stage)
+		{
+			eastl::string result;
+			if (stage & VK_SHADER_STAGE_VERTEX_BIT)    result.append("vert|");
+			if (stage & VK_SHADER_STAGE_FRAGMENT_BIT)  result.append("frag|");
+			if (stage & VK_SHADER_STAGE_COMPUTE_BIT)   result.append("comp|");
+			if (stage & VK_SHADER_STAGE_RAYGEN_BIT_KHR)  result.append("rgen|");
+			if (stage & VK_SHADER_STAGE_ANY_HIT_BIT_KHR)  result.append("anyhit|");
+			if (stage & VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR)  result.append("closesthit|");
+			if (stage & VK_SHADER_STAGE_MISS_BIT_KHR)  result.append("miss|");
+			if (stage & VK_SHADER_STAGE_INTERSECTION_BIT_KHR)  result.append("intersect|");
+			if (stage & VK_SHADER_STAGE_CALLABLE_BIT_KHR)  result.append("call|");
+
+			result.pop_back();
+
+			BEY_CORE_ASSERT(!result.empty());
+			return result;
+		}
+
 		inline static VkShaderStageFlagBits ShaderTypeFromString(const std::string_view type)
 		{
 			if (type == "vert") return VK_SHADER_STAGE_VERTEX_BIT;

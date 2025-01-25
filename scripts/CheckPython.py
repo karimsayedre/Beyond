@@ -10,13 +10,18 @@ InstallPackage('setuptools')
 
 import pkg_resources
 
-def ValidatePackage(package):
-    required = { package }
-    installed = {pkg.key for pkg in pkg_resources.working_set}
-    missing = required - installed
+from importlib.metadata import distributions, distribution
+from importlib.metadata import PackageNotFoundError
+import subprocess
+import sys
 
-    if missing:
-        InstallPackage(package)
+def ValidatePackage(package_name):
+    try:
+        # This will raise PackageNotFoundError if package isn't found
+        distribution(package_name)
+    except PackageNotFoundError:
+        InstallPackage(package_name)
+
 
 def ValidatePackages():
     ValidatePackage('requests')

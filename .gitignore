@@ -82,3 +82,4 @@ Editor/SandboxProject/Assets/Scripts/Binaries/Microsoft*.dll
 Editor/SandboxProject/**/*.dds
 
 !Editor/SandboxProject/Assets/Meshes/Source/Bistro_v5_2/**/**.dds
+/Editor/SandboxProject/Assets/Meshes/Source/Bistro_v5_2

@@ -56,7 +56,7 @@ Entities:
         0: 4632926086905324461
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 1261383900868470224
+      ColliderHandle: 3149519709536296266
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -123,7 +123,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 5534090462181477195
+      ColliderHandle: 17772225373306876933
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -178,10 +178,10 @@ Entities:
       []
     TransformComponent:
       Position: [-7.27691685e-08, 1.8584646, -1.0028851e-07]
-      Rotation: [-1.27160001, 0.37894997, -2.99902534]
+      Rotation: [-2.20661592, 1.13794196, 0.613902569]
       Scale: [1, 0.999998748, 0.999998569]
     DirectionalLightComponent:
-      Intensity: 0
+      Intensity: 4.9000001
       Radiance: [0.764478743, 0.739913523, 0.510636389]
       SourceSize: 0.5
       SoftShadows: true
@@ -275,7 +275,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 10948629081278663243
+      ColliderHandle: 175743915864188195
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -302,7 +302,7 @@ Entities:
       Scale: [1, 1, 1]
     ScriptComponent:
       ClassHandle: 351365716
-      Name: AudioDemo.OneShotTrigger
+      Name: "Null"
     RigidBodyComponent:
       BodyType: 0
       LayerID: 0
@@ -382,7 +382,7 @@ Entities:
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      AssetID: 17437196776715727753
+      AssetID: 14540816192526373953
       SubmeshIndex: 0
       MaterialTable:
         0: 761861143196698806
@@ -418,7 +418,7 @@ Entities:
         0: 0
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 10687596211201198748
+      ColliderHandle: 9238309371202811090
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -435,7 +435,7 @@ Entities:
       Scale: [1, 1, 1]
     SkyLightComponent:
       EnvironmentMap: 0
-      Intensity: 1
+      Intensity: 0
       Lod: 1
       DynamicSky: true
       TurbidityAzimuthInclination: [2.31999993, 5.1420002, 1.52999997]
@@ -447,7 +447,7 @@ Entities:
       []
     TransformComponent:
       Position: [3.60716513e-07, 3.02590942, 0]
-      Rotation: [1.57079637, 0, 1.57079637]
+      Rotation: [1.22322655, 0, 1.57079637]
       Scale: [1, 1, 1]
     SpotLightComponent:
       Radiance: [1, 1, 1]
@@ -456,7 +456,7 @@ Entities:
       CastShadows: false
       SoftShadows: false
       Falloff: 0
-      Intensity: 6
+      Intensity: 0
       Range: 8.80000019
       SourceSize: 99.5
   - Entity: 16679927148269971972
@@ -491,7 +491,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 4334378291598149964
+      ColliderHandle: 8092632370141378493
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -510,9 +510,10 @@ Entities:
       AssetID: 16497380876707455890
       MaterialTable:
         0: 4632926086905324461
+        1: 0
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 14178714524175384183
+      ColliderHandle: 5250364675675745568
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -549,7 +550,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 3494413951431537321
+      ColliderHandle: 10858014533129601570
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006

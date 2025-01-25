@@ -517,7 +517,7 @@ namespace Beyond {
 					if (aiMaterial->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness) != aiReturn_SUCCESS)
 						roughness = 0.5f; // Default value
 
-					if (aiMaterial->Get(AI_MATKEY_METALLIC_FACTOR, metalness) != aiReturn_SUCCESS && aiMaterial->Get(AI_MATKEY_REFLECTIVITY, metalness) != aiReturn_SUCCESS)
+					if (aiMaterial->Get(AI_MATKEY_REFLECTIVITY, metalness) != aiReturn_SUCCESS)
 						metalness = 0.0f;
 
 					float specular = 0.0f;

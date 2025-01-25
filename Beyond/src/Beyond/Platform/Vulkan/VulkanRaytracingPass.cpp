@@ -62,6 +62,11 @@ namespace Beyond {
 		m_DescriptorSetManager->SetInput(name, image);
 	}
 
+	void VulkanRaytracingPass::SetInput(const eastl::string& name, Ref<ImageView> image, uint32_t index)
+	{
+		m_DescriptorSetManager->SetInput(name, image, index);
+	}
+
 	void VulkanRaytracingPass::SetInput(const eastl::string& name, Ref<Sampler> sampler, uint32_t index)
 	{
 		m_DescriptorSetManager->SetInput(name, sampler, index);
