@@ -151,9 +151,8 @@ void main()
     float3 F0 = lerp(0.04f, payload.albedo, payload.metallic);
 
     DDGIPayload rayPayload = UnpackPayload(packedPayload);
-    PbrMaterial material = defaultPbrMaterial(rayPayload.albedo, rayPayload.metallic, rayPayload.roughness,
-                                              rayPayload.shadingNormal, rayPayload.normal);
-
+    PbrMaterial material = defaultPbrMaterial(rayPayload.albedo, rayPayload.metallic, rayPayload.roughness, rayPayload.shadingNormal, rayPayload.normal);
+    material.WorldPosition = payload.worldPosition;
     float3 diffuse = DirectLighting(asuint(probeRayDirection.x), F0, material, view, 1, SceneTLAS).rgb;
     diffuse += payload.albedo * payload.opacity; // Emission, not opacity.
 

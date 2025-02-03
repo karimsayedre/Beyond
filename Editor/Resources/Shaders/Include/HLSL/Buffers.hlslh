@@ -116,10 +116,12 @@ struct ScreenData
 };
 [[vk::binding(2, 2)]] ConstantBuffer<ScreenData> u_ScreenData;
 
+
+//column major
 struct TransformData
 {
-    float4 ModelMatrix[3];
-    float4 PrevModelMatrix[3];
+	float4 ModelMatrix[3];
+	float4 PrevModelMatrix[3];
 };
 
 struct Transforms

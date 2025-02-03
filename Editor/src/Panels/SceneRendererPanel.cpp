@@ -11,7 +11,8 @@
 
 #include "imgui/imgui.h"
 
-namespace Beyond {
+namespace Beyond
+{
 
 	bool SceneRendererPanel::OnImGuiRender(bool& isOpen)
 	{
@@ -43,18 +44,18 @@ namespace Beyond {
 				{
 					float size = ImGui::GetContentRegionAvail().x;
 
-					const ImVec2 imageSize = { size, size * ((float)m_Context->m_TargetHeight / (float)m_Context->m_TargetWidth) };
+					const ImVec2 imageSize = {size, size * ((float)m_Context->m_TargetHeight / (float)m_Context->m_TargetWidth)};
 
-					size = 2048.0f;
-					const ImVec2 toolTipSize = { size, size * ((float)m_Context->m_TargetHeight / (float)m_Context->m_TargetWidth) };
+					size					 = 2048.0f;
+					const ImVec2 toolTipSize = {size, size * ((float)m_Context->m_TargetHeight / (float)m_Context->m_TargetWidth)};
 
 					if (UI::BeginTreeNode("Debug Image", true))
 					{
-						UI::Image(m_Context->m_DebugImage, imageSize, { 0, 1 }, { 1, 0 });
+						UI::Image(m_Context->m_DebugImage, imageSize, {0, 1}, {1, 0});
 						if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right))
 						{
 							ImGui::BeginTooltip();
-							UI::Image(m_Context->m_DebugImage, toolTipSize, { 0, 1 }, { 1, 0 });
+							UI::Image(m_Context->m_DebugImage, toolTipSize, {0, 1}, {1, 0});
 							ImGui::EndTooltip();
 						}
 						UI::EndTreeNode();
@@ -65,11 +66,11 @@ namespace Beyond {
 						if (m_Context->m_ResourcesCreated)
 						{
 							const float size = ImGui::GetContentRegionAvail().x;
-							UI::Image(m_Context->m_PreDepthPass->GetOutput(0), imageSize, { 0, 1 }, { 1, 0 });
+							UI::Image(m_Context->m_PreDepthPass->GetOutput(0), imageSize, {0, 1}, {1, 0});
 							if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right))
 							{
 								ImGui::BeginTooltip();
-								UI::Image(m_Context->m_PreDepthPass->GetOutput(0), toolTipSize, { 0, 1 }, { 1, 0 });
+								UI::Image(m_Context->m_PreDepthPass->GetOutput(0), toolTipSize, {0, 1}, {1, 0});
 								ImGui::EndTooltip();
 							}
 						}
@@ -78,11 +79,11 @@ namespace Beyond {
 
 					if (UI::BeginTreeNode("Resloved Motion Vectors", false))
 					{
-						UI::Image(m_Context->m_ExposureImage, imageSize, { 0, 1 }, { 1, 0 });
+						UI::Image(m_Context->m_ExposureImage, imageSize, {0, 1}, {1, 0});
 						if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Right))
 						{
 							ImGui::BeginTooltip();
-							UI::Image(m_Context->m_ExposureImage, toolTipSize, { 0, 1 }, { 1, 0 });
+							UI::Image(m_Context->m_ExposureImage, toolTipSize, {0, 1}, {1, 0});
 							ImGui::EndTooltip();
 						}
 						UI::EndTreeNode();
@@ -92,7 +93,7 @@ namespace Beyond {
 			}
 
 			const float headerSpacingOffset = -(ImGui::GetStyle().ItemSpacing.y + 1.0f);
-			const bool shadersTreeNode = UI::PropertyGridHeader("Shaders", true);
+			const bool	shadersTreeNode		= UI::PropertyGridHeader("Shaders", true);
 
 			// TODO: Better placement of the button?
 			const float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
@@ -138,20 +139,19 @@ namespace Beyond {
 			else
 				UI::ShiftCursorY(headerSpacingOffset);
 
-
 			if (UI::PropertyGridHeader("Ray Tracing"))
 			{
 				UI::BeginPropertyGrid();
 
-				const static char* modes[] = { "Disabled", "Ray Tracing", "Path Tracing", "Restir", "Restir-Compute" };
+				const static char* modes[] = {"Disabled", "Path Tracing"};
 
-				static int lastMode = (int)SceneRenderer::RaytracingMode::Pathtracing;
-				int modeIndex = (int)m_Context->m_RaytracingSettings.Mode;
+				static int lastMode	 = (int)SceneRenderer::RaytracingMode::Pathtracing;
+				int		   modeIndex = (int)m_Context->m_RaytracingSettings.Mode;
 
-				if (UI::PropertyDropdown("Rendering Mode", modes, 5, modeIndex))
+				if (UI::PropertyDropdown("Rendering Mode", modes, 2, modeIndex))
 				{
-					//if (m_Context->m_RaytracingSettings.Mode > SceneRenderer::RaytracingMode::None)
-					lastMode = (int)m_Context->m_RaytracingSettings.Mode;
+					// if (m_Context->m_RaytracingSettings.Mode > SceneRenderer::RaytracingMode::None)
+					lastMode							 = (int)m_Context->m_RaytracingSettings.Mode;
 					m_Context->m_RaytracingSettings.Mode = (SceneRenderer::RaytracingMode)modeIndex;
 					BEY_CORE_INFO_TAG("Renderer", "Changed Rendering mode to: {}", magic_enum::enum_name<SceneRenderer::RaytracingMode>(m_Context->m_RaytracingSettings.Mode));
 					changed = true;
@@ -167,8 +167,7 @@ namespace Beyond {
 					changed = true;
 				}
 
-				if (m_Context->m_RaytracingSettings.Mode == SceneRenderer::RaytracingMode::Pathtracing || m_Context->m_RaytracingSettings.Mode == SceneRenderer::RaytracingMode::Restir ||
-					m_Context->m_RaytracingSettings.Mode == SceneRenderer::RaytracingMode::RestirComp)
+				if (m_Context->m_RaytracingSettings.Mode == SceneRenderer::RaytracingMode::Pathtracing)
 				{
 					changed |= UI::Property("Max Accumulated Frames", m_Context->m_RaytracingSettings.MaxFrames, 0, UINT_MAX);
 					changed |= UI::Property("Russian Roulette", m_Context->m_RaytracingSettings.EnableRussianRoulette);
@@ -182,10 +181,10 @@ namespace Beyond {
 					ImGui::NextColumn();
 				}
 
-				if (m_Context->m_RaytracingSettings.Mode == SceneRenderer::RaytracingMode::RestirComp)
+				/*if (m_Context->m_RaytracingSettings.Mode == SceneRenderer::RaytracingMode::Pathtracing)
 				{
-					changed |= UI::PropertyPowerOfTwo("Work Group Size", m_Context->m_RaytracingSettings.WorkGroupSize, 1, 32);
-				}
+						changed |= UI::PropertyPowerOfTwo("Work Group Size", m_Context->m_RaytracingSettings.WorkGroupSize, 1, 32);
+				}*/
 
 				UI::EndPropertyGrid();
 				UI::EndTreeNode();
@@ -197,7 +196,7 @@ namespace Beyond {
 			{
 				UI::BeginPropertyGrid();
 
-				const static char* modes[] = { "None", "PBR Neutral", "ACES","AGX" };
+				const static char* modes[] = {"None", "PBR Neutral", "ACES", "AGX"};
 
 				int modeIndex = (int)m_Context->m_CompositeSettings.Tonemapper;
 				if (UI::PropertyDropdown("Tone Mapper", modes, 4, modeIndex))
@@ -206,14 +205,13 @@ namespace Beyond {
 				}
 
 				UI::Property("Grain Strength", m_Context->m_CompositeSettings.GrainStrength, 0.1f, 0.0f, 50.0f);
-				//UI::Property("Opacity", m_Context->m_CompositeSettings.Opacity, 0.1f, 0.0f, 1.0f);
+				// UI::Property("Opacity", m_Context->m_CompositeSettings.Opacity, 0.1f, 0.0f, 1.0f);
 
 				UI::EndPropertyGrid();
 				UI::EndTreeNode();
 			}
 			else
 				UI::ShiftCursorY(headerSpacingOffset);
-
 
 			if (UI::PropertyGridHeader("Deep Learning Super-Sampling"))
 			{
@@ -227,18 +225,18 @@ namespace Beyond {
 				resetDLSS |= UI::Property("Base Sample Count", m_Context->m_DLSSSettings.BasePhases, 0, 32, "Samples before repeating the jitter sequence.");
 				resetDLSS |= UI::Property("Use Quadrant Jitter", m_Context->m_DLSSSettings.UseQuadrants);
 				resetDLSS |= UI::Property("Quadrant", m_Context->m_DLSSSettings.Quadrant, 0, 4, "4 is a cycle between quadrants.");
-				//resetDLSS |= UI::Property("Jittered Motion Vectors", m_Context->m_DLSSSettings.JitteredMotionVectors); // Debug
+				// resetDLSS |= UI::Property("Jittered Motion Vectors", m_Context->m_DLSSSettings.JitteredMotionVectors); // Debug
 
-				const static char* modes[] = { "Max Performance", "Balanced", "Max Quality", "Ultra Performance", "DLAA" };
+				const static char* modes[] = {"Max Performance", "Balanced", "Max Quality", "Ultra Performance", "DLAA"};
 
-				int modeIndex = (int)m_Context->m_DLSSSettings.Mode;
-				static int lastMode = modeIndex;
+				int		   modeIndex = (int)m_Context->m_DLSSSettings.Mode;
+				static int lastMode	 = modeIndex;
 
 				if (UI::PropertyDropdown("Quality Mode", modes, 5, modeIndex))
 				{
-					lastMode = (int)m_Context->m_DLSSSettings.Mode;
+					lastMode					   = (int)m_Context->m_DLSSSettings.Mode;
 					m_Context->m_DLSSSettings.Mode = (DLSSQualityValue)modeIndex;
-					resetDLSS = true;
+					resetDLSS					   = true;
 				}
 
 				m_Context->m_NeedsResize |= resetDLSS;
@@ -260,10 +258,12 @@ namespace Beyond {
 
 				if (m_Context->m_DDGISettings.TextureVis)
 				{
-					if (UI::BeginTreeNode("Texture Visualization"))
+					if (UI::PropertyGridHeader("Texture Visualization"))
 					{
-						//UI::Property("Instance Offset", m_Context->m_DDGITextureVisSettings.InstanceOffset);
-						//UI::Property("Probe Type", m_Context->m_DDGITextureVisSettings.ProbeType);
+						UI::BeginPropertyGrid();
+
+						// UI::Property("Instance Offset", m_Context->m_DDGITextureVisSettings.InstanceOffset);
+						// UI::Property("Probe Type", m_Context->m_DDGITextureVisSettings.ProbeType);
 						UI::Property("Probe Radius", m_Context->m_DDGITextureVisSettings.ProbeRadius);
 						UI::Property("Distance Divisor", m_Context->m_DDGITextureVisSettings.DistanceDivisor);
 						UI::Property("Ray Data Texture Scale", m_Context->m_DDGITextureVisSettings.RayDataTextureScale);
@@ -271,8 +271,8 @@ namespace Beyond {
 						UI::Property("Distance Texture Scale", m_Context->m_DDGITextureVisSettings.DistanceTextureScale);
 						UI::Property("Probe Data Texture Scale", m_Context->m_DDGITextureVisSettings.ProbeDataTextureScale);
 						UI::Property("Probe Variability Texture Scale", m_Context->m_DDGITextureVisSettings.ProbeVariabilityTextureScale);
+						UI::EndPropertyGrid();
 						UI::EndTreeNode();
-
 					}
 				}
 
@@ -284,7 +284,7 @@ namespace Beyond {
 
 			if (UI::PropertyGridHeader("Render Statistics"))
 			{
-				const auto& commandBuffer = m_Context->m_MainCommandBuffer;
+				const auto& commandBuffer  = m_Context->m_MainCommandBuffer;
 				const auto& gpuTimeQueries = m_Context->m_GPUTimeQueries;
 
 				uint32_t frameIndex = Renderer::RT_GetCurrentFrameIndex();
@@ -306,7 +306,7 @@ namespace Beyond {
 
 				if (UI::BeginTreeNode("GPU Time Statistics"))
 				{
-					//ImGui::Text("Building Acceleration Structures: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.BuildAccelerationStructuresQuery));
+					ImGui::Text("Building Acceleration Structures: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.BuildAccelerationStructuresQuery));
 					ImGui::Text("Dir Shadow Map Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.DirShadowMapPassQuery));
 					ImGui::Text("Spot Shadow Map Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.SpotShadowMapPassQuery));
 					ImGui::Text("Depth Pre-Pass: %.3fms", commandBuffer->GetExecutionGPUTime(frameIndex, gpuTimeQueries.DepthPrePassQuery));
@@ -425,9 +425,9 @@ namespace Beyond {
 				UI::Property("Enable SSR", options.EnableSSR);
 				UI::Property("Enable Cone Tracing", ssrOptions.EnableConeTracing, "Enable rough reflections.");
 
-				const static char* aoMethods[4] = { "Disabled", "Ground-Truth Ambient Occlusion", "Horizon-Based Ambient Occlusion", "All" };
+				const static char* aoMethods[4] = {"Disabled", "Ground-Truth Ambient Occlusion", "Horizon-Based Ambient Occlusion", "All"};
 
-				//TODO: Disable disabled methods in ImGui
+				// TODO: Disable disabled methods in ImGui
 				int methodIndex = ShaderDef::GetMethodIndex(options.ReflectionOcclusionMethod);
 				if (UI::PropertyDropdown("Reflection Occlusion method", aoMethods, 4, methodIndex))
 				{
@@ -440,8 +440,7 @@ namespace Beyond {
 
 				UI::Property("Brightness", ssrOptions.Brightness, 0.001f, 0.0f, 1.0f);
 				UI::Property("Depth Tolerance", ssrOptions.DepthTolerance, 0.01f, 0.0f, std::numeric_limits<float>::max());
-				UI::Property("Roughness Depth Tolerance", ssrOptions.RoughnessDepthTolerance, 0.33f, 0.0f, std::numeric_limits<float>::max(),
-					"The higher the roughness the higher the depth tolerance.\nWorks best with cone tracing enabled.\nReduce as much as possible.");
+				UI::Property("Roughness Depth Tolerance", ssrOptions.RoughnessDepthTolerance, 0.33f, 0.0f, std::numeric_limits<float>::max(), "The higher the roughness the higher the depth tolerance.\nWorks best with cone tracing enabled.\nReduce as much as possible.");
 				UI::Property("Horizontal Fade In", ssrOptions.FadeIn.x, 0.005f, 0.0f, 10.0f);
 				UI::Property("Vertical Fade In", ssrOptions.FadeIn.y, 0.005f, 0.0f, 10.0f);
 				UI::Property("Facing Reflections Fading", ssrOptions.FacingReflectionsFading, 0.01f, 0.0f, 2.0f);
@@ -456,11 +455,10 @@ namespace Beyond {
 					if (m_Context->m_ResourcesCreated)
 					{
 						const float size = ImGui::GetContentRegionAvail().x;
-						UI::Image(m_Context->m_SSRImage, { size, size * (0.9f / 1.6f) }, { 0, 1 }, { 1, 0 });
+						UI::Image(m_Context->m_SSRImage, {size, size * (0.9f / 1.6f)}, {0, 1}, {1, 0});
 						static int32_t mip = 0;
 						UI::PropertySlider("Pre-convoluted Mip", mip, 0, (int)m_Context->m_PreConvolutedTexture.Texture->GetMipLevelCount() - 1);
-						UI::ImageMip(m_Context->m_PreConvolutedTexture.Texture->GetImage(), mip, { size, size * (0.9f / 1.6f) }, { 0, 1 }, { 1, 0 });
-
+						UI::ImageMip(m_Context->m_PreConvolutedTexture.Texture->GetImage(), mip, {size, size * (0.9f / 1.6f)}, {0, 1}, {1, 0});
 					}
 					UI::EndTreeNode();
 				}
@@ -542,7 +540,6 @@ namespace Beyond {
 						changed |= UI::Property("Cascade 1", m_Context->m_ShadowCascadeSplits[1], 0.025f, 0.0f);
 						changed |= UI::Property("Cascade 2", m_Context->m_ShadowCascadeSplits[2], 0.025f, 0.0f);
 						changed |= UI::Property("Cascade 3", m_Context->m_ShadowCascadeSplits[3], 0.025f, 0.0f);
-
 					}
 					UI::EndPropertyGrid();
 					UI::EndTreeNode();
@@ -550,8 +547,8 @@ namespace Beyond {
 				if (UI::BeginTreeNode("Shadow Map", false))
 				{
 					static int cascadeIndex = 0;
-					auto fb = m_Context->m_DirectionalShadowMapPass[cascadeIndex]->GetTargetFramebuffer();
-					auto image = fb->GetDepthImage();
+					auto	   fb			= m_Context->m_DirectionalShadowMapPass[cascadeIndex]->GetTargetFramebuffer();
+					auto	   image		= fb->GetDepthImage();
 
 					float size = ImGui::GetContentRegionAvail().x; // (float)fb->GetWidth() * 0.5f, (float)fb->GetHeight() * 0.5f
 					UI::BeginPropertyGrid();
@@ -559,20 +556,20 @@ namespace Beyond {
 					UI::EndPropertyGrid();
 					if (m_Context->m_ResourcesCreated)
 					{
-						UI::Image(image, (uint32_t)cascadeIndex, { size, size }, { 0, 1 }, { 1, 0 });
+						UI::Image(image, (uint32_t)cascadeIndex, {size, size}, {0, 1}, {1, 0});
 					}
 					UI::EndTreeNode();
 				}
 
 				if (UI::BeginTreeNode("Spotlight Shadow Map", false))
 				{
-					auto fb = m_Context->m_SpotShadowPass->GetTargetFramebuffer();
+					auto fb	   = m_Context->m_SpotShadowPass->GetTargetFramebuffer();
 					auto image = fb->GetDepthImage();
 
 					float size = ImGui::GetContentRegionAvail().x; // (float)fb->GetWidth() * 0.5f, (float)fb->GetHeight() * 0.5f
 					if (m_Context->m_ResourcesCreated)
 					{
-						UI::Image(image, { size, size }, { 0, 1 }, { 1, 0 });
+						UI::Image(image, {size, size}, {0, 1}, {1, 0});
 					}
 					UI::EndTreeNode();
 				}
@@ -604,11 +601,10 @@ namespace Beyond {
 			{
 				if (m_Context->m_ResourcesCreated)
 				{
-					const float size = ImGui::GetContentRegionAvail().x;
-					static int32_t mip = 0;
+					const float	   size = ImGui::GetContentRegionAvail().x;
+					static int32_t mip	= 0;
 					UI::PropertySlider("HZB Mip", mip, 0, (int)m_Context->m_HierarchicalDepthTexture.Texture->GetMipLevelCount() - 1);
-					UI::ImageMip(m_Context->m_HierarchicalDepthTexture.Texture->GetImage(), mip, { size, size * (0.9f / 1.6f) }, { 0, 1 }, { 1, 0 });
-
+					UI::ImageMip(m_Context->m_HierarchicalDepthTexture.Texture->GetImage(), mip, {size, size * (0.9f / 1.6f)}, {0, 1}, {1, 0});
 				}
 				UI::EndTreeNode();
 			}
@@ -620,4 +616,4 @@ namespace Beyond {
 		return changed;
 	}
 
-}
+} // namespace Beyond

@@ -250,6 +250,7 @@ namespace Beyond {
 		static GPUMemoryStats GetGPUMemoryStats();
 		static bool UpdatedShaders();
 		static void NotifyShaderUpdate();
+		static void WaitDeviceIdle();
 
 	private:
 		static RenderCommandQueue& GetRenderCommandQueue();

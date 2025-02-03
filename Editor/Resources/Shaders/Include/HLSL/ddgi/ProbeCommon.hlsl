@@ -58,17 +58,17 @@ float3 DDGIGetProbeWorldPosition(int3 probeCoords, DDGIVolumeDescGPU volume, Tex
     float3 probeWorldPosition = DDGIGetProbeWorldPosition(probeCoords, volume);
 
     // If the volume has probe relocation enabled, account for the probe offsets
-    // if (volume.probeRelocationEnabled)
-    // {
-    //     // Get the scroll adjusted probe index
-    //     int probeIndex = DDGIGetScrollingProbeIndex(probeCoords, volume);
+    if (volume.probeRelocationEnabled)
+    {
+        // Get the scroll adjusted probe index
+        int probeIndex = DDGIGetScrollingProbeIndex(probeCoords, volume);
 
-    //     // Find the texture coordinates of the probe in the Probe Data texture
-    //     uint3 coords = DDGIGetProbeTexelCoords(probeIndex, volume);
+        // Find the texture coordinates of the probe in the Probe Data texture
+        uint3 coords = DDGIGetProbeTexelCoords(probeIndex, volume);
 
-    //     // Load the probe's world-space position offset and add it to the current world position
-    //     probeWorldPosition += DDGILoadProbeDataOffset(probeData, coords, volume);
-    // }
+        // Load the probe's world-space position offset and add it to the current world position
+        probeWorldPosition += DDGILoadProbeDataOffset(probeData, coords, volume);
+    }
 
     return probeWorldPosition;
 }

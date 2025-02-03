@@ -4903,13 +4903,13 @@ void ed::CreateItemAction::DrawLastLink()
     ed::Pin startPin(Editor, 0, m_lastStartPinKind);
     startPin.m_Pivot = m_lastStartPivot;
     startPin.m_Dir = m_lastStartDir;
-    startPin.m_Corners = (float)m_lastStartPinCorners;
+    startPin.m_Corners = (int)m_lastStartPinCorners;
     startPin.m_Strength = m_lastStartPinStrength;
 
     ed::Pin endPin(Editor, 0, m_lastEndPinKind);
     endPin.m_Pivot = m_lastEndPivot;
     endPin.m_Dir = m_lastEndDir;
-    endPin.m_Corners = (float)m_lastEndPinCorners;
+	endPin.m_Corners  = (int)m_lastEndPinCorners;
     endPin.m_Strength = m_lastEndPinStrength;
 
     ed::Link candidate(Editor, 0);

@@ -26,7 +26,8 @@
 #include "Beyond/Platform/Vulkan/BindlessDescriptorSetManager.h"
 #include "Beyond/Platform/Vulkan/VulkanRasterPipeline.h"
 
-namespace std {
+namespace std
+{
 	template<>
 	struct hash<Beyond::WeakRef<Beyond::Shader>>
 	{
@@ -35,20 +36,21 @@ namespace std {
 			return shader->GetHash();
 		}
 	};
-}
+} // namespace std
 
-namespace Beyond {
+namespace Beyond
+{
 
 	static RendererAPI* s_RendererAPI = nullptr;
 
 	struct ShaderDependencies
 	{
-		std::vector<Ref<PipelineCompute>> ComputePipelines;
-		std::vector<Ref<RasterPipeline>> RasterPipelines;
-		std::vector<Ref<RaytracingPipeline>> RaytracingPipelines;
-		std::vector<Ref<Material>> Materials;
+		std::vector<Ref<PipelineCompute>>			   ComputePipelines;
+		std::vector<Ref<RasterPipeline>>			   RasterPipelines;
+		std::vector<Ref<RaytracingPipeline>>		   RaytracingPipelines;
+		std::vector<Ref<Material>>					   Materials;
 		std::vector<Ref<BindlessDescriptorSetManager>> BindlessDescriptorSetManagers;
-		std::vector<Ref<DescriptorSetManager>> DescriptorSetManagers;
+		std::vector<Ref<DescriptorSetManager>>		   DescriptorSetManagers;
 	};
 	static std::unordered_map<size_t, ShaderDependencies> s_ShaderDependencies;
 
@@ -136,7 +138,6 @@ namespace Beyond {
 			{
 				material->OnShaderReloaded();
 			}
-
 		}
 	}
 
@@ -162,27 +163,27 @@ namespace Beyond {
 	{
 		Ref<ShaderLibrary> m_ShaderLibrary;
 
-		Ref<Texture2D> MissingTexture;
-		Ref<Texture2D> WhiteTexture;
-		Ref<Texture2D> WhiteTextureArray;
-		Ref<Texture2D> BlackTexture;
-		Ref<Texture2D> BRDFLutTexture;
+		Ref<Texture2D>	   MissingTexture;
+		Ref<Texture2D>	   WhiteTexture;
+		Ref<Texture2D>	   WhiteTextureArray;
+		Ref<Texture2D>	   BlackTexture;
+		Ref<Texture2D>	   BRDFLutTexture;
 		Ref<UniformBuffer> DefaultUniformBuffer;
 		Ref<StorageBuffer> DefaultStorageBuffer;
-		Ref<Texture2D> HilbertLut;
-		Ref<TextureCube> BlackCubeTexture;
-		Ref<Environment> EmptyEnvironment;
+		Ref<Texture2D>	   HilbertLut;
+		Ref<TextureCube>   BlackCubeTexture;
+		Ref<Environment>   EmptyEnvironment;
 
 		std::unordered_map<std::string, std::string> GlobalShaderMacros;
-		std::atomic_bool HasUpdatedShaders = false;
+		std::atomic_bool							 HasUpdatedShaders = false;
 	};
 
-	static RendererConfig s_Config;
-	static RendererData* s_Data = nullptr;
-	constexpr static uint32_t s_RenderCommandQueueCount = 2;
-	static RenderCommandQueue* s_CommandQueue[s_RenderCommandQueueCount];
+	static RendererConfig		 s_Config;
+	static RendererData*		 s_Data					   = nullptr;
+	constexpr static uint32_t	 s_RenderCommandQueueCount = 2;
+	static RenderCommandQueue*	 s_CommandQueue[s_RenderCommandQueueCount];
 	static std::atomic<uint32_t> s_RenderCommandQueueSubmissionIndex = 0;
-	static RenderCommandQueue s_ResourceFreeQueue[3];
+	static RenderCommandQueue	 s_ResourceFreeQueue[3];
 
 	static RendererAPI* InitRendererAPI()
 	{
@@ -201,9 +202,9 @@ namespace Beyond {
 
 	void Renderer::LoadDDGIShaders()
 	{
-		std::vector<std::pair<std::wstring, std::wstring>> defines{
-			{ L"HLSL", L"1" },
-			{ L"__spirv__", L"1" },
+		std::vector<std::pair<std::wstring, std::wstring>> defines {
+			{L"HLSL", L"1"},
+			{L"__spirv__", L"1"},
 
 			/*{ L"VOLUME_CONSTS_REGISTER", L"0" },
 			{ L"VOLUME_CONSTS_SPACE ", L"4" },
@@ -218,18 +219,17 @@ namespace Beyond {
 			{ L"PROBE_VARIABILITY_AVERAGE_REGISTER ", L"5" },*/
 
 			//{ L"RTXGI_PUSH_CONSTS_TYPE", L"2" },
-			{ L"RTXGI_DDGI_USE_SHADER_CONFIG_FILE", L"0" },
-			{ L"RTXGI_DDGI_BINDLESS_RESOURCES", L"0" },
-			{ L"RTXGI_BINDLESS_TYPE", L"0" },
+			{L"RTXGI_DDGI_USE_SHADER_CONFIG_FILE", L"0"},
+			{L"RTXGI_DDGI_BINDLESS_RESOURCES", L"0"},
+			{L"RTXGI_BINDLESS_TYPE", L"0"},
 
-
-			{ L"RTXGI_DDGI_RESOURCE_MANAGEMENT", std::to_wstring(RTXGI_DDGI_RESOURCE_MANAGEMENT).c_str() },
-			{ L"RTXGI_DDGI_SHADER_REFLECTION", L"0" },
-			{ L"RTXGI_DDGI_DEBUG_PROBE_INDEXING", L"0" },
-			{ L"RTXGI_DDGI_DEBUG_OCTAHEDRAL_INDEXING", L"0" },
-			{ L"RTXGI_COORDINATE_SYSTEM", L"2" },
-			{ L"RTXGI_DDGI_WAVE_LANE_COUNT", L"32" },
-			{ L"RTXGI_PUSH_CONSTS_TYPE", L"1" },
+			{L"RTXGI_DDGI_RESOURCE_MANAGEMENT", std::to_wstring(RTXGI_DDGI_RESOURCE_MANAGEMENT).c_str()},
+			{L"RTXGI_DDGI_SHADER_REFLECTION", L"0"},
+			{L"RTXGI_DDGI_DEBUG_PROBE_INDEXING", L"0"},
+			{L"RTXGI_DDGI_DEBUG_OCTAHEDRAL_INDEXING", L"0"},
+			{L"RTXGI_COORDINATE_SYSTEM", L"2"},
+			{L"RTXGI_DDGI_WAVE_LANE_COUNT", L"32"},
+			{L"RTXGI_PUSH_CONSTS_TYPE", L"1"},
 		};
 		std::vector<std::pair<std::wstring, std::wstring>> probeShaderDefines(defines);
 		/*probeShaderDefines.emplace_back(L"RTXGI_PUSH_CONSTS_STRUCT_NAME", L"GlobalConstants");
@@ -240,8 +240,6 @@ namespace Beyond {
 		probeShaderDefines.emplace_back(L"RTXGI_PUSH_CONSTS_FIELD_DDGI_REDUCTION_INPUT_SIZE_Z_NAME", L"ddgi_reductionInputSizeZ");*/
 		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/DDGIIrradiance.hlsl", false, false, true, L"main", L"cs_6_6", probeShaderDefines);
 		Renderer::GetShaderLibrary()->Load(RootSignature::DDGICompute, "Resources/Shaders/DDGITexVis.hlsl", false, false, true, L"main", L"cs_6_6", probeShaderDefines);
-
-
 
 		Renderer::GetShaderLibrary()->Load(RootSignature::DDGIRaytrace, "Resources/Shaders/DDGIRaytrace.hlsl", false, false, false, L"main", L"lib_6_3", probeShaderDefines);
 		Renderer::GetShaderLibrary()->Load(RootSignature::DDGIVis, "Resources/Shaders/DDGIVis.hlsl", false, false, false, L"main", L"lib_6_3", defines);
@@ -288,7 +286,7 @@ namespace Beyond {
 
 	void Renderer::Init()
 	{
-		s_Data = hnew RendererData();
+		s_Data			  = hnew			RendererData();
 		s_CommandQueue[0] = hnew RenderCommandQueue();
 		s_CommandQueue[1] = hnew RenderCommandQueue();
 
@@ -299,7 +297,7 @@ namespace Beyond {
 		s_RendererAPI->InitBindlessDescriptorSetManager();
 		s_Data->m_ShaderLibrary = Ref<ShaderLibrary>::Create();
 
-		//s_Config.ShaderPackPath = "Resources/ShaderPack.hsp";
+		// s_Config.ShaderPackPath = "Resources/ShaderPack.hsp";
 
 		if (!s_Config.ShaderPackPath.empty())
 			Renderer::GetShaderLibrary()->LoadShaderPack(s_Config.ShaderPackPath);
@@ -307,18 +305,13 @@ namespace Beyond {
 		// Ray tracing
 		if (VulkanContext::GetCurrentDevice()->IsRaytracingSupported())
 		{
-			Renderer::GetShaderLibrary()->Load(RootSignature::ComputeHLSL, "Resources/Shaders/Path-Restir-comp.hlsl");
-			Renderer::GetShaderLibrary()->Load(RootSignature::RaytracingHLSL, "Resources/Shaders/Pathtracing.hlsl");
-			Renderer::GetShaderLibrary()->Load(RootSignature::RaytracingHLSL, "Resources/Shaders/Path-Restir.hlsl");
-			Renderer::GetShaderLibrary()->Load(RootSignature::RaytracingHLSL, "Resources/Shaders/Raytracing.hlsl");
+			Renderer::GetShaderLibrary()->Load(RootSignature::ComputeHLSL, "Resources/Shaders/Pathtrace-GGX-comp.hlsl");
+			LoadDDGIShaders();
 		}
-
-		LoadDDGIShaders();
 
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/PBR_Transparent.glsl");
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/PBR_Static.glsl");
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/PBR_Anim.glsl");
-
 
 		Renderer::GetShaderLibrary()->Load(RootSignature::ComputeHLSL, "Resources/Shaders/Exposure.hlsl");
 		Renderer::GetShaderLibrary()->Load(RootSignature::ComputeGLSL, "Resources/Shaders/HZB.glsl");
@@ -331,7 +324,7 @@ namespace Beyond {
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/SpotShadowMap.glsl");
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/SpotShadowMap_Anim.glsl");
 
-		//SSR
+		// SSR
 		Renderer::GetShaderLibrary()->Load(RootSignature::Draw, "Resources/Shaders/Pre-Integration.glsl");
 		Renderer::GetShaderLibrary()->Load(RootSignature::ComputeGLSL, "Resources/Shaders/PostProcessing/Pre-Convolution.glsl");
 		Renderer::GetShaderLibrary()->Load(RootSignature::ComputeGLSL, "Resources/Shaders/PostProcessing/SSR.glsl");
@@ -382,56 +375,50 @@ namespace Beyond {
 		Application::Get().GetRenderThread().Pump();
 
 		{
-			constexpr uint32_t missingTextureData = 0xffff45e0;
+			constexpr uint32_t	 missingTextureData = 0xffff45e0;
 			TextureSpecification spec;
-			spec.Format = ImageFormat::RGBA;
+			spec.Format					  = ImageFormat::RGBA;
 			spec.CreateBindlessDescriptor = true;
-			spec.DebugName = "Missing Texture";
-			s_Data->MissingTexture = Texture2D::Create(spec, Buffer(&missingTextureData, sizeof(uint32_t)));
+			spec.DebugName				  = "Missing Texture";
+			s_Data->MissingTexture		  = Texture2D::Create(spec, Buffer(&missingTextureData, sizeof(uint32_t)));
 		}
 
 		{
-			constexpr uint32_t whiteTextureData = 0xffffffff;
+			constexpr uint32_t	 whiteTextureData = 0xffffffff;
 			TextureSpecification spec;
-			spec.Format = ImageFormat::RGBA;
+			spec.Format					  = ImageFormat::RGBA;
 			spec.CreateBindlessDescriptor = true;
-			spec.DebugName = "White Texture";
-			s_Data->WhiteTexture = Texture2D::Create(spec, Buffer(&whiteTextureData, sizeof(uint32_t)));
+			spec.DebugName				  = "White Texture";
+			s_Data->WhiteTexture		  = Texture2D::Create(spec, Buffer(&whiteTextureData, sizeof(uint32_t)));
 
 			constexpr uint32_t blackTextureData = 0xff000000;
-			spec.DebugName = "Black Texture";
-			s_Data->BlackTexture = Texture2D::Create(spec, Buffer(&blackTextureData, sizeof(uint32_t)));
-
+			spec.DebugName						= "Black Texture";
+			s_Data->BlackTexture				= Texture2D::Create(spec, Buffer(&blackTextureData, sizeof(uint32_t)));
 		}
-
 
 		{
 			constexpr uint32_t whiteTextureData = 0xffffffff;
 
 			TextureSpecification spec;
-			spec.Format = ImageFormat::RGBA;
+			spec.Format					  = ImageFormat::RGBA;
 			spec.CreateBindlessDescriptor = true;
-			spec.GenerateMips = false;
-			spec.Storage = true;
-			spec.DebugName = "White Texture Array";
-			spec.Layers = 2;
-			s_Data->WhiteTextureArray = Texture2D::Create(spec, std::vector{ Buffer(&whiteTextureData, sizeof(uint32_t)), Buffer(&whiteTextureData, sizeof(uint32_t)) });
+			spec.GenerateMips			  = false;
+			spec.Storage				  = true;
+			spec.DebugName				  = "White Texture Array";
+			spec.Layers					  = 2;
+			s_Data->WhiteTextureArray	  = Texture2D::Create(spec, std::vector {Buffer(&whiteTextureData, sizeof(uint32_t)), Buffer(&whiteTextureData, sizeof(uint32_t))});
 
-
-			constexpr uint32_t blackCubeTextureData[6] = { 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000 };
-			spec.DebugName = "Black Cube Texture";
-			s_Data->BlackCubeTexture = TextureCube::Create(spec, Buffer(&blackCubeTextureData, sizeof(blackCubeTextureData)));
+			constexpr uint32_t blackCubeTextureData[6] = {0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000};
+			spec.DebugName							   = "Black Cube Texture";
+			s_Data->BlackCubeTexture				   = TextureCube::Create(spec, Buffer(&blackCubeTextureData, sizeof(blackCubeTextureData)));
 		}
-
-
-
 
 		{
 			TextureSpecification spec;
-			spec.SamplerWrap = TextureWrap::ClampToEdge;
-			spec.DebugName = "BRDF LUT";
+			spec.SamplerWrap			  = TextureWrap::ClampToEdge;
+			spec.DebugName				  = "BRDF LUT";
 			spec.CreateBindlessDescriptor = true;
-			s_Data->BRDFLutTexture = Texture2D::Create(spec, std::filesystem::path("Resources/Renderer/BRDF_LUT.png"));
+			s_Data->BRDFLutTexture		  = Texture2D::Create(spec, std::filesystem::path("Resources/Renderer/BRDF_LUT.png"));
 		}
 
 		s_Data->EmptyEnvironment = Ref<Environment>::Create(s_Data->BlackCubeTexture, s_Data->BlackCubeTexture);
@@ -439,19 +426,19 @@ namespace Beyond {
 		{
 			s_Data->DefaultUniformBuffer = UniformBuffer::Create(1, "Default Uniform Buffer");
 			StorageBufferSpecification storageBufferSpec;
-			storageBufferSpec.DebugName = "Default Storage Buffer";
+			storageBufferSpec.DebugName	 = "Default Storage Buffer";
 			s_Data->DefaultStorageBuffer = StorageBuffer::Create(1, storageBufferSpec);
 		}
 
 		// Hilbert look-up texture! It's a 64 x 64 uint16 texture
 		{
 			TextureSpecification spec;
-			spec.Format = ImageFormat::RED16UI;
-			spec.Width = 64;
-			spec.Height = 64;
-			spec.SamplerWrap = TextureWrap::ClampToEdge;
+			spec.Format		   = ImageFormat::RED16UI;
+			spec.Width		   = 64;
+			spec.Height		   = 64;
+			spec.SamplerWrap   = TextureWrap::ClampToEdge;
 			spec.SamplerFilter = TextureFilter::Nearest;
-			spec.DebugName = "Hilbert LUT";
+			spec.DebugName	   = "Hilbert LUT";
 
 			constexpr auto HilbertIndex = [](uint32_t posX, uint32_t posY)
 			{
@@ -484,13 +471,12 @@ namespace Beyond {
 					for (uint32_t y = 0; y < 64; y++)
 					{
 						const uint16_t r2index = HilbertIndex(x, y);
-						data[x + 64 * y] = r2index;
+						data[x + 64 * y]	   = r2index;
 					}
 				}
 				return data;
 			};
 			s_Data->HilbertLut = Texture2D::Create(spec, Buffer(hilbertLut().data(), 1));
-
 		}
 
 		s_RendererAPI->Init();
@@ -809,8 +795,6 @@ namespace Beyond {
 		s_RendererAPI->SubmitFullscreenQuadWithOverrides(renderCommandBuffer, pipeline, material, vertexShaderOverrides, fragmentShaderOverrides);
 	}
 
-
-
 #if 0
 	void Renderer::SubmitFullscreenQuad(Ref<Material> material)
 	{
@@ -929,7 +913,6 @@ namespace Beyond {
 		return s_ResourceFreeQueue[index];
 	}
 
-
 	const std::unordered_map<std::string, std::string>& Renderer::GetGlobalShaderMacros()
 	{
 		return s_Data->GlobalShaderMacros;
@@ -1011,4 +994,9 @@ namespace Beyond {
 	{
 		s_Data->HasUpdatedShaders = true;
 	}
-}
+
+	void Renderer::WaitDeviceIdle()
+	{
+		s_RendererAPI->WaitDeviceIdle();
+	}
+} // namespace Beyond

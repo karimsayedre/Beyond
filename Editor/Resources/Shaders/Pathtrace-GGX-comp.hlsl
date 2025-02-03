@@ -18,7 +18,6 @@ VK_PUSH_CONST ConstantBuffer<RaytracingPushConst> pushConst;
 
 static const int NBSAMPLES = 1;
 static const float Fdielectric = 0.04f;
-// static const int MIN_BOUNCES = 1;
 static const int MAX_BOUNCES = 15;
 static const float MIN_THROUGHPUT = 0.005f;
 
@@ -41,7 +40,7 @@ PbrMaterial TraceRay(RaytracingAccelerationStructure TLAS, RayDesc ray, uint bou
     {
         return GetMaterialParams(ray, rayQuery.CommittedObjectToWorld3x4(), rayQuery.CommittedTriangleBarycentrics(),
                                  rayQuery.CommittedRayT(), rayQuery.CommittedInstanceID(),
-                                 rayQuery.CommittedPrimitiveIndex(), launchIndex);
+                                 rayQuery.CommittedPrimitiveIndex());
     }
     else
     {
@@ -71,8 +70,7 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
         [branch]
         if (bounceIndex == 0)
         {
-            o_ViewNormalsLuminance[launchIndex] =
-                float4(mul((float3x3)(u_Camera.ViewMatrix), normalize(material.N)) * 0.5 + 0.5, 1.0);
+            o_ViewNormalsLuminance[launchIndex] = float4(mul((float3x3)(u_Camera.ViewMatrix), normalize(material.N)) * 0.5 + 0.5, 1.0);
             o_MetalnessRoughness[launchIndex] = float4(material.metallic, material.roughness.r, 0.0, 1.0);
             o_AlbedoColor[launchIndex] = float4(material.baseColor, material.opacity);
         }
@@ -159,16 +157,16 @@ void main(uint3 dispatchThreadID: SV_DispatchThreadID)
     uint2 launchDimensions = (uint2)u_ScreenData.FullResolution.xy;
     float4 previousColor = io_AccumulatedColor[launchIndex];
 
-    uint seed = tea(launchIndex.y * launchDimensions.x + launchIndex.x, pushConst.FrameIndex * NBSAMPLES);
 
     o_ViewNormalsLuminance[launchIndex] = 0.0.xxxx;
     Bey_DebugImage[launchIndex] = 0.0.xxxx;
     float3 color = 0.0.xxx;
 
     [unroll]
-    for (int smpl = 0; smpl < NBSAMPLES; smpl++)
+    for (int smpl = 1; smpl <= NBSAMPLES; smpl++)
     {
-        // float2 subpixel_jitter = float2(0.5f, 0.5f) + float2(rnd(seed), rnd(seed));
+        uint seed = tea(launchIndex.y * launchDimensions.x + launchIndex.x, pushConst.FrameIndex * smpl);
+
         float2 pixelCenter = float2(launchIndex);
         float2 inUV = pixelCenter / float2(launchDimensions);
 
@@ -190,8 +188,6 @@ void main(uint3 dispatchThreadID: SV_DispatchThreadID)
             color *= 10.0 /*pushConst.fireflyClampThreshold*/ / lum;
         }
     }
-
-    color /= (NBSAMPLES);
 
     float numPaths = (float)NBSAMPLES;
 

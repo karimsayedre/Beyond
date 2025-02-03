@@ -25,7 +25,6 @@ struct PAYLOAD_DECORATION Payload
     float HitT PAYLOAD_WRITE_MODIFIER(closesthit, miss) PAYLOAD_READ_MODIFIER(caller);
     uint PrimitiveIndex PAYLOAD_WRITE_MODIFIER(miss) PAYLOAD_READ_MODIFIER(caller);
     uint InstanceID PAYLOAD_WRITE_MODIFIER(miss) PAYLOAD_READ_MODIFIER(caller);
-    uint WorldNormals PAYLOAD_WRITE_MODIFIER(closesthit) PAYLOAD_READ_MODIFIER(caller);
 };
 
 struct PAYLOAD_DECORATION RayPackedPayload
@@ -67,46 +66,6 @@ struct PAYLOAD_DECORATION RayPackedPayload
         return Unpack8BitToFloat(PackedRoughness);
     }
 };
-
-// RayPackedPayload PackPayload(Payload input)
-// {
-// 	RayPackedPayload output = (RayPackedPayload)0;
-// 	output.HitT = input.HitT;
-// 	output.WorldPosition = input.WorldPosition;
-
-// 	output.PackedAlbedo = PackR11G11B10(input.Albedo.rgb);
-// 	output.PackedAlpha = PackFloatTo8Bit(input.Albedo.a);
-// 	output.PackedMetalness = PackFloatTo8Bit(input.Metalness);
-// 	output.PackedRoughness = PackFloatTo8Bit(input.Roughness);
-// 	output.PackedDepth = input.Depth;
-
-// 	output.PackedNormal = PackNormal(input.Normal);
-
-// 	output.PackedEmissive = f32tof16(input.Emissive.r);
-// 	output.PackedMaterialIndex = (min16uint)input.MaterialIndex;
-// 	return output;
-// }
-
-// Payload UnpackPayload(RayPackedPayload input)
-// {
-// 	Payload output;
-// 	output.HitT = input.HitT;
-// 	output.WorldPosition = input.WorldPosition;
-
-// 	output.Albedo.rgb = UnpackR11G11B10(input.PackedAlbedo);
-// 	output.Albedo.a = Unpack8BitToFloat(input.PackedAlpha);
-
-// 	output.Normal = UnpackNormal(input.PackedNormal);
-
-// 	output.Metalness = Unpack8BitToFloat(input.PackedMetalness);
-// 	output.Roughness = Unpack8BitToFloat(input.PackedRoughness);
-// 	output.Depth = input.PackedDepth;
-
-// 	output.Emissive.r = f16tof32(input.PackedEmissive);
-// 	output.MaterialIndex = uint(input.PackedMaterialIndex);
-
-// 	return output;
-// }
 
 struct PbrMaterial
 {
@@ -201,14 +160,10 @@ PbrMaterial defaultPbrMaterial(float3 baseColor, float metallic, float roughness
 }
 
 PbrMaterial GetMaterialParams(inout RayDesc ray,
-#ifdef USE_RAYQUERY
-                              float3x4 objectToWorld3x4
-#else
-                              float3 worldPosition, uint worldNormal
-#endif
-                              ,
-                              float2 triangleBarycentrices, float hitT, uint InstanceID, uint primitiveIndex,
-                              uint2 launchIndex)
+
+                              float3x4 objectToWorld3x4,
+
+                              float2 triangleBarycentrices, float hitT, uint InstanceID, uint primitiveIndex)
 {
     PbrMaterial payload = (PbrMaterial)0;
     payload.HitT = -1.0f;
@@ -220,24 +175,17 @@ PbrMaterial GetMaterialParams(inout RayDesc ray,
     ObjDesc objResource = objDescs[InstanceID];
     Vertex vertex = LoadInterpolatedVertex(objResource, primitiveIndex, barycentrics);
 
-#ifdef USE_RAYQUERY
-    payload.WorldPosition = float3(mul(objectToWorld3x4, float4(vertex.Position, 1.0)));
-#else
-    payload.WorldPosition = worldPosition;
-#endif
 
-#ifndef USE_RAYQUERY
-    payload.N = normalize(UnpackNormal(worldNormal));
-#else
+    payload.WorldPosition = float3(mul(objectToWorld3x4, float4(vertex.Position, 1.0)));
     float3x3 TBN = float3x3(vertex.Tangent, vertex.Binormal, vertex.Normal);
-    float3x3 worldNormals = mul(((float3x3)objectToWorld3x4), TBN);
-    payload.N = normalize(mul((float3x3)(objectToWorld3x4), vertex.Normal));
-    payload.B = normalize(mul((float3x3)(objectToWorld3x4), vertex.Binormal));
-    payload.T = normalize(mul((float3x3)(objectToWorld3x4), vertex.Tangent));
-#endif
+    float3x3 worldNormals = mul((float3x3)objectToWorld3x4, TBN);
+    payload.N = normalize(mul((float3x3)objectToWorld3x4, vertex.Normal));
+    payload.B = normalize(mul((float3x3)objectToWorld3x4, vertex.Binormal));
+    payload.T = normalize(mul((float3x3)objectToWorld3x4, vertex.Tangent));
+
     payload.Ng = payload.N;
 
-    Material material = materials[objResource.MaterialIndex];
+    Material material = materials[InstanceID];
 
     const float mipLevel = 0.0;
     float4 albedoTexColor = SampleTex2DLevel(material.AlbedoTexIndex, vertex.TexCoord, mipLevel);

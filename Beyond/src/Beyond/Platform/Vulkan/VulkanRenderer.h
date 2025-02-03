@@ -83,9 +83,11 @@ namespace Beyond {
 		static uint32_t GetDescriptorAllocationCount(uint32_t frameIndex = 0);
 
 		static int32_t& GetSelectedDrawCall();
-	public:
+
 		static VkDescriptorSet RT_AllocateDescriptorSet(VkDescriptorSetAllocateInfo& allocInfo);
 		static VkDescriptorSet AllocateMaterialDescriptorSet(VkDescriptorSetAllocateInfo& allocInfo, uint32_t set, uint32_t frame, std::string_view shaderName);
+
+		void WaitDeviceIdle() override;
 	};
 
 	namespace Utils {

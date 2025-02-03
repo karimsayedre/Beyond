@@ -59,11 +59,13 @@ void main()
             }
 
             ObjDesc objDesc = objDescs[payload.InstanceID];
-            Material mat = materials[objDesc.MaterialIndex];
-            float3 worldPosition = ray.Origin + ray.Direction * payload.HitT;
-            PbrMaterial material =
-                GetMaterialParams(ray, worldPosition, payload.WorldNormals, payload.BarycentricCoords, payload.HitT,
-                                  payload.InstanceID, payload.PrimitiveIndex, launchIndex);
+            Material mat = materials[payload.InstanceID];
+
+            float4 modelMatrix[3] = r_Transforms.Load(0).Transform[payload.InstanceID].ModelMatrix;
+            float4x4 transform = float4x4(float4(modelMatrix[0].x, modelMatrix[1].x, modelMatrix[2].x, 0.0), float4(modelMatrix[0].y, modelMatrix[1].y, modelMatrix[2].y, 0.0),
+	                      float4(modelMatrix[0].z, modelMatrix[1].z, modelMatrix[2].z, 0.0), float4(modelMatrix[0].w, modelMatrix[1].w, modelMatrix[2].w, 1.0));
+            PbrMaterial material = GetMaterialParams(ray, (float4x3)transform, payload.BarycentricCoords, payload.HitT, payload.InstanceID, payload.PrimitiveIndex);
+            Bey_DebugImage[launchIndex] = float4(material.WorldPosition, 1.0);
 
             material.transmission = 0.0f;
             material.ior1 = 1.0f;
@@ -128,18 +130,11 @@ static const float3 Fdielectric = 0.04;
 [shader("closesthit")]
 void main(inout Payload payload, BuiltInTriangleIntersectionAttributes attrib)
 {
-    uint2 launchIndex = DispatchRaysIndex().xy;
-
     payload = (Payload)0;
     payload.HitT = RayTCurrent();
     payload.InstanceID = InstanceID();
     payload.PrimitiveIndex = PrimitiveIndex();
     payload.BarycentricCoords = attrib.barycentrics;
-
-    float3 normal = LoadInterpolatedVertexNormals(
-        objDescs[InstanceID()], PrimitiveIndex(),
-        float3(1.0f - attrib.barycentrics.x - attrib.barycentrics.y, attrib.barycentrics.x, attrib.barycentrics.y));
-    payload.WorldNormals = PackNormal(normalize(mul((float3x3)(ObjectToWorld3x4()), normal)));
 }
 
 #pragma stage : miss

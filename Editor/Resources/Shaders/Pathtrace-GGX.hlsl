@@ -80,10 +80,12 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
         Payload payload = TraceRay(ray, bounceIndex);
 
         ObjDesc objDesc = objDescs[payload.InstanceID];
-        Material mat = materials[objDesc.MaterialIndex];
-        float3 worldPosition = ray.Origin + ray.Direction * payload.HitT;
-        PbrMaterial material = GetMaterialParams(ray, worldPosition, payload.WorldNormals, payload.BarycentricCoords,
-                                                 payload.HitT, payload.InstanceID, payload.PrimitiveIndex, launchIndex);
+        Material mat = materials[payload.InstanceID];
+
+        float4 modelMatrix[3] = r_Transforms.Load(0).Transform[payload.InstanceID].ModelMatrix;
+        float4x3 transform = float4x3(float3(modelMatrix[0].x, modelMatrix[1].x, modelMatrix[2].x), float3(modelMatrix[0].y, modelMatrix[1].y, modelMatrix[2].y),
+	                      float3(modelMatrix[0].z, modelMatrix[1].z, modelMatrix[2].z), float3(modelMatrix[0].w, modelMatrix[1].w, modelMatrix[2].w));
+        PbrMaterial material = GetMaterialParams(ray, (transform), payload.BarycentricCoords, payload.HitT, payload.InstanceID, payload.PrimitiveIndex);
 
         const float3 view = -ray.Direction;
         // float2 iors;
@@ -106,6 +108,8 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
         [branch]
         if (bounceIndex == 0)
         {
+            Bey_DebugImage[launchIndex] = float4(material.WorldPosition, 1.0);
+
             o_ViewNormalsLuminance[launchIndex] =
                 float4(mul((float3x3)(u_Camera.ViewMatrix), normalize(material.N)) * 0.5 + 0.5, 1.0);
             o_MetalnessRoughness[launchIndex] = float4(material.metallic, material.roughness.r, 0.0, 1.0);
@@ -302,17 +306,10 @@ static const float3 Fdielectric = 0.04;
 [shader("closesthit")]
 void main(inout Payload payload, BuiltInTriangleIntersectionAttributes attrib)
 {
-    uint2 launchIndex = DispatchRaysIndex().xy;
-
     payload.HitT = RayTCurrent();
     payload.InstanceID = InstanceID();
     payload.PrimitiveIndex = PrimitiveIndex();
     payload.BarycentricCoords = attrib.barycentrics;
-
-    float3 normal = LoadInterpolatedVertexNormals(
-        objDescs[InstanceID()], PrimitiveIndex(),
-        float3(1.0f - attrib.barycentrics.x - attrib.barycentrics.y, attrib.barycentrics.x, attrib.barycentrics.y));
-    payload.WorldNormals = PackNormal(normalize(mul((float3x3)(ObjectToWorld3x4()), normal)));
 }
 
 #pragma stage : miss

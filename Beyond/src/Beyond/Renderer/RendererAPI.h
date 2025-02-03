@@ -106,6 +106,7 @@ namespace Beyond {
 		virtual std::vector<std::unique_ptr<rtxgi::vulkan::DDGIVolume>>& GetDDGIVolumes() = 0;
 
 		virtual RendererCapabilities& GetCapabilities() = 0;
+		virtual void WaitDeviceIdle() = 0;
 
 		static RendererAPIType Current() { return s_CurrentRendererAPI; }
 		static void SetAPI(RendererAPIType api);

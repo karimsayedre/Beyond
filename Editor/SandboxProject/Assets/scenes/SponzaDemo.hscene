@@ -1,21 +1,5 @@
 Scene: ""
 Entities:
-  - Entity: 19637126306445731
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 11
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 113113219122576926
     TagComponent:
       Tag: nodes[0]
@@ -29,22 +13,6 @@ Entities:
     MeshComponent:
       AssetID: 7849690312330082760
       SubmeshIndex: 10
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 310071505618958838
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 4
       MaterialTable:
         0: 0
       Visible: true
@@ -64,70 +32,6 @@ Entities:
       MaterialTable:
         0: 0
       Visible: true
-  - Entity: 646001848684353931
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 13
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 974567427554857963
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 6
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 1743420591907136529
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 12
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 1827150067487262959
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 23
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 2143608321399101581
     TagComponent:
       Tag: Sky Light
@@ -144,86 +48,6 @@ Entities:
       Lod: 1
       DynamicSky: true
       TurbidityAzimuthInclination: [2.31999993, 5.1420002, 1.52999997]
-  - Entity: 2179097041744445716
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 10
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 2696330117599275167
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 19
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 2892838499758054430
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 2
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 2935392244170919439
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 14
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 3439312793400448604
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 9
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 3728659574317991148
     TagComponent:
       Tag: nodes[0]
@@ -253,38 +77,6 @@ Entities:
     MeshComponent:
       AssetID: 7849690312330082760
       SubmeshIndex: 16
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 4148456246984208098
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 17
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 4706038333366545956
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 7
       MaterialTable:
         0: 0
       Visible: true
@@ -358,38 +150,6 @@ Entities:
         OrthographicNear: -1
         OrthographicFar: 1
       Primary: true
-  - Entity: 6163631523541628919
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 5
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 6171187324531738669
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 15
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 6210496036339132220
     TagComponent:
       Tag: nodes[0]
@@ -419,22 +179,6 @@ Entities:
     MeshComponent:
       AssetID: 7849690312330082760
       SubmeshIndex: 13
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 6889600918922010061
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 22
       MaterialTable:
         0: 0
       Visible: true
@@ -474,22 +218,6 @@ Entities:
       ProbeIrradianceEncodingGamma: 5
       ProbeRandomRayBackfaceThreshold: 0.100000001
       ProbeFixedRayBackfaceThreshold: 0.25
-  - Entity: 7549527081915308245
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 24
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 7834551360065713661
     TagComponent:
       Tag: Sponza
@@ -564,22 +292,6 @@ Entities:
       MaterialTable:
         0: 0
       Visible: true
-  - Entity: 10513705240280924682
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 3
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 11491642393553252025
     TagComponent:
       Tag: nodes[0]
@@ -644,22 +356,6 @@ Entities:
       MaterialTable:
         0: 0
       Visible: true
-  - Entity: 13287548898233335012
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 21
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 13474805638977316047
     TagComponent:
       Tag: nodes[0]
@@ -712,16 +408,6 @@ Entities:
       MaterialTable:
         0: 0
       Visible: true
-  - Entity: 13647542126103642194
-    TagComponent:
-      Tag: Sponza
-    Parent: 0
-    Children:
-      - Handle: 16795843436205531440
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
   - Entity: 13882838760121718506
     TagComponent:
       Tag: Directional Light
@@ -759,22 +445,6 @@ Entities:
       Offset: [0, 0, 0]
       Friction: 0.5
       Restitution: 0.150000006
-  - Entity: 14198133804335526941
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 20
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 14268751408297094773
     TagComponent:
       Tag: Sphere
@@ -842,22 +512,6 @@ Entities:
     MeshComponent:
       AssetID: 7849690312330082760
       SubmeshIndex: 23
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 15249554596690220724
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 18
       MaterialTable:
         0: 0
       Visible: true
@@ -940,40 +594,6 @@ Entities:
       MaterialTable:
         0: 0
       Visible: true
-  - Entity: 16795843436205531440
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 13647542126103642194
-    Children:
-      - Handle: 18249627465670198018
-      - Handle: 17333022146929445681
-      - Handle: 2892838499758054430
-      - Handle: 10513705240280924682
-      - Handle: 310071505618958838
-      - Handle: 6163631523541628919
-      - Handle: 974567427554857963
-      - Handle: 4706038333366545956
-      - Handle: 18345550230055350924
-      - Handle: 3439312793400448604
-      - Handle: 2179097041744445716
-      - Handle: 19637126306445731
-      - Handle: 1743420591907136529
-      - Handle: 646001848684353931
-      - Handle: 2935392244170919439
-      - Handle: 6171187324531738669
-      - Handle: 17621893118476142953
-      - Handle: 4148456246984208098
-      - Handle: 15249554596690220724
-      - Handle: 2696330117599275167
-      - Handle: 14198133804335526941
-      - Handle: 13287548898233335012
-      - Handle: 6889600918922010061
-      - Handle: 1827150067487262959
-      - Handle: 7549527081915308245
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, -0, 0]
-      Scale: [0.00800000038, 0.00800000038, 0.00800000038]
   - Entity: 16858741825400978777
     TagComponent:
       Tag: nodes[0]
@@ -1008,22 +628,6 @@ Entities:
       Position: [0, 0, 0]
       Rotation: [0, -0, 0]
       Scale: [0.00800000038, 0.00800000038, 0.00800000038]
-  - Entity: 17333022146929445681
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 1
-      MaterialTable:
-        0: 0
-      Visible: true
   - Entity: 17417433887387644273
     TagComponent:
       Tag: nodes[0]
@@ -1037,22 +641,6 @@ Entities:
     MeshComponent:
       AssetID: 7849690312330082760
       SubmeshIndex: 5
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 17621893118476142953
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 16
       MaterialTable:
         0: 0
       Visible: true
@@ -1088,38 +676,6 @@ Entities:
       ConeInnerAngle: 6.28318501
       ConeOuterAngle: 6.28318501
       ConeOuterGain: 0
-  - Entity: 18249627465670198018
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-  - Entity: 18345550230055350924
-    TagComponent:
-      Tag: nodes[0]
-    Parent: 16795843436205531440
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    MeshComponent:
-      AssetID: 11630371052269982226
-      SubmeshIndex: 8
-      MaterialTable:
-        0: 0
-      Visible: true
 SceneAudio:
   MasterReverb:
     Pre-delay: 50

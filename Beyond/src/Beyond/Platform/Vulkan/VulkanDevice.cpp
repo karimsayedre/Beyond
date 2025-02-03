@@ -22,13 +22,13 @@ namespace Beyond {
 		switch (loggingLevel)
 		{
 			case NVSDK_NGX_LOGGING_LEVEL_OFF:
-				BEY_CORE_ERROR("NGX Error: {} from: {}", message, magic_enum::enum_name<NVSDK_NGX_Feature>(sourceComponent));
+				BEY_CORE_ERROR("NGX Error: {} from: {}", message, magic_enum::enum_name(sourceComponent));
 				break;
 			case NVSDK_NGX_LOGGING_LEVEL_ON:
-				BEY_CORE_INFO("NGX INFO: {} from: {}", message, magic_enum::enum_name<NVSDK_NGX_Feature>(sourceComponent));
+				//BEY_CORE_INFO("NGX INFO: {} from: {}", message, magic_enum::enum_name(sourceComponent));
 				break;
 			case NVSDK_NGX_LOGGING_LEVEL_VERBOSE:
-				BEY_CORE_TRACE("NGX Verbose: {} from: {}", message, magic_enum::enum_name<NVSDK_NGX_Feature>(sourceComponent));
+				BEY_CORE_TRACE("NGX Verbose: {} from: {}", message, magic_enum::enum_name(sourceComponent));
 				break;
 		}
 	}
@@ -312,6 +312,9 @@ namespace Beyond {
 		deviceExtensions.push_back(VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME);
 		deviceExtensions.push_back(VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME);
 		deviceExtensions.push_back(VK_EXT_PAGEABLE_DEVICE_LOCAL_MEMORY_EXTENSION_NAME);
+#ifdef BEY_DEBUG
+		deviceExtensions.push_back(VK_NV_RAY_TRACING_VALIDATION_EXTENSION_NAME);
+#endif
 
 		deviceExtensions.erase(std::ranges::remove_if(deviceExtensions, [physicalDevice = m_PhysicalDevice](const char* ext) mutable
 		{
@@ -370,6 +373,9 @@ namespace Beyond {
 		VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures separateDepthStencilFeatures = {};
 		separateDepthStencilFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES;
 		separateDepthStencilFeatures.separateDepthStencilLayouts = true;
+
+		VkPhysicalDeviceRayTracingValidationFeaturesNV raytracingValidationFeature = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV };
+		raytracingValidationFeature.rayTracingValidation = true;
 
 		// Start with the last feature in the chain
 		void* featureChainHead = nullptr;
@@ -445,10 +451,13 @@ namespace Beyond {
 			featureChainHead = &bufferDeviceAddressFeatures;
 		}
 
-
-
-		//NVSDK_NGX_VULKAN_GetFeatureInstanceExtensionRequirements
-
+#ifdef BEY_DEBUG
+		if (physicalDevice->IsExtensionSupported(VK_NV_RAY_TRACING_VALIDATION_EXTENSION_NAME))
+		{
+			raytracingValidationFeature.pNext = featureChainHead;
+			featureChainHead = &raytracingValidationFeature;
+		}
+#endif
 
 #if BEY_HAS_AFTERMATH
 		VkDeviceDiagnosticsConfigCreateInfoNV aftermathInfo = {};
@@ -470,25 +479,13 @@ namespace Beyond {
 		}
 #endif
 
-
 		VkDeviceCreateInfo deviceCreateInfo = {};
 		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
-		//////////////////////////////////////////////////////////////////////////
-		// version features and physical device extensions
-
-#if BEY_HAS_AFTERMATH
-		if (canEnableAftermath)
-			deviceCreateInfo.pNext = &aftermathInfo;
-#else
-		deviceCreateInfo.pNext = &separateDepthStencilFeatures;
-#endif
+		deviceCreateInfo.pNext = featureChainHead;
 		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(physicalDevice->m_QueueCreateInfos.size());
 		deviceCreateInfo.pQueueCreateInfos = physicalDevice->m_QueueCreateInfos.data();
 		deviceCreateInfo.pEnabledFeatures = &enabledFeatures;
 
-		// If a pNext(Chain) has been passed, we need to add it to the device creation info
-		VkPhysicalDeviceFeatures2 physicalDeviceFeatures2{};
 		// Enable the debug marker extension if it is present (likely meaning a debugging tool is present)
 		if (m_PhysicalDevice->IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
 		{

@@ -8,7 +8,7 @@
 #include "VulkanUniformBufferSet.h"
 #include "VulkanStorageBuffer.h"
 #include "VulkanStorageBufferSet.h"
-//#include "VulkanAccelerationStructure.h"
+// #include "VulkanAccelerationStructure.h"
 #include "VulkanBLAS.h"
 
 #include "VulkanAccelerationStructureSet.h"
@@ -23,34 +23,30 @@
 #include "Beyond/Platform/Vulkan/VulkanShader.h"
 #include "Beyond/Renderer/Sampler.h"
 
-namespace Beyond {
+namespace Beyond
+{
 
-	namespace Utils {
+	namespace Utils
+	{
 
 		inline RenderPassResourceType GetDefaultResourceType(VkDescriptorType descriptorType)
 		{
 			switch (descriptorType)
 			{
 				case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
-				case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-					return RenderPassResourceType::Texture2D;
-				case VK_DESCRIPTOR_TYPE_SAMPLER:
-					return RenderPassResourceType::Sampler;
-				case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-					return RenderPassResourceType::Image2D;
-				case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
-					return RenderPassResourceType::UniformBufferSet;
-				case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
-					return RenderPassResourceType::StorageBufferSet;
-				case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR:
-					return RenderPassResourceType::AccelerationStructureSet;
+				case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE: return RenderPassResourceType::Texture2D;
+				case VK_DESCRIPTOR_TYPE_SAMPLER: return RenderPassResourceType::Sampler;
+				case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE: return RenderPassResourceType::Image2D;
+				case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER: return RenderPassResourceType::UniformBufferSet;
+				case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER: return RenderPassResourceType::StorageBufferSet;
+				case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR: return RenderPassResourceType::AccelerationStructureSet;
 			}
 
 			BEY_CORE_ASSERT(false);
 			return RenderPassResourceType::None;
 		}
 
-	}
+	} // namespace Utils
 
 	template<class ResourceType, typename DescriptorInfoType, RenderPassResourceType resourceType>
 	void CheckChanges(const RenderPassInput& input, uint32_t frameIndex, uint32_t set, uint32_t binding, const std::vector<std::map<uint32_t, std::map<uint32_t, DescriptorSetManager::WriteDescriptor>>>& writeDescriptorMap, ResourceDesMap<RenderPassInput>& invalidatedInputResources)
@@ -58,21 +54,19 @@ namespace Beyond {
 		bool invalidated = false;
 		for (auto [index, resource] : input.Input)
 		{
-
 			Ref<ResourceType> vulkanResource = resource.As<ResourceType>();
-
 
 			if constexpr (resourceType == RenderPassResourceType::UniformBufferSet)
 			{
 				if (vulkanResource->Get(frameIndex).As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo().buffer != writeDescriptorMap[frameIndex].at(set).at(binding).ResourceHandles[index])
 					invalidated = true;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
+			else if constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
 			{
 				if (vulkanResource->Get(frameIndex).As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo().buffer != writeDescriptorMap[frameIndex].at(set).at(binding).ResourceHandles[index])
 					invalidated = true;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
+			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
 			{
 				if (vulkanResource->Get(frameIndex).As<VulkanTLAS>()->GetVulkanDescriptorInfo().pAccelerationStructures[0] != writeDescriptorMap[frameIndex].at(set).at(binding).ResourceHandles[index])
 					invalidated = true;
@@ -94,14 +88,11 @@ namespace Beyond {
 					if (((DescriptorInfoType*)vulkanResource.As<ResourceType>()->GetDescriptorInfo())->sampler != writeDescriptorMap[frameIndex].at(set).at(binding).ResourceHandles[index])
 						invalidated = true;
 				}
-				else
-					if (((DescriptorInfoType*)vulkanResource.As<ResourceType>()->GetDescriptorInfo())->imageView != writeDescriptorMap[frameIndex].at(set).at(binding).ResourceHandles[index])
-						invalidated = true;
-
+				else if (((DescriptorInfoType*)vulkanResource.As<ResourceType>()->GetDescriptorInfo())->imageView != writeDescriptorMap[frameIndex].at(set).at(binding).ResourceHandles[index])
+					invalidated = true;
 			}
 
-			//if constexpr (std::is_same_v<ResourceType, VulkanTexture2D>) // TODO: texture IsReady()?
-
+			// if constexpr (std::is_same_v<ResourceType, VulkanTexture2D>) // TODO: texture IsReady()?
 		}
 
 		if (invalidated)
@@ -120,39 +111,37 @@ namespace Beyond {
 			const DescriptorInfoType* info;
 			if constexpr (resourceType == RenderPassResourceType::UniformBufferSet)
 			{
-
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->buffer;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
+			else if constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->buffer;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
+			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
 			{
-
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanTLAS>()->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanTLAS>()->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->pAccelerationStructures[0];
 			}
 			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructure)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->pAccelerationStructures[0];
 			}
 			else if constexpr (resourceType == RenderPassResourceType::UniformBuffer || resourceType == RenderPassResourceType::StorageBuffer || resourceType == RenderPassResourceType::IndexBuffer || resourceType == RenderPassResourceType::VertexBuffer)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->buffer;
 			}
 			else if constexpr (resourceType == RenderPassResourceType::Sampler)
 			{
-				info = (const DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
+				info			   = (const DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
 				resourceHandles[i] = info->sampler;
 			}
 			else
 			{
-				info = (DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
+				info			   = (DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
 				resourceHandles[i] = info->imageView;
 			}
 
@@ -175,43 +164,40 @@ namespace Beyond {
 	template<class ResourceType, typename DescriptorInfoType, RenderPassResourceType resourceType>
 	void SubmitDescriptor(const RenderPassInput& input, uint32_t frameIndex, uint32_t set, uint32_t binding, VkWriteDescriptorSet& descriptor, Buffer& imageInfoStorage, ResourceDesMap<RenderPassInput>& invalidatedInputResources, std::vector<const void*>& resourceHandles)
 	{
-
 		imageInfoStorage.Allocate(input.Input.size() * sizeof(DescriptorInfoType));
 
 		for (size_t i = 0; const auto [index, resource] : input.Input)
 		{
-			Ref<ResourceType> vulkanResource = resource.As<ResourceType>();
+			Ref<ResourceType>		  vulkanResource = resource.As<ResourceType>();
 			const DescriptorInfoType* info;
 			if constexpr (resourceType == RenderPassResourceType::UniformBufferSet)
 			{
-
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->buffer;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
+			else if constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->buffer;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
+			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
 			{
-
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanTLAS>()->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).template As<VulkanTLAS>()->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->pAccelerationStructures[0];
 			}
 			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructure)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->pAccelerationStructures[0];
 			}
 			else if constexpr (resourceType == RenderPassResourceType::UniformBuffer || resourceType == RenderPassResourceType::StorageBuffer || resourceType == RenderPassResourceType::IndexBuffer || resourceType == RenderPassResourceType::VertexBuffer)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
+				info			   = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
 				resourceHandles[i] = info->buffer;
 			}
 			else
 			{
-				info = (DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
+				info			   = (DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
 				resourceHandles[i] = info->imageView;
 			}
 
@@ -237,7 +223,6 @@ namespace Beyond {
 		else
 			invalidatedInputResources[ResourceDesID(frameIndex, set, binding)] = input;
 	}
-
 
 	DescriptorSetManager::DescriptorSetManager(const DescriptorSetManagerSpecification& specification)
 		: m_Specification(specification)
@@ -267,9 +252,9 @@ namespace Beyond {
 
 	void DescriptorSetManager::Init()
 	{
-		VkDevice device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
+		VkDevice	device				 = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
 		const auto& shaderDescriptorSets = m_Specification.Shader->GetShaderDescriptorSets();
-		uint32_t framesInFlight = Renderer::GetConfig().FramesInFlight;
+		uint32_t	framesInFlight		 = Renderer::GetConfig().FramesInFlight;
 		WriteDescriptorMap.resize(framesInFlight);
 
 		for (uint32_t set = m_Specification.StartSet; set <= m_Specification.EndSet; set++)
@@ -282,23 +267,23 @@ namespace Beyond {
 			{
 				// NOTE: This is a hack to fix a bad input decl name
 				//				Coming from somewhere.
-				const char* broken = strrchr(bname.c_str(), '.');
-				eastl::string name = broken ? broken + 1 : bname;
+				const char*	  broken = strrchr(bname.c_str(), '.');
+				eastl::string name	 = broken ? broken + 1 : bname;
 
-				uint32_t binding = wd.dstBinding;
+				uint32_t					binding	  = wd.dstBinding;
 				RenderPassInputDeclaration& inputDecl = InputDeclarations[name];
-				inputDecl.Type = RenderPassInputTypeFromVulkanDescriptorType(wd.descriptorType);
-				inputDecl.Set = set;
-				inputDecl.Binding = binding;
-				inputDecl.Name = name;
-				inputDecl.Count = wd.descriptorCount;
+				inputDecl.Type						  = RenderPassInputTypeFromVulkanDescriptorType(wd.descriptorType);
+				inputDecl.Set						  = set;
+				inputDecl.Binding					  = binding;
+				inputDecl.Name						  = name;
+				inputDecl.Count						  = wd.descriptorCount;
 
 				// Create RenderPassInput
 				RenderPassInput& input = InputResources[set][binding];
-				input.Type = Utils::GetDefaultResourceType(wd.descriptorType);
+				input.Type			   = Utils::GetDefaultResourceType(wd.descriptorType);
 
 				//// Insert default resources (useful for materials)
-				//if (m_Specification.DefaultResources && set == (uint32_t)DescriptorSetAlias::Material)
+				// if (m_Specification.DefaultResources && set == (uint32_t)DescriptorSetAlias::Material)
 				//{
 				//	// Set default textures
 				//	if (inputDecl.Type == RenderPassInputType::ImageSampler2D)
@@ -311,43 +296,31 @@ namespace Beyond {
 				//		for (size_t i = 0; i < input.Input.size(); i++)
 				//			input.Input[i] = Renderer::GetBlackCubeTexture();
 				//	}
-				//}
+				// }
 
 				for (uint32_t frameIndex = 0; frameIndex < framesInFlight; frameIndex++)
-					WriteDescriptorMap[frameIndex][set][binding] = { wd, std::vector<const void*>(wd.descriptorCount) };
+					WriteDescriptorMap[frameIndex][set][binding] = {wd, std::vector<const void*>(wd.descriptorCount)};
 
 				if (shaderDescriptor.ImageSamplers.contains(binding))
 				{
-					auto& imageSampler = shaderDescriptor.ImageSamplers.at(binding);
-					uint32_t dimension = imageSampler.Dimension;
+					auto&	 imageSampler = shaderDescriptor.ImageSamplers.at(binding);
+					uint32_t dimension	  = imageSampler.Dimension;
 					if (wd.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE || wd.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 					{
 						switch (dimension)
 						{
-							case 1:
-								inputDecl.Type = RenderPassInputType::ImageSampler1D;
-								break;
-							case 2:
-								inputDecl.Type = RenderPassInputType::ImageSampler2D;
-								break;
-							case 3:
-								inputDecl.Type = RenderPassInputType::ImageSampler3D;
-								break;
+							case 1: inputDecl.Type = RenderPassInputType::ImageSampler1D; break;
+							case 2: inputDecl.Type = RenderPassInputType::ImageSampler2D; break;
+							case 3: inputDecl.Type = RenderPassInputType::ImageSampler3D; break;
 						}
 					}
 					else if (wd.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
 					{
 						switch (dimension)
 						{
-							case 1:
-								inputDecl.Type = RenderPassInputType::StorageImage1D;
-								break;
-							case 2:
-								inputDecl.Type = RenderPassInputType::StorageImage2D;
-								break;
-							case 3:
-								inputDecl.Type = RenderPassInputType::StorageImage3D;
-								break;
+							case 1: inputDecl.Type = RenderPassInputType::StorageImage1D; break;
+							case 2: inputDecl.Type = RenderPassInputType::StorageImage2D; break;
+							case 3: inputDecl.Type = RenderPassInputType::StorageImage3D; break;
 						}
 					}
 				}
@@ -379,9 +352,7 @@ namespace Beyond {
 	void DescriptorSetManager::Invalidate()
 	{
 		Renderer::Submit([instance = Ref(this)]() mutable
-		{
-			instance->RT_Invalidate();
-		});
+						 { instance->RT_Invalidate(); });
 	}
 
 	void DescriptorSetManager::RT_Invalidate()
@@ -389,9 +360,9 @@ namespace Beyond {
 		Release();
 		VkDevice device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
 
-		auto bufferSets = HasBufferSets();
-		bool perFrameInFlight = !bufferSets.empty();
-		perFrameInFlight = true; // always
+		auto bufferSets				= HasBufferSets();
+		bool perFrameInFlight		= !bufferSets.empty();
+		perFrameInFlight			= true; // always
 		uint32_t descriptorSetCount = Renderer::GetConfig().FramesInFlight;
 		if (!perFrameInFlight)
 			descriptorSetCount = 1;
@@ -406,7 +377,7 @@ namespace Beyond {
 			descriptorSet.clear();
 
 		const auto& shaderDescriptorSets = m_Specification.Shader->GetShaderDescriptorSets();
-		uint32_t framesInFlight = Renderer::GetConfig().FramesInFlight;
+		uint32_t	framesInFlight		 = Renderer::GetConfig().FramesInFlight;
 		WriteDescriptorMap.resize(framesInFlight);
 
 		for (uint32_t set = m_Specification.StartSet; set <= m_Specification.EndSet; set++)
@@ -419,54 +390,41 @@ namespace Beyond {
 			{
 				// NOTE: This is a hack to fix a bad input decl name
 				//				Coming from somewhere.
-				const char* broken = strrchr(bname.c_str(), '.');
-				eastl::string name = broken ? broken + 1 : bname;
+				const char*	  broken = strrchr(bname.c_str(), '.');
+				eastl::string name	 = broken ? broken + 1 : bname;
 
-				uint32_t binding = wd.dstBinding;
+				uint32_t					binding	  = wd.dstBinding;
 				RenderPassInputDeclaration& inputDecl = InputDeclarations[name];
-				inputDecl.Type = RenderPassInputTypeFromVulkanDescriptorType(wd.descriptorType);
-				inputDecl.Set = set;
-				inputDecl.Binding = binding;
-				inputDecl.Name = name;
-				inputDecl.Count = wd.descriptorCount;
+				inputDecl.Type						  = RenderPassInputTypeFromVulkanDescriptorType(wd.descriptorType);
+				inputDecl.Set						  = set;
+				inputDecl.Binding					  = binding;
+				inputDecl.Name						  = name;
+				inputDecl.Count						  = wd.descriptorCount;
 
 				for (uint32_t frameIndex = 0; frameIndex < framesInFlight; frameIndex++)
-					WriteDescriptorMap[frameIndex][set][binding] = { wd, std::vector<const void*>(wd.descriptorCount) };
+					WriteDescriptorMap[frameIndex][set][binding] = {wd, std::vector<const void*>(wd.descriptorCount)};
 
 				if (shaderDescriptor.ImageSamplers.contains(binding))
 				{
-					auto& imageSampler = shaderDescriptor.ImageSamplers.at(binding);
-					uint32_t dimension = imageSampler.Dimension;
+					auto&	 imageSampler = shaderDescriptor.ImageSamplers.at(binding);
+					uint32_t dimension	  = imageSampler.Dimension;
 					if (wd.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE || wd.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 					{
 						switch (dimension)
 						{
-							case 1:
-								inputDecl.Type = RenderPassInputType::ImageSampler1D;
-								break;
-							case 2:
-								inputDecl.Type = RenderPassInputType::ImageSampler2D;
-								break;
-							case 3:
-								inputDecl.Type = RenderPassInputType::ImageSampler3D;
-								break;
+							case 1: inputDecl.Type = RenderPassInputType::ImageSampler1D; break;
+							case 2: inputDecl.Type = RenderPassInputType::ImageSampler2D; break;
+							case 3: inputDecl.Type = RenderPassInputType::ImageSampler3D; break;
 						}
 					}
 					else if (wd.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
 					{
 						switch (dimension)
 						{
-							case 1:
-								inputDecl.Type = RenderPassInputType::StorageImage1D;
-								break;
-							case 2:
-								inputDecl.Type = RenderPassInputType::StorageImage2D;
-								break;
-							case 3:
-								inputDecl.Type = RenderPassInputType::StorageImage3D;
-								break;
+							case 1: inputDecl.Type = RenderPassInputType::StorageImage1D; break;
+							case 2: inputDecl.Type = RenderPassInputType::StorageImage2D; break;
+							case 3: inputDecl.Type = RenderPassInputType::StorageImage3D; break;
 						}
-
 					}
 				}
 			}
@@ -646,14 +604,13 @@ namespace Beyond {
 		return sets;
 	}
 
-
 	bool DescriptorSetManager::Validate()
 	{
 		// Go through pipeline requirements to make sure we have all required resource
 		const auto& shaderDescriptorSets = m_Specification.Shader->GetShaderDescriptorSets();
 
 		// Nothing to validate, pipeline only contains material inputs
-		//if (shaderDescriptorSets.size() < 2)
+		// if (shaderDescriptorSets.size() < 2)
 		//	return true;
 
 		for (uint32_t set = m_Specification.StartSet; set <= m_Specification.EndSet; set++)
@@ -720,9 +677,7 @@ namespace Beyond {
 	void DescriptorSetManager::Release()
 	{
 		Renderer::SubmitResourceFree([pool = m_DescriptorPool]()
-		{
-			vkDestroyDescriptorPool(VulkanContext::GetCurrentDevice()->GetVulkanDevice(), pool, nullptr);
-		});
+									 { vkDestroyDescriptorPool(VulkanContext::GetCurrentDevice()->GetVulkanDevice(), pool, nullptr); });
 		InputDeclarations.clear();
 		m_DescriptorSets.clear();
 		WriteDescriptorMap.clear();
@@ -745,35 +700,35 @@ namespace Beyond {
 		std::vector<VkDescriptorPoolSize> poolSizes;
 
 		// Add descriptor types based on the support
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 5000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 });
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_SAMPLER, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 5000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000});
+		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000});
 
 		if (VulkanContext::GetCurrentDevice()->GetPhysicalDevice()->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME))
 		{
-			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1000 });
+			poolSizes.push_back({VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1000});
 		}
 
-		VkDescriptorPoolCreateInfo poolInfo{};
-		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-		poolInfo.maxSets = 10 * 3; // frames in flight should partially determine this
+		VkDescriptorPoolCreateInfo poolInfo {};
+		poolInfo.sType		   = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		poolInfo.flags		   = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+		poolInfo.maxSets	   = 10 * 3; // frames in flight should partially determine this
 		poolInfo.poolSizeCount = 10;
-		poolInfo.pPoolSizes = poolSizes.data();
+		poolInfo.pPoolSizes	   = poolSizes.data();
 
 		VK_CHECK_RESULT(vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool));
 		VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_POOL, fmt::eastl_format("Descriptor Set Manager({})", m_Specification.DebugName), m_DescriptorPool);
 
-		auto bufferSets = HasBufferSets();
-		bool perFrameInFlight = !bufferSets.empty();
-		perFrameInFlight = true; // always
+		auto bufferSets				= HasBufferSets();
+		bool perFrameInFlight		= !bufferSets.empty();
+		perFrameInFlight			= true; // always
 		uint32_t descriptorSetCount = Renderer::GetConfig().FramesInFlight;
 		if (!perFrameInFlight)
 			descriptorSetCount = 1;
@@ -787,7 +742,6 @@ namespace Beyond {
 		for (auto& descriptorSet : m_DescriptorSets)
 			descriptorSet.clear();
 
-
 		for (const auto& [set, setData] : InputResources)
 		{
 			BEY_CORE_VERIFY(set != (uint32_t)DescriptorSetAlias::Bindless && set != (uint32_t)DescriptorSetAlias::DynamicBindless, "Use BindlessDescriptorSetManager for bindless sets.");
@@ -795,9 +749,9 @@ namespace Beyond {
 			uint32_t descriptorCountInSet = bufferSets.contains(set) ? descriptorSetCount : 1;
 			for (uint32_t frameIndex = 0; frameIndex < descriptorSetCount; frameIndex++)
 			{
-				VkDescriptorSetLayout dsl = m_Specification.Shader->GetDescriptorSetLayout(set);
+				VkDescriptorSetLayout		dsl					   = m_Specification.Shader->GetDescriptorSetLayout(set);
 				VkDescriptorSetAllocateInfo descriptorSetAllocInfo = Vulkan::DescriptorSetAllocInfo(&dsl, 1, m_DescriptorPool);
-				VkDescriptorSet descriptorSet = nullptr;
+				VkDescriptorSet				descriptorSet		   = nullptr;
 
 				VK_CHECK_RESULT(vkAllocateDescriptorSets(device, &descriptorSetAllocInfo, &descriptorSet));
 				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_SET, fmt::eastl_format("Shader: {}, Set: {}, frame: {}", m_Specification.Shader->GetName(), set, frameIndex), descriptorSet);
@@ -807,16 +761,16 @@ namespace Beyond {
 				if (!WriteDescriptorMap[frameIndex].contains(set))
 					return;
 
-				auto& writeDescriptorMap = WriteDescriptorMap[frameIndex].at(set);
+				auto&				writeDescriptorMap = WriteDescriptorMap[frameIndex].at(set);
 				std::vector<Buffer> imageInfoStorage;
-				uint32_t imageInfoStorageIndex = 0;
+				uint32_t			imageInfoStorageIndex = 0;
 
 				for (const auto& [binding, input] : setData)
 				{
 					auto& storedWriteDescriptor = writeDescriptorMap.at(binding);
 
 					VkWriteDescriptorSet& writeDescriptor = storedWriteDescriptor.WriteDescriptorSet;
-					writeDescriptor.dstSet = descriptorSet;
+					writeDescriptor.dstSet				  = descriptorSet;
 					imageInfoStorage.resize(imageInfoStorageIndex + 1);
 					switch (input.Type)
 					{
@@ -882,7 +836,6 @@ namespace Beyond {
 						}
 					}
 					imageInfoStorageIndex++;
-
 				}
 
 				std::vector<VkWriteDescriptorSet> writeDescriptors;
@@ -902,8 +855,6 @@ namespace Beyond {
 					buffer.Release();
 			}
 		}
-
-
 	}
 
 	void DescriptorSetManager::InvalidateAndUpdate()
@@ -913,9 +864,8 @@ namespace Beyond {
 		if (m_IsDirty)
 		{
 			RT_Invalidate();
-			//return;
+			// return;
 		}
-
 
 		uint32_t currentFrameIndex = Renderer::RT_GetCurrentFrameIndex();
 
@@ -928,7 +878,7 @@ namespace Beyond {
 				{
 					case RenderPassResourceType::UniformBuffer:
 					{
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<VulkanUniformBuffer, VkDescriptorBufferInfo, RenderPassResourceType::UniformBuffer>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -936,7 +886,7 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::UniformBufferSet:
 					{
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<VulkanUniformBufferSet, VkDescriptorBufferInfo, RenderPassResourceType::UniformBufferSet>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -944,8 +894,7 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::StorageBuffer:
 					{
-
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<VulkanStorageBuffer, VkDescriptorBufferInfo, RenderPassResourceType::StorageBuffer>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -953,7 +902,7 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::StorageBufferSet:
 					{
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<VulkanStorageBufferSet, VkDescriptorBufferInfo, RenderPassResourceType::StorageBufferSet>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -961,7 +910,7 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::AccelerationStructure:
 					{
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<VulkanTLAS, VkWriteDescriptorSetAccelerationStructureKHR, RenderPassResourceType::AccelerationStructure>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -969,7 +918,7 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::AccelerationStructureSet:
 					{
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<VulkanAccelerationStructureSet, VkWriteDescriptorSetAccelerationStructureKHR, RenderPassResourceType::AccelerationStructureSet>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -982,7 +931,7 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::TextureCube:
 					{
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<RendererResource, VkDescriptorImageInfo, RenderPassResourceType::TextureCube>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -995,7 +944,7 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::Sampler:
 					{
-						//for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
+						// for (uint32_t frameIndex = 0; frameIndex < (uint32_t)WriteDescriptorMap.size(); frameIndex++)
 						{
 							CheckChanges<RendererResource, VkDescriptorImageInfo, RenderPassResourceType::Sampler>(input, currentFrameIndex, set, binding, WriteDescriptorMap, InvalidatedInputResources);
 						}
@@ -1009,14 +958,14 @@ namespace Beyond {
 		if (InvalidatedInputResources.GetRangeForFrame(currentFrameIndex).Empty())
 			return;
 
-		auto bufferSets = HasBufferSets();
-		bool perFrameInFlight = !bufferSets.empty();
-		perFrameInFlight = true; // always
+		auto bufferSets				= HasBufferSets();
+		bool perFrameInFlight		= !bufferSets.empty();
+		perFrameInFlight			= true; // always
 		uint32_t descriptorSetCount = Renderer::GetConfig().FramesInFlight;
 		if (!perFrameInFlight)
 			descriptorSetCount = 1;
 
-		uint32_t imageInfoStorageIndex = 0;
+		uint32_t			imageInfoStorageIndex = 0;
 		std::vector<Buffer> imageInfoStorage;
 
 		// TODO: handle these if they fail (although Vulkan will probably give us a validation error if they do anyway)
@@ -1024,24 +973,24 @@ namespace Beyond {
 		{
 			ResourceDesID frameKey = key;
 			frameKey.SetFrame(currentFrameIndex);
-			const uint32_t set = frameKey.GetSet();
+			const uint32_t set	   = frameKey.GetSet();
 			const uint32_t binding = frameKey.GetBinding();
 
 			uint32_t descriptorCountInSet = bufferSets.contains(set) ? descriptorSetCount : 1;
-			//for (uint32_t frameIndex = currentFrameIndex; frameIndex < descriptorSetCount; frameIndex++)
+			// for (uint32_t frameIndex = currentFrameIndex; frameIndex < descriptorSetCount; frameIndex++)
 			uint32_t frameIndex = perFrameInFlight ? currentFrameIndex : 0;
 
 			// Go through every resource here and call vkUpdateDescriptorSets with write descriptors
 			// If we don't have valid buffers/images to bind to here, that's an error and needs to be
 			// probably handled by putting in some error resources, otherwise we'll crash
 			std::vector<VkWriteDescriptorSet> writeDescriptorsToUpdate;
-			//writeDescriptorsToUpdate.reserve(setData.size());
-			//for (const auto& [binding, input] : setData)
+			// writeDescriptorsToUpdate.reserve(setData.size());
+			// for (const auto& [binding, input] : setData)
 			{
 				BEY_CORE_VERIFY(!input.Input.empty() && input.Type != RenderPassResourceType::None, "Invalid input(set: {}, binding:{}) named: \"{}\" of type: {}!", set, binding, input.Name, magic_enum::enum_name(input.Type));
 
 				// Update stored write descriptor
-				auto& wd = WriteDescriptorMap[frameIndex].at(set).at(binding);
+				auto&				  wd			  = WriteDescriptorMap[frameIndex].at(set).at(binding);
 				VkWriteDescriptorSet& writeDescriptor = wd.WriteDescriptorSet;
 				imageInfoStorage.resize(imageInfoStorageIndex + 1);
 				switch (input.Type)
@@ -1154,6 +1103,6 @@ namespace Beyond {
 	void DescriptorSetManager::OnShaderReloaded()
 	{
 		m_IsDirty = true;
-		//RT_Invalidate();
+		// RT_Invalidate();
 	}
-}
+} // namespace Beyond

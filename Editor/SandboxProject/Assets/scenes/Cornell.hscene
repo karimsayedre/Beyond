@@ -56,7 +56,7 @@ Entities:
         0: 4632926086905324461
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 3149519709536296266
+      ColliderHandle: 792239358565785265
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -123,7 +123,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 17772225373306876933
+      ColliderHandle: 5040713792784257205
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -181,7 +181,7 @@ Entities:
       Rotation: [-2.20661592, 1.13794196, 0.613902569]
       Scale: [1, 0.999998748, 0.999998569]
     DirectionalLightComponent:
-      Intensity: 4.9000001
+      Intensity: 0
       Radiance: [0.764478743, 0.739913523, 0.510636389]
       SourceSize: 0.5
       SoftShadows: true
@@ -275,7 +275,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 175743915864188195
+      ColliderHandle: 17879340953711398506
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -382,7 +382,7 @@ Entities:
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      AssetID: 14540816192526373953
+      AssetID: 3363937656239707393
       SubmeshIndex: 0
       MaterialTable:
         0: 761861143196698806
@@ -418,7 +418,7 @@ Entities:
         0: 0
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 9238309371202811090
+      ColliderHandle: 8742790730038984211
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -456,7 +456,7 @@ Entities:
       CastShadows: false
       SoftShadows: false
       Falloff: 0
-      Intensity: 0
+      Intensity: 14.3000002
       Range: 8.80000019
       SourceSize: 99.5
   - Entity: 16679927148269971972
@@ -491,7 +491,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 8092632370141378493
+      ColliderHandle: 1251775816268209081
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -513,7 +513,7 @@ Entities:
         1: 0
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 5250364675675745568
+      ColliderHandle: 6603235175101333087
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -550,7 +550,7 @@ Entities:
       MaxAngularVelocity: 50
       LockedAxes: 0
     MeshColliderComponent:
-      ColliderHandle: 10858014533129601570
+      ColliderHandle: 6983609546652749813
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -572,7 +572,7 @@ Entities:
       InsertPerfMarkers: true
       ProbeRelocationEnabled: true
       ProbeClassificationEnabled: true
-      ProbeVariabilityEnabled: false
+      ProbeVariabilityEnabled: true
       InfiniteScrollingEnabled: false
       ProbeSpacing: [0.300000012, 0.300000012, 0.300000012]
       ProbeCounts: [9, 9, 9]
@@ -580,16 +580,16 @@ Entities:
       ProbeNumIrradianceTexels: 8
       ProbeNumDistanceTexels: 16
       ProbeHysteresis: 0.970000029
-      ProbeMaxRayDistance: 10
+      ProbeMaxRayDistance: 16.1000004
       ProbeNormalBias: 0.0199999996
       ProbeViewBias: 0.100000001
-      ProbeIrradianceThreshold: 0.200000003
-      ProbeBrightnessThreshold: 1
-      ProbeVariabilityThreshold: 0
+      ProbeIrradianceThreshold: 0.930000007
+      ProbeBrightnessThreshold: 0.860000014
+      ProbeVariabilityThreshold: 1
       ProbeMinFrontfaceDistance: 0.100000001
       ProbeDistanceExponent: 50
       ProbeIrradianceEncodingGamma: 5
-      ProbeRandomRayBackfaceThreshold: 0.100000001
+      ProbeRandomRayBackfaceThreshold: 0.330000013
       ProbeFixedRayBackfaceThreshold: 0.25
 SceneAudio:
   MasterReverb:

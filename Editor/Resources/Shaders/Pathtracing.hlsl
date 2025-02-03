@@ -129,45 +129,45 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
         Payload payload = TraceRay(ray, bounceIndex);
 
         ObjDesc objDesc = objDescs[payload.InstanceID];
-        Material mat = materials[objDesc.MaterialIndex];
+        Material mat = materials[payload.InstanceID];
 
         // Bey_DebugImage[launchIndex] = float4(, 1.0);
 
         const float3 view = -ray.Direction;
-        // float2 iors;
-        // if (dot(payload.Normal, view) < 0.0)
-        // {
-        // 	iors.x = mat.IOR;
-        // 	iors.y = 1.0;
 
-        // }
+
+        float4 modelMatrix[3] = r_Transforms.Load(0).Transform[objDesc.TransformIndex].ModelMatrix;
+        float4x4 transform = float4x4(float4(modelMatrix[0].x, modelMatrix[1].x, modelMatrix[2].x, 0.0), float4(modelMatrix[0].y, modelMatrix[1].y, modelMatrix[2].y, 0.0),
+	                      float4(modelMatrix[0].z, modelMatrix[1].z, modelMatrix[2].z, 0.0), float4(modelMatrix[0].w, modelMatrix[1].w, modelMatrix[2].w, 1.0));
+        PbrMaterial material = GetMaterialParams(ray, (float4x3)transform, payload.BarycentricCoords, payload.HitT, payload.InstanceID, payload.PrimitiveIndex);
+
+
+        float2 iors;
+        // if (dot(material.Ng, view) < 0.0)
+        {
+        	iors.x = mat.IOR;
+        	iors.y = 1.0;
+
+        }
         // else
         // {
         // 	iors.x = 1.0;
         // 	iors.y = mat.IOR;
         // }
 
-        // float eta = iors.x / iors.y;
+        float eta = iors.x / iors.y;
 
-        // if (dot(material.Normal, view) < 0.0)
+        // if (dot(material.Ng, view) < 0.0)
         // {
-        // 	material.Normal = -material.Normal;
+        // 	material.N = -material.N;
+        // 	material.Ng = -material.Ng;
+        // 	material.Nc = -material.Nc;
         // }
-
-        // float4 modelMatrix[3] = r_Transforms.Load(0).Transform[objDesc.MaterialIndex].ModelMatrix;
-        // float4x4 transform = (float4x4(float4(modelMatrix[0].x, modelMatrix[1].x, modelMatrix[2].x, 0.0),
-        // 							   float4(modelMatrix[0].y, modelMatrix[1].y, modelMatrix[2].y, 0.0),
-        // 							   float4(modelMatrix[0].z, modelMatrix[1].z, modelMatrix[2].z, 0.0),
-        // 							   float4(modelMatrix[0].w, modelMatrix[1].w, modelMatrix[2].w, 1.0)));
-
-        float3 worldPosition = ray.Origin + ray.Direction * payload.HitT;
-        PbrMaterial material = GetMaterialParams(ray, worldPosition, payload.WorldNormals, payload.BarycentricCoords,
-                                                 payload.HitT, payload.InstanceID, payload.PrimitiveIndex, launchIndex);
 
         [branch]
         if (bounceIndex == 0)
         {
-            Bey_DebugImage[launchIndex] = float4(material.N, 1.0);
+            Bey_DebugImage[launchIndex] = float4(material.WorldPosition, 1.0);
             o_ViewNormalsLuminance[launchIndex] =
                 float4(mul((float3x3)(u_Camera.ViewMatrix), normalize(material.N)) * 0.5 + 0.5, 1.0);
             o_MetalnessRoughness[launchIndex] = float4(material.metallic, material.roughness.x, 0.0, 1.0);
@@ -203,11 +203,11 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
         float3 bsdf = 0.0.xxx;
 
         float3 L;
-        // bool transmitSuccess = Refract(ray.Direction, H, eta, L);
-        // float reflectProb = ReflectionProbability(view, H, eta, material.roughness, NdotV, material.Albedo.a);
+        bool transmitSuccess = Refract(ray.Direction, H, eta, L);
+        float reflectProb = ReflectionProbability(view, H, eta, material.roughness.x, NdotV, material.transmission);
 
-        // if (!transmitSuccess || RandomFloat(seed) < reflectProb)
-        if (true)
+        if (!transmitSuccess || RandomFloat(seed) < reflectProb)
+        // if (true)
         // if (false)
         { // Reflection: Calculate the half-vector and reflected direction
 
@@ -313,7 +313,6 @@ void main()
 
 #include <Buffers.hlslh>
 #include <Common.hlslh>
-#include <Common.slh>
 #include <HostDevice.hlslh>
 #include <Raytracing/Descriptors.hlslh>
 #include <Raytracing/Random.hlslh>
@@ -374,18 +373,11 @@ void main(inout Payload packedPayload, BuiltInTriangleIntersectionAttributes att
 [shader("closesthit")]
 void main(inout Payload payload, BuiltInTriangleIntersectionAttributes attrib)
 {
-    uint2 launchIndex = DispatchRaysIndex().xy;
-
     payload = (Payload)0;
     payload.HitT = RayTCurrent();
     payload.InstanceID = InstanceID();
     payload.PrimitiveIndex = PrimitiveIndex();
     payload.BarycentricCoords = attrib.barycentrics;
-
-    float3 normal = LoadInterpolatedVertexNormals(
-        objDescs[InstanceID()], PrimitiveIndex(),
-        float3(1.0f - attrib.barycentrics.x - attrib.barycentrics.y, attrib.barycentrics.x, attrib.barycentrics.y));
-    payload.WorldNormals = PackNormal(normalize(mul((float3x3)(ObjectToWorld3x4()), normal)));
 }
 
 #pragma stage : miss

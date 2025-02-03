@@ -106,7 +106,8 @@ namespace Beyond {
 		Ref<MaterialAsset> m_DefaultMaterial;
 
 		eastl::unordered_map<AssetHandle, VulkanBufferResources> m_VulkanBuffers;
-		mutable uint32_t m_DynamicBufferIndex = 0;
+		// TODO: Static because we can have multiple ray tracers
+		inline static uint32_t m_DynamicBufferIndex = 0;
 		eastl::vector<ObjDesc>     m_objDesc;    // Model description for device access
 		std::vector<MaterialBuffer>     m_Materials;    // Materials for device access
 		eastl::vector<SceneInstance> m_SceneInstances;  // Scene model instances
