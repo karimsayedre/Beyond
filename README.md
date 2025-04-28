@@ -45,7 +45,6 @@ Checkout my [website](https://karimsayedre.github.io) for more images.
 ## Getting Started  
 
 ### Prerequisites  
-- **Graphics API**:
 - Visual Studio 2022 (Windows)
 - Vulkan SDK.  
 - Git
