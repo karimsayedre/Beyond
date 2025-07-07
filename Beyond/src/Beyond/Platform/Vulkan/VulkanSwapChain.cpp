@@ -7,13 +7,13 @@
 
 #include "Beyond/Core/Application.h"
 
-
-namespace Beyond {
+namespace Beyond
+{
 
 	void VulkanSwapChain::Init(VkInstance instance, const Ref<VulkanDevice>& device)
 	{
 		m_Instance = instance;
-		m_Device = device;
+		m_Device   = device;
 	}
 
 	void VulkanSwapChain::InitSurface(GLFWwindow* windowHandle)
@@ -42,7 +42,7 @@ namespace Beyond {
 		// Search for a graphics and a present queue in the array of queue
 		// families, try to find one that supports both
 		uint32_t graphicsQueueNodeIndex = UINT32_MAX;
-		uint32_t presentQueueNodeIndex = UINT32_MAX;
+		uint32_t presentQueueNodeIndex	= UINT32_MAX;
 		for (uint32_t i = 0; i < queueCount; i++)
 		{
 			if ((queueProps[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
@@ -55,7 +55,7 @@ namespace Beyond {
 				if (supportsPresent[i] == VK_TRUE)
 				{
 					graphicsQueueNodeIndex = i;
-					presentQueueNodeIndex = i;
+					presentQueueNodeIndex  = i;
 					break;
 				}
 			}
@@ -86,7 +86,7 @@ namespace Beyond {
 	{
 		m_VSync = vsync;
 
-		VkDevice device = m_Device->GetVulkanDevice();
+		VkDevice		 device			= m_Device->GetVulkanDevice();
 		VkPhysicalDevice physicalDevice = m_Device->GetPhysicalDevice()->GetVulkanPhysicalDevice();
 
 		VkSwapchainKHR oldSwapchain = m_SwapChain;
@@ -108,18 +108,18 @@ namespace Beyond {
 		{
 			// If the surface size is undefined, the size is set to
 			// the size of the images requested.
-			swapchainExtent.width = *width;
+			swapchainExtent.width  = *width;
 			swapchainExtent.height = *height;
 		}
 		else
 		{
 			// If the surface size is defined, the swap chain size must match
 			swapchainExtent = surfCaps.currentExtent;
-			*width = surfCaps.currentExtent.width;
-			*height = surfCaps.currentExtent.height;
+			*width			= surfCaps.currentExtent.width;
+			*height			= surfCaps.currentExtent.height;
 		}
 
-		m_Width = *width;
+		m_Width	 = *width;
 		m_Height = *height;
 
 		if (*width == 0 || *height == 0)
@@ -187,23 +187,23 @@ namespace Beyond {
 		}
 
 		VkSwapchainCreateInfoKHR swapchainCI = {};
-		swapchainCI.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		swapchainCI.pNext = NULL;
-		swapchainCI.surface = m_Surface;
-		swapchainCI.minImageCount = desiredNumberOfSwapchainImages;
-		swapchainCI.imageFormat = m_ColorFormat;
-		swapchainCI.imageColorSpace = m_ColorSpace;
-		swapchainCI.imageExtent = { swapchainExtent.width, swapchainExtent.height };
-		swapchainCI.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		swapchainCI.preTransform = (VkSurfaceTransformFlagBitsKHR)preTransform;
-		swapchainCI.imageArrayLayers = 1;
-		swapchainCI.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		swapchainCI.queueFamilyIndexCount = 0;
-		swapchainCI.pQueueFamilyIndices = NULL;
-		swapchainCI.presentMode = swapchainPresentMode;
-		swapchainCI.oldSwapchain = oldSwapchain;
+		swapchainCI.sType					 = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+		swapchainCI.pNext					 = NULL;
+		swapchainCI.surface					 = m_Surface;
+		swapchainCI.minImageCount			 = desiredNumberOfSwapchainImages;
+		swapchainCI.imageFormat				 = m_ColorFormat;
+		swapchainCI.imageColorSpace			 = m_ColorSpace;
+		swapchainCI.imageExtent				 = { swapchainExtent.width, swapchainExtent.height };
+		swapchainCI.imageUsage				 = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		swapchainCI.preTransform			 = (VkSurfaceTransformFlagBitsKHR)preTransform;
+		swapchainCI.imageArrayLayers		 = 1;
+		swapchainCI.imageSharingMode		 = VK_SHARING_MODE_EXCLUSIVE;
+		swapchainCI.queueFamilyIndexCount	 = 0;
+		swapchainCI.pQueueFamilyIndices		 = NULL;
+		swapchainCI.presentMode				 = swapchainPresentMode;
+		swapchainCI.oldSwapchain			 = oldSwapchain;
 		// Setting clipped to VK_TRUE allows the implementation to discard rendering outside of the surface area
-		swapchainCI.clipped = VK_TRUE;
+		swapchainCI.clipped		   = VK_TRUE;
 		swapchainCI.compositeAlpha = compositeAlpha;
 
 		// Enable transfer source on swap chain images if supported
@@ -251,25 +251,25 @@ namespace Beyond {
 
 		for (uint32_t i = 0; i < m_ImageCount; i++)
 		{
-			m_Images[i].Image = swapChainImages[i];
+			m_Images[i].Image						  = swapChainImages[i];
 			VkImageViewCreateInfo colorAttachmentView = {};
-			colorAttachmentView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			colorAttachmentView.pNext = nullptr;
-			colorAttachmentView.format = m_ColorFormat;
-			colorAttachmentView.image = swapChainImages[i];
-			colorAttachmentView.components = {
-				VK_COMPONENT_SWIZZLE_R,
-				VK_COMPONENT_SWIZZLE_G,
-				VK_COMPONENT_SWIZZLE_B,
-				VK_COMPONENT_SWIZZLE_A
+			colorAttachmentView.sType				  = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			colorAttachmentView.pNext				  = nullptr;
+			colorAttachmentView.format				  = m_ColorFormat;
+			colorAttachmentView.image				  = swapChainImages[i];
+			colorAttachmentView.components			  = {
+				   VK_COMPONENT_SWIZZLE_R,
+				   VK_COMPONENT_SWIZZLE_G,
+				   VK_COMPONENT_SWIZZLE_B,
+				   VK_COMPONENT_SWIZZLE_A
 			};
-			colorAttachmentView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			colorAttachmentView.subresourceRange.baseMipLevel = 0;
-			colorAttachmentView.subresourceRange.levelCount = 1;
+			colorAttachmentView.subresourceRange.aspectMask		= VK_IMAGE_ASPECT_COLOR_BIT;
+			colorAttachmentView.subresourceRange.baseMipLevel	= 0;
+			colorAttachmentView.subresourceRange.levelCount		= 1;
 			colorAttachmentView.subresourceRange.baseArrayLayer = 0;
-			colorAttachmentView.subresourceRange.layerCount = 1;
-			colorAttachmentView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			colorAttachmentView.flags = 0;
+			colorAttachmentView.subresourceRange.layerCount		= 1;
+			colorAttachmentView.viewType						= VK_IMAGE_VIEW_TYPE_2D;
+			colorAttachmentView.flags							= 0;
 
 			result = vkCreateImageView(device, &colorAttachmentView, nullptr, &m_Images[i].ImageView);
 			if (result != VK_SUCCESS)
@@ -288,13 +288,13 @@ namespace Beyond {
 				vkDestroyCommandPool(device, commandBuffer.CommandPool, nullptr);
 
 			VkCommandPoolCreateInfo cmdPoolInfo = {};
-			cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-			cmdPoolInfo.queueFamilyIndex = m_QueueNodeIndex;
-			cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+			cmdPoolInfo.sType					= VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+			cmdPoolInfo.queueFamilyIndex		= m_QueueNodeIndex;
+			cmdPoolInfo.flags					= VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
 
-			VkCommandBufferAllocateInfo commandBufferAllocateInfo{};
-			commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-			commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+			VkCommandBufferAllocateInfo commandBufferAllocateInfo {};
+			commandBufferAllocateInfo.sType				 = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+			commandBufferAllocateInfo.level				 = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 			commandBufferAllocateInfo.commandBufferCount = 1;
 
 			m_CommandBuffers.resize(m_ImageCount);
@@ -314,34 +314,42 @@ namespace Beyond {
 		// Synchronization Objects
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		{
-			VkSemaphoreCreateInfo semaphoreCreateInfo{};
+			VkSemaphoreCreateInfo semaphoreCreateInfo {};
 			semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-			const auto& config = Renderer::GetConfig();
-			m_Semaphores.RenderComplete.resize(config.FramesInFlight);
-			m_Semaphores.PresentComplete.resize(config.FramesInFlight);
+			m_RenderComplete.resize(m_ImageCount);
 
-			for (uint32_t i = 0; i < config.FramesInFlight; i++)
+			for (uint32_t i = 0; i < m_ImageCount; i++)
 			{
-				VK_CHECK_RESULT(vkCreateSemaphore(m_Device->GetVulkanDevice(), &semaphoreCreateInfo, nullptr, &m_Semaphores.RenderComplete[i]));
-				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_SEMAPHORE, fmt::eastl_format("Swapchain Semaphore RenderComplete {}", i), m_Semaphores.RenderComplete[i]);
-
-				VK_CHECK_RESULT(vkCreateSemaphore(m_Device->GetVulkanDevice(), &semaphoreCreateInfo, nullptr, &m_Semaphores.PresentComplete[i]));
-				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_SEMAPHORE, fmt::eastl_format("Swapchain Semaphore PresentComplete {}", i), m_Semaphores.PresentComplete[i]);
+				VK_CHECK_RESULT(vkCreateSemaphore(m_Device->GetVulkanDevice(), &semaphoreCreateInfo, nullptr, &m_RenderComplete[i]));
+				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_SEMAPHORE, fmt::eastl_format("Swapchain Semaphore RenderComplete {}", i), m_RenderComplete[i]);
 			}
 		}
 
 		if (m_WaitFences.size() != m_ImageCount)
 		{
-			VkFenceCreateInfo fenceCreateInfo{};
+			VkFenceCreateInfo fenceCreateInfo {};
 			fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 			fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 			m_WaitFences.resize(m_ImageCount);
-			for (auto& fence : m_WaitFences)
+			for (uint32_t i = 0; i < m_WaitFences.size(); i++)
 			{
-				VK_CHECK_RESULT(vkCreateFence(m_Device->GetVulkanDevice(), &fenceCreateInfo, nullptr, &fence));
-				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_FENCE, "Swapchain Fence", fence);
+				VK_CHECK_RESULT(vkCreateFence(m_Device->GetVulkanDevice(), &fenceCreateInfo, nullptr, &m_WaitFences[i]));
+				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_FENCE, fmt::eastl_format("Swapchain Fence[{}]", i), m_WaitFences[i]);
+			}
+		}
+
+		if (m_PresentFencePerImage.size() != m_ImageCount)
+		{
+			VkFenceCreateInfo fenceCreateInfo {};
+			fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+			fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+			m_PresentFencePerImage.resize(m_ImageCount);
+			for (uint32_t i = 0; i < m_PresentFencePerImage.size(); i++)
+			{
+				VK_CHECK_RESULT(vkCreateFence(m_Device->GetVulkanDevice(), &fenceCreateInfo, nullptr, &m_PresentFencePerImage[i]));
+				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_FENCE, fmt::eastl_format("Swapchain Present Fence[{}]", i), m_PresentFencePerImage[i]);
 			}
 		}
 
@@ -352,64 +360,61 @@ namespace Beyond {
 
 		for (uint32_t i = 0; i < config.FramesInFlight; i++)
 		{
-			m_SubmitInfos[i] = {};
-			m_SubmitInfos[i].sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-			m_SubmitInfos[i].pWaitDstStageMask = &pipelineStageFlags;
-			m_SubmitInfos[i].waitSemaphoreCount = 1;
-			m_SubmitInfos[i].pWaitSemaphores = &m_Semaphores.PresentComplete[i];
+			m_SubmitInfos[i]					  = {};
+			m_SubmitInfos[i].sType				  = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			m_SubmitInfos[i].pWaitDstStageMask	  = &pipelineStageFlags;
 			m_SubmitInfos[i].signalSemaphoreCount = 1;
-			m_SubmitInfos[i].pSignalSemaphores = &m_Semaphores.RenderComplete[i];
+			m_SubmitInfos[i].pSignalSemaphores	  = &m_RenderComplete[i];
 		}
-
 
 		VkFormat depthFormat = m_Device->GetPhysicalDevice()->GetDepthFormat();
 
 		// Render Pass
 		VkAttachmentDescription colorAttachmentDesc = {};
 		// Color attachment
-		colorAttachmentDesc.format = m_ColorFormat;
-		colorAttachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
-		colorAttachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		colorAttachmentDesc.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		colorAttachmentDesc.format		   = m_ColorFormat;
+		colorAttachmentDesc.samples		   = VK_SAMPLE_COUNT_1_BIT;
+		colorAttachmentDesc.loadOp		   = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentDesc.storeOp		   = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentDesc.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		colorAttachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		colorAttachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		colorAttachmentDesc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		colorAttachmentDesc.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
+		colorAttachmentDesc.finalLayout	   = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 		VkAttachmentReference colorReference = {};
-		colorReference.attachment = 0;
-		colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorReference.attachment			 = 0;
+		colorReference.layout				 = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 		VkAttachmentReference depthReference = {};
-		depthReference.attachment = 1;
-		depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		depthReference.attachment			 = 1;
+		depthReference.layout				 = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-		VkSubpassDescription subpassDescription = {};
-		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpassDescription.colorAttachmentCount = 1;
-		subpassDescription.pColorAttachments = &colorReference;
-		subpassDescription.inputAttachmentCount = 0;
-		subpassDescription.pInputAttachments = nullptr;
+		VkSubpassDescription subpassDescription	   = {};
+		subpassDescription.pipelineBindPoint	   = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpassDescription.colorAttachmentCount	   = 1;
+		subpassDescription.pColorAttachments	   = &colorReference;
+		subpassDescription.inputAttachmentCount	   = 0;
+		subpassDescription.pInputAttachments	   = nullptr;
 		subpassDescription.preserveAttachmentCount = 0;
-		subpassDescription.pPreserveAttachments = nullptr;
-		subpassDescription.pResolveAttachments = nullptr;
+		subpassDescription.pPreserveAttachments	   = nullptr;
+		subpassDescription.pResolveAttachments	   = nullptr;
 
 		VkSubpassDependency dependency = {};
-		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-		dependency.dstSubpass = 0;
-		dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependency.srcAccessMask = 0;
-		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		dependency.srcSubpass		   = VK_SUBPASS_EXTERNAL;
+		dependency.dstSubpass		   = 0;
+		dependency.srcStageMask		   = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependency.dstStageMask		   = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependency.srcAccessMask	   = 0;
+		dependency.dstAccessMask	   = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
 		VkRenderPassCreateInfo renderPassInfo = {};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = 1;
-		renderPassInfo.pAttachments = &colorAttachmentDesc;
-		renderPassInfo.subpassCount = 1;
-		renderPassInfo.pSubpasses = &subpassDescription;
-		renderPassInfo.dependencyCount = 1;
-		renderPassInfo.pDependencies = &dependency;
+		renderPassInfo.sType				  = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		renderPassInfo.attachmentCount		  = 1;
+		renderPassInfo.pAttachments			  = &colorAttachmentDesc;
+		renderPassInfo.subpassCount			  = 1;
+		renderPassInfo.pSubpasses			  = &subpassDescription;
+		renderPassInfo.dependencyCount		  = 1;
+		renderPassInfo.pDependencies		  = &dependency;
 
 		VK_CHECK_RESULT(vkCreateRenderPass(m_Device->GetVulkanDevice(), &renderPassInfo, nullptr, &m_RenderPass));
 		VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_RENDER_PASS, "Swapchain render pass", m_RenderPass);
@@ -420,12 +425,12 @@ namespace Beyond {
 				vkDestroyFramebuffer(device, framebuffer, nullptr);
 
 			VkFramebufferCreateInfo frameBufferCreateInfo = {};
-			frameBufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			frameBufferCreateInfo.renderPass = m_RenderPass;
-			frameBufferCreateInfo.attachmentCount = 1;
-			frameBufferCreateInfo.width = m_Width;
-			frameBufferCreateInfo.height = m_Height;
-			frameBufferCreateInfo.layers = 1;
+			frameBufferCreateInfo.sType					  = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+			frameBufferCreateInfo.renderPass			  = m_RenderPass;
+			frameBufferCreateInfo.attachmentCount		  = 1;
+			frameBufferCreateInfo.width					  = m_Width;
+			frameBufferCreateInfo.height				  = m_Height;
+			frameBufferCreateInfo.layers				  = 1;
 
 			m_Framebuffers.resize(m_ImageCount);
 			for (uint32_t i = 0; i < m_Framebuffers.size(); i++)
@@ -459,10 +464,7 @@ namespace Beyond {
 		for (auto framebuffer : m_Framebuffers)
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 
-		for (auto& semaphore : m_Semaphores.RenderComplete)
-			vkDestroySemaphore(device, semaphore, nullptr);
-
-		for (auto& semaphore : m_Semaphores.PresentComplete)
+		for (auto& semaphore : m_RenderComplete)
 			vkDestroySemaphore(device, semaphore, nullptr);
 
 		for (auto& fence : m_WaitFences)
@@ -484,13 +486,21 @@ namespace Beyond {
 	void VulkanSwapChain::BeginFrame()
 	{
 		BEY_SCOPE_PERF("VulkanSwapChain::BeginFrame");
+		auto device = m_Device->GetVulkanDevice();
+
 		// Resource release queue
 		auto& queue = Renderer::GetRenderResourceReleaseQueue(m_CurrentBufferIndex);
 		queue.Execute();
 
+		// Wait and reset the present fence *before* acquiring the next image
+		// We don't know the image index yet, so we use last frame's image index
+		VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_PresentFencePerImage[m_CurrentImageIndex], VK_TRUE, UINT64_MAX));
+		VK_CHECK_RESULT(vkResetFences(device, 1, &m_PresentFencePerImage[m_CurrentImageIndex]));
+
+		// Now acquire the next image
 		m_CurrentImageIndex = AcquireNextImage();
 
-		VK_CHECK_RESULT(vkResetCommandPool(m_Device->GetVulkanDevice(), m_CommandBuffers[m_CurrentBufferIndex].CommandPool, 0));
+		VK_CHECK_RESULT(vkResetCommandPool(device, m_CommandBuffers[m_CurrentBufferIndex].CommandPool, 0));
 	}
 
 	void VulkanSwapChain::Present()
@@ -498,31 +508,41 @@ namespace Beyond {
 		BEY_PROFILE_FUNC();
 		BEY_SCOPE_PERF("VulkanSwapChain::Present");
 
+		auto		   device				 = m_Device->GetVulkanDevice();
 		const uint64_t DEFAULT_FENCE_TIMEOUT = 100000000000;
 
 		VkPipelineStageFlags waitStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
-		VkSubmitInfo& submitInfo = m_SubmitInfos[m_CurrentBufferIndex];
-		submitInfo.pCommandBuffers = &m_CommandBuffers[m_CurrentBufferIndex].CommandBuffer;
+		// Submit rendering commands
+		VkSubmitInfo& submitInfo	  = m_SubmitInfos[m_CurrentBufferIndex];
+		submitInfo.pCommandBuffers	  = &m_CommandBuffers[m_CurrentBufferIndex].CommandBuffer;
 		submitInfo.commandBufferCount = 1;
 
-		VK_CHECK_RESULT(vkResetFences(m_Device->GetVulkanDevice(), 1, &m_WaitFences[m_CurrentBufferIndex]));
+		VK_CHECK_RESULT(vkResetFences(device, 1, &m_WaitFences[m_CurrentBufferIndex]));
 		VK_CHECK_RESULT(vkQueueSubmit(m_Device->GetGraphicsQueue(), 1, &submitInfo, m_WaitFences[m_CurrentBufferIndex]));
 
-		// Present the current buffer to the swap chain
-		// Pass the semaphore signaled by the command buffer submission from the submit info as the wait semaphore for swap chain presentation
-		// This ensures that the image is not presented to the windowing system until all commands have been submitted
-		VkResult result;
+		// Wait on the present fence - it was signaled by vkAcquireNextImageKHR
+		VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_PresentFencePerImage[m_CurrentImageIndex], VK_TRUE, UINT64_MAX));
+		VK_CHECK_RESULT(vkResetFences(device, 1, &m_PresentFencePerImage[m_CurrentImageIndex]));
+
+		// Prepare and perform presentation
+		VkSwapchainPresentFenceInfoEXT presentFenceInfo = {};
+		presentFenceInfo.sType							= VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_FENCE_INFO_EXT;
+		presentFenceInfo.swapchainCount					= 1;
+		presentFenceInfo.pFences						= &m_PresentFencePerImage[m_CurrentImageIndex];
+
+		VkPresentInfoKHR presentInfo   = {};
+		presentInfo.sType			   = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.pNext			   = &presentFenceInfo;
+		presentInfo.swapchainCount	   = 1;
+		presentInfo.pSwapchains		   = &m_SwapChain;
+		presentInfo.pImageIndices	   = &m_CurrentImageIndex;
+		presentInfo.pWaitSemaphores	   = &m_RenderComplete[m_CurrentBufferIndex];
+		presentInfo.waitSemaphoreCount = 1;
+
+		VkResult result = VK_SUCCESS;
 		{
 			BEY_SCOPE_PERF("VulkanSwapChain::Present - QueuePresent");
-			
-			VkPresentInfoKHR presentInfo = {};
-			presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-			presentInfo.swapchainCount = 1;
-			presentInfo.pSwapchains = &m_SwapChain;
-			presentInfo.pImageIndices = &m_CurrentImageIndex;
-			presentInfo.pWaitSemaphores = &m_Semaphores.RenderComplete[m_CurrentBufferIndex];
-			presentInfo.waitSemaphoreCount = 1;
 			result = vkQueuePresentKHR(m_Device->GetGraphicsQueue(), &presentInfo);
 		}
 
@@ -538,16 +558,17 @@ namespace Beyond {
 			}
 		}
 
+		// Wait for this frame's rendering to finish before reusing it
 		{
 			BEY_PROFILE_SCOPE("VulkanSwapChain::Present - WaitForFences");
 
 			auto& performanceTimers = Application::Get().GetPerformanceTimers();
 			Timer gpuWaitTimer;
 
-			const auto& config = Renderer::GetConfig();
+			const auto& config	 = Renderer::GetConfig();
 			m_CurrentBufferIndex = (m_CurrentBufferIndex + 1) % config.FramesInFlight;
-			// Make sure the frame we're requesting has finished rendering
-			VK_CHECK_RESULT(vkWaitForFences(m_Device->GetVulkanDevice(), 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX));
+
+			VK_CHECK_RESULT(vkWaitForFences(device, 1, &m_WaitFences[m_CurrentBufferIndex], VK_TRUE, UINT64_MAX));
 
 			performanceTimers.RenderThreadGPUWaitTime = gpuWaitTimer.ElapsedMillis();
 		}
@@ -556,17 +577,17 @@ namespace Beyond {
 	uint32_t VulkanSwapChain::AcquireNextImage()
 	{
 		uint32_t imageIndex;
-		VkResult result = vkAcquireNextImageKHR(m_Device->GetVulkanDevice(), m_SwapChain, UINT64_MAX, m_Semaphores.PresentComplete[m_CurrentBufferIndex], (VkFence)nullptr, &imageIndex);
+		VkResult result = vkAcquireNextImageKHR(m_Device->GetVulkanDevice(), m_SwapChain, UINT64_MAX, nullptr, m_PresentFencePerImage[m_CurrentImageIndex], &imageIndex);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
 		{
 			OnResize(m_Width, m_Height);
-			result = vkAcquireNextImageKHR(m_Device->GetVulkanDevice(), m_SwapChain, UINT64_MAX, m_Semaphores.PresentComplete[m_CurrentBufferIndex], (VkFence)nullptr, &imageIndex);
+			result = vkAcquireNextImageKHR(m_Device->GetVulkanDevice(), m_SwapChain, UINT64_MAX, nullptr, m_PresentFencePerImage[m_CurrentImageIndex], &imageIndex);
 		}
 
 		if (result != VK_SUCCESS)
 		{
-			VK_CHECK_RESULT(result);  // This will handle any other errors appropriately
+			VK_CHECK_RESULT(result); // This will handle any other errors appropriately
 		}
 
 		return imageIndex;
@@ -589,7 +610,7 @@ namespace Beyond {
 		if ((formatCount == 1) && (surfaceFormats[0].format == VK_FORMAT_UNDEFINED))
 		{
 			m_ColorFormat = VK_FORMAT_B8G8R8A8_UNORM;
-			m_ColorSpace = surfaceFormats[0].colorSpace;
+			m_ColorSpace  = surfaceFormats[0].colorSpace;
 		}
 		else
 		{
@@ -600,8 +621,8 @@ namespace Beyond {
 			{
 				if (surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM)
 				{
-					m_ColorFormat = surfaceFormat.format;
-					m_ColorSpace = surfaceFormat.colorSpace;
+					m_ColorFormat		 = surfaceFormat.format;
+					m_ColorSpace		 = surfaceFormat.colorSpace;
 					found_B8G8R8A8_UNORM = true;
 					break;
 				}
@@ -612,10 +633,9 @@ namespace Beyond {
 			if (!found_B8G8R8A8_UNORM)
 			{
 				m_ColorFormat = surfaceFormats[0].format;
-				m_ColorSpace = surfaceFormats[0].colorSpace;
+				m_ColorSpace  = surfaceFormats[0].colorSpace;
 			}
 		}
-
 	}
 
-}
+} // namespace Beyond

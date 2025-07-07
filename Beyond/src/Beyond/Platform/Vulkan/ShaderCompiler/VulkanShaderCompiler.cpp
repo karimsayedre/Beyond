@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "VulkanShaderCompiler.h"
 
+#include <algorithm>
 #include <codecvt>
-
 
 #include "Beyond/Utilities/StringUtils.h"
 
@@ -31,19 +31,21 @@
 #include "Beyond/ImGui/ImGuiUtilities.h"
 
 #if defined(BEY_PLATFORM_LINUX)
-#include <spawn.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#	include <spawn.h>
+#	include <sys/types.h>
+#	include <sys/wait.h>
+#	include <unistd.h>
 #endif
 
-namespace Beyond {
+namespace Beyond
+{
 
-	static std::unordered_map<uint32_t, std::unordered_map<uint32_t, ShaderResource::UniformBuffer>> s_UniformBuffers; // set -> binding point -> buffer
-	static std::unordered_map<uint32_t, std::unordered_map<uint32_t, ShaderResource::StorageBuffer>> s_StorageBuffers; // set -> binding point -> buffer
+	static std::unordered_map<uint32_t, std::unordered_map<uint32_t, ShaderResource::UniformBuffer>>		 s_UniformBuffers;		   // set -> binding point -> buffer
+	static std::unordered_map<uint32_t, std::unordered_map<uint32_t, ShaderResource::StorageBuffer>>		 s_StorageBuffers;		   // set -> binding point -> buffer
 	static std::unordered_map<uint32_t, std::unordered_map<uint32_t, ShaderResource::AccelerationStructure>> s_AccelerationStructures; // set -> binding point -> acceleration structure
 
-	namespace Utils {
+	namespace Utils
+	{
 
 		static const char* GetCacheDirectory()
 		{
@@ -62,24 +64,34 @@ namespace Beyond {
 		{
 			switch (type.basetype)
 			{
-				case spirv_cross::SPIRType::Boolean:  return ShaderUniformType::Bool;
+				case spirv_cross::SPIRType::Boolean: return ShaderUniformType::Bool;
 				case spirv_cross::SPIRType::Int:
-					if (type.vecsize == 1)            return ShaderUniformType::Int;
-					if (type.vecsize == 2)            return ShaderUniformType::IVec2;
-					if (type.vecsize == 3)            return ShaderUniformType::IVec3;
-					if (type.vecsize == 4)            return ShaderUniformType::IVec4;
+					if (type.vecsize == 1)
+						return ShaderUniformType::Int;
+					if (type.vecsize == 2)
+						return ShaderUniformType::IVec2;
+					if (type.vecsize == 3)
+						return ShaderUniformType::IVec3;
+					if (type.vecsize == 4)
+						return ShaderUniformType::IVec4;
 
-				case spirv_cross::SPIRType::UInt:     return ShaderUniformType::UInt;
+				case spirv_cross::SPIRType::UInt: return ShaderUniformType::UInt;
 				case spirv_cross::SPIRType::Float:
-					if (type.columns == 3)            return ShaderUniformType::Mat3;
-					if (type.columns == 4)            return ShaderUniformType::Mat4;
+					if (type.columns == 3)
+						return ShaderUniformType::Mat3;
+					if (type.columns == 4)
+						return ShaderUniformType::Mat4;
 
-					if (type.vecsize == 1)            return ShaderUniformType::Float;
-					if (type.vecsize == 2)            return ShaderUniformType::Vec2;
-					if (type.vecsize == 3)            return ShaderUniformType::Vec3;
-					if (type.vecsize == 4)            return ShaderUniformType::Vec4;
+					if (type.vecsize == 1)
+						return ShaderUniformType::Float;
+					if (type.vecsize == 2)
+						return ShaderUniformType::Vec2;
+					if (type.vecsize == 3)
+						return ShaderUniformType::Vec3;
+					if (type.vecsize == 4)
+						return ShaderUniformType::Vec4;
 					break;
-				case spirv_cross::SPIRType::Struct:		return ShaderUniformType::Struct;
+				case spirv_cross::SPIRType::Struct: return ShaderUniformType::Struct;
 			}
 			BEY_CORE_ASSERT(false, "Unknown type!");
 			return ShaderUniformType::None;
@@ -130,17 +142,17 @@ namespace Beyond {
 			// For static arrays, the size is stored in the array size field
 			if (type.array.size() == 1)
 			{
-				return  type.array[0];
+				return type.array[0];
 			}
 			return 1;
 		}
 
-	}
+	} // namespace Utils
 
 	VulkanShaderCompiler::VulkanShaderCompiler(Ref<VulkanShader> shader, const std::filesystem::path& shaderSourcePath, bool disableOptimization)
 		: m_ShaderSourcePath(shaderSourcePath), m_DisableOptimization(disableOptimization), m_Shader(shader)
 	{
-		m_Language = ShaderUtils::ShaderLangFromExtension(shaderSourcePath.extension().string());
+		m_Language			 = ShaderUtils::ShaderLangFromExtension(shaderSourcePath.extension().string());
 		m_Shader->m_Language = m_Language;
 	}
 
@@ -157,13 +169,13 @@ namespace Beyond {
 		BEY_CORE_VERIFY(source.size(), "Failed to load shader!");
 
 		BEY_CORE_TRACE_TAG("Renderer", "Compiling shader: {}", m_ShaderSourcePath.string());
-		m_ShaderSource = PreProcess(source);
+		m_ShaderSource							  = PreProcess(source);
 		const VkShaderStageFlagBits changedStages = VulkanShaderCache::HasChanged(this);
 
 		const bool compileSucceeded = CompileOrGetVulkanBinaries(m_SPIRVDebugData, m_SPIRVData, changedStages, forceCompile);
 		if (!compileSucceeded)
 		{
-			//BEY_CORE_VERIFY(false);
+			// BEY_CORE_VERIFY(false);
 			return false;
 		}
 
@@ -203,8 +215,8 @@ namespace Beyond {
 		static shaderc::Compiler compiler;
 
 		shaderc_util::FileFinder fileFinder;
-		fileFinder.search_path().emplace_back("Resources/Shaders/Include/GLSL/"); //Main include directory
-		fileFinder.search_path().emplace_back("Resources/Shaders/Include/Common/"); //Shared include directory
+		fileFinder.search_path().emplace_back("Resources/Shaders/Include/GLSL/");	// Main include directory
+		fileFinder.search_path().emplace_back("Resources/Shaders/Include/Common/"); // Shared include directory
 		for (auto& [stage, shaderSource] : shaderSources)
 		{
 			shaderc::CompileOptions options;
@@ -224,7 +236,7 @@ namespace Beyond {
 				BEY_CORE_ERROR_TAG("Renderer", "Failed to pre-process \"{}\" {} shader.\nError: {}", m_ShaderSourcePath.string(), ShaderUtils::ShaderStageToString(stage), preProcessingResult.GetErrorMessage());
 
 			m_StagesMetadata[stage].HashValue = Hash::GenerateFNVHash(shaderSource.c_str());
-			m_StagesMetadata[stage].Headers = std::move(includer->GetIncludeData());
+			m_StagesMetadata[stage].Headers	  = std::move(includer->GetIncludeData());
 
 			m_AcknowledgedMacros.merge(includer->GetParsedSpecialMacros());
 
@@ -249,12 +261,17 @@ namespace Beyond {
 		mbstowcs(buffer.data(), m_ShaderSourcePath.string().c_str(), m_ShaderSourcePath.string().size());
 #endif
 
-		std::vector<const wchar_t*> arguments{ buffer.c_str(), L"-P", DXC_ARG_WARNINGS_ARE_ERRORS,
+		std::vector<const wchar_t*> arguments {
+			buffer.c_str(),
+			L"-P",
+			DXC_ARG_WARNINGS_ARE_ERRORS,
 			L"-I Resources/Shaders/Include/Common/",
-			L"-I Resources/Shaders/Include/HLSL/", //Main include directory
+			L"-I Resources/Shaders/Include/HLSL/", // Main include directory
 			L"-I Resources/Shaders/",
-			L"-D", L"__HLSL__",
-			L"-D", L"HLSL",
+			L"-D",
+			L"__HLSL__",
+			L"-D",
+			L"HLSL",
 		};
 
 		const auto& globalMacros = Renderer::GetGlobalShaderMacros();
@@ -270,7 +287,7 @@ namespace Beyond {
 
 			wchar_t* def_buffer = new wchar_t[def.size() + 1];
 			mbstowcs(def_buffer, def.c_str(), def.size());
-			def_buffer[def.size()] = 0;
+			def_buffer[def.size()]			= 0;
 			arguments[arguments.size() - 1] = def_buffer;
 		}
 
@@ -305,17 +322,17 @@ namespace Beyond {
 			DxcInstances::Utils->CreateBlob(shaderSource.c_str(), (uint32_t)shaderSource.size(), CP_UTF8, &pSource);
 
 			DxcBuffer sourceBuffer;
-			sourceBuffer.Ptr = pSource->GetBufferPointer();
-			sourceBuffer.Size = pSource->GetBufferSize();
+			sourceBuffer.Ptr	  = pSource->GetBufferPointer();
+			sourceBuffer.Size	  = pSource->GetBufferSize();
 			sourceBuffer.Encoding = 0;
 
 			m_CurrentIncluder = std::make_unique<HlslIncluder>();
 			IDxcResult* pCompileResult;
-			HRESULT err = DxcInstances::Compiler->Compile(&sourceBuffer, arguments.data(), (uint32_t)arguments.size(), m_CurrentIncluder.get(), IID_PPV_ARGS(&pCompileResult));
+			HRESULT		err = DxcInstances::Compiler->Compile(&sourceBuffer, arguments.data(), (uint32_t)arguments.size(), m_CurrentIncluder.get(), IID_PPV_ARGS(&pCompileResult));
 
 			// Error Handling
 			eastl::string error;
-			const bool failed = FAILED(err);
+			const bool	  failed = FAILED(err);
 			if (failed)
 				error = fmt::eastl_format("Failed to pre-process, Error: {}\n", err);
 			IDxcBlobEncoding* pErrors = nullptr;
@@ -330,7 +347,7 @@ namespace Beyond {
 				pCompileResult->GetResult(&pResult);
 
 				const size_t size = pResult->GetBufferSize();
-				shaderSource = (const char*)pResult->GetBufferPointer();
+				shaderSource	  = (const char*)pResult->GetBufferPointer();
 				pResult->Release();
 			}
 			else
@@ -339,11 +356,11 @@ namespace Beyond {
 			}
 
 			m_StagesMetadata[stage].HashValue = Hash::GenerateFNVHash(shaderSource.c_str());
-			m_StagesMetadata[stage].Headers = std::move(m_CurrentIncluder->GetIncludeData());
+			m_StagesMetadata[stage].Headers	  = std::move(m_CurrentIncluder->GetIncludeData());
 
 			m_AcknowledgedMacros.merge(m_CurrentIncluder->GetParsedSpecialMacros());
 #else
-			m_StagesMetadata[stage] = StageData{};
+			m_StagesMetadata[stage] = StageData {};
 #endif
 		}
 		return shaderSources;
@@ -356,7 +373,7 @@ namespace Beyond {
 		if (m_Language == ShaderUtils::SourceLang::GLSL)
 		{
 			static shaderc::Compiler compiler;
-			shaderc::CompileOptions shaderCOptions;
+			shaderc::CompileOptions	 shaderCOptions;
 			shaderCOptions.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
 			shaderCOptions.SetTargetSpirv(shaderc_spirv_version_1_5);
 			shaderCOptions.SetWarningsAsErrors();
@@ -380,36 +397,28 @@ namespace Beyond {
 #ifdef BEY_PLATFORM_WINDOWS
 
 			std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-			std::string entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
-			const auto extension = ShaderUtils::ShaderStageCachedFileExtension(stage, options.GenerateDebugInfo);
-			const std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
+			std::string												  entryPoint	 = converter.to_bytes(m_Shader->m_EntryPoint);
+			const auto												  extension		 = ShaderUtils::ShaderStageCachedFileExtension(stage, options.GenerateDebugInfo);
+			const std::filesystem::path								  cacheDirectory = Utils::GetCacheDirectory();
 
-			auto path = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + extension + ".pdb");
+			auto		 path			= cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + extension + ".pdb");
 			std::wstring cachedFilePath = path.wstring();
 
-			std::wstring buffer = m_ShaderSourcePath.wstring();
-			bool isSER = cachedFilePath.find(L"Pathtracing") != eastl::string::npos && (stage & (VK_SHADER_STAGE_CALLABLE_BIT_KHR | VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR |
-				VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV | VK_SHADER_STAGE_MISS_BIT_KHR | VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_RAYGEN_BIT_KHR));
-			std::vector<const wchar_t*> arguments{ buffer.c_str(), L"-E", m_Shader->m_EntryPoint.c_str(), L"-T", isSER ? L"lib_6_3" : ShaderUtils::HLSLShaderProfile(stage), L"-spirv", L"-fspv-target-env=vulkan1.3",
+			std::wstring				buffer = m_ShaderSourcePath.wstring();
+			bool						isSER  = cachedFilePath.find(L"Pathtracing") != eastl::string::npos && (stage & (VK_SHADER_STAGE_CALLABLE_BIT_KHR | VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV | VK_SHADER_STAGE_MISS_BIT_KHR | VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_RAYGEN_BIT_KHR));
+			std::vector<const wchar_t*> arguments {
+				buffer.c_str(),
+				L"-E",
+				m_Shader->m_EntryPoint.c_str(),
+				L"-T",
+				isSER ? L"lib_6_3" : ShaderUtils::HLSLShaderProfile(stage),
+				L"-spirv",
+				L"-fspv-target-env=vulkan1.3",
 				L"-HV 2021",
-				DXC_ARG_PACK_MATRIX_COLUMN_MAJOR, DXC_ARG_WARNINGS_ARE_ERRORS,
+
+				DXC_ARG_PACK_MATRIX_COLUMN_MAJOR,
+				DXC_ARG_WARNINGS_ARE_ERRORS,
 				L"-DENABLE_SPIRV_CODEGEN=ON",
-				//L"-fspv-extension=SPV_NV_compute_shader_derivatives",
-				//L"-fspv-extension=SPV_EXT_descriptor_indexing",
-				//L"-fvk-use-gl-layout",
-				//L"-line-directive",
-				//DXC_ARG_DEBUG_NAME_FOR_SOURCE,
-				//DXC_ARG_DEBUG_NAME_FOR_BINARY,
-				//L"-fvk-use-scalar-layout",
-				// TODO: L"-fspv-reflect" causes a validation error about SPV_GOOGLE_hlsl_functionality1
-				// Without this argument, not much info will be in Nsight.
-				//L"-fspv-reflect",
-				L"-O3",
-				//L"-fspv-debug=vulkan-with-source",
-
-				//L"Fd",
-				//cachedFilePath.c_str(),
-
 			};
 
 			if (options.GenerateDebugInfo)
@@ -417,6 +426,15 @@ namespace Beyond {
 				arguments.emplace_back(L"-Qembed_debug");
 				arguments.emplace_back(DXC_ARG_DEBUG);
 			}
+			else
+			{
+				arguments.push_back(L"-Qstrip_debug");
+			}
+
+			// if (options.Optimize)
+			arguments.push_back(L"-O3");
+			// else
+			// arguments.push_back(L"-Od");
 
 			if (stage & (VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT | VK_SHADER_STAGE_GEOMETRY_BIT))
 				arguments.push_back(L"-fvk-invert-y");
@@ -425,11 +443,11 @@ namespace Beyond {
 			DxcInstances::Utils->CreateBlob(stageSource.c_str(), (uint32_t)stageSource.size(), CP_UTF8, &pSource);
 
 			DxcBuffer sourceBuffer;
-			sourceBuffer.Ptr = pSource->GetBufferPointer();
-			sourceBuffer.Size = pSource->GetBufferSize();
+			sourceBuffer.Ptr	  = pSource->GetBufferPointer();
+			sourceBuffer.Size	  = pSource->GetBufferSize();
 			sourceBuffer.Encoding = 0;
 
-			IDxcResult* pCompileResult;
+			IDxcResult*	  pCompileResult;
 			eastl::string error;
 
 			HRESULT err = DxcInstances::Compiler->Compile(&sourceBuffer, arguments.data(), (uint32_t)arguments.size(), m_CurrentIncluder.get(), IID_PPV_ARGS(&pCompileResult));
@@ -444,12 +462,12 @@ namespace Beyond {
 			IDxcBlob* pPdb = nullptr;
 			pCompileResult->GetOutput(DXC_OUT_PDB, IID_PPV_ARGS(&pPdb), NULL);
 
-			//if (pPdb && pPdb->GetBufferSize())
+			// if (pPdb && pPdb->GetBufferSize())
 			{
 				//
 				// Save pdb.
 				//
-				IDxcBlob* pPDB = nullptr;
+				IDxcBlob*	   pPDB		= nullptr;
 				IDxcBlobUtf16* pPDBName = nullptr;
 				if (SUCCEEDED(pCompileResult->GetOutput(DXC_OUT_PDB, IID_PPV_ARGS(&pPDB), &pPDBName)))
 				{
@@ -486,26 +504,31 @@ namespace Beyond {
 			//				from the integration.
 
 			char tempfileName[] = "beyond-hlsl-XXXXXX.spv";
-			int outfile = mkstemps(tempfileName, 4);
+			int	 outfile		= mkstemps(tempfileName, 4);
 
-			eastl::string dxc = fmt::format("{}/bin/dxc", FileSystem::GetEnvironmentVariable("VULKAN_SDK"));
+			eastl::string dxc		 = fmt::format("{}/bin/dxc", FileSystem::GetEnvironmentVariable("VULKAN_SDK"));
 			eastl::string sourcePath = m_ShaderSourcePath.string();
 
-			std::vector<const char*> exec{
+			std::vector<const char*> exec {
 				dxc.c_str(),
 				sourcePath.c_str(),
 
-				"-E", "main",
-				"-T", ShaderUtils::HLSLShaderProfile(stage),
+				"-E",
+				"main",
+				"-T",
+				ShaderUtils::HLSLShaderProfile(stage),
 				"-spirv",
 				"-fspv-target-env=vulkan1.2",
 				"-Zpc",
 				"-WX",
 
-				"-I", "Resources/Shaders/Include/Common",
-				"-I", "Resources/Shaders/Include/HLSL",
+				"-I",
+				"Resources/Shaders/Include/Common",
+				"-I",
+				"Resources/Shaders/Include/HLSL",
 
-				"-Fo", tempfileName
+				"-Fo",
+				tempfileName
 			};
 
 			if (options.GenerateDebugInfo)
@@ -520,12 +543,12 @@ namespace Beyond {
 			exec.push_back(NULL);
 
 			// TODO: Error handling
-			pid_t pid;
+			pid_t			  pid;
 			posix_spawnattr_t attr;
 			posix_spawnattr_init(&attr);
 
 			eastl::string ld_lib_path = fmt::format("LD_LIBRARY_PATH={}", getenv("LD_LIBRARY_PATH"));
-			char* env[] = { ld_lib_path.data(), NULL };
+			char*		  env[]		  = { ld_lib_path.data(), NULL };
 			if (posix_spawn(&pid, exec[0], NULL, &attr, (char**)exec.data(), env))
 			{
 				return fmt::format("Could not execute `dxc` for shader compilation", m_ShaderSourcePath.string(), ShaderUtils::ShaderStageToString(stage));
@@ -551,26 +574,25 @@ namespace Beyond {
 		return "Unknown language!";
 	}
 
-	Ref<VulkanShader> VulkanShaderCompiler::Compile(const RootSignature rootSignature, const std::filesystem::path& shaderSourcePath, bool forceCompile, bool disableOptimization, bool external, const std::wstring& entryPoint, const std::wstring& targetProfile, const
-													std::vector<std::pair<std::wstring, std::wstring>>& defines)
+	Ref<VulkanShader> VulkanShaderCompiler::Compile(const RootSignature rootSignature, const std::filesystem::path& shaderSourcePath, bool forceCompile, bool disableOptimization, bool external, const std::wstring& entryPoint, const std::wstring& targetProfile, const std::vector<std::pair<std::wstring, std::wstring>>& defines)
 	{
 		// Set name
-		std::string path = shaderSourcePath.string();
-		size_t found = path.find_last_of("/\\");
-		std::string name = found != eastl::string::npos ? path.substr(found + 1) : path;
-		found = name.find_last_of('.');
-		name = found != eastl::string::npos ? name.substr(0, found) : name;
+		std::string path  = shaderSourcePath.string();
+		size_t		found = path.find_last_of("/\\");
+		std::string name  = found != eastl::string::npos ? path.substr(found + 1) : path;
+		found			  = name.find_last_of('.');
+		name			  = found != eastl::string::npos ? name.substr(0, found) : name;
 
-		Ref<VulkanShader> shader = Ref<VulkanShader>::Create();
-		shader->m_AssetPath = shaderSourcePath;
-		shader->m_Name = name;
+		Ref<VulkanShader> shader	  = Ref<VulkanShader>::Create();
+		shader->m_AssetPath			  = shaderSourcePath;
+		shader->m_Name				  = name;
 		shader->m_DisableOptimization = disableOptimization;
-		shader->m_EntryPoint = entryPoint;
-		shader->m_PreDefines = defines;
-		shader->m_ExternalShader = external;
-		shader->m_TargetProfile = targetProfile;
-		shader->m_RootSignature = rootSignature;
-		shader->m_Hash = Hash::GenerateFNVHash(shader->m_AssetPath.string());
+		shader->m_EntryPoint		  = entryPoint;
+		shader->m_PreDefines		  = defines;
+		shader->m_ExternalShader	  = external;
+		shader->m_TargetProfile		  = targetProfile;
+		shader->m_RootSignature		  = rootSignature;
+		shader->m_Hash				  = Hash::GenerateFNVHash(shader->m_AssetPath.string());
 
 		Ref<VulkanShaderCompiler> compiler = Ref<VulkanShaderCompiler>::Create(shader, shaderSourcePath, disableOptimization);
 		compiler->Reload(forceCompile);
@@ -589,18 +611,18 @@ namespace Beyond {
 	Ref<VulkanShader> VulkanShaderCompiler::Compile(const RootSignature rootSignature, const std::filesystem::path& shaderSourcePath, bool forceCompile, bool disableOptimization)
 	{
 		// Set name
-		std::string path = shaderSourcePath.string();
-		size_t found = path.find_last_of("/\\");
-		std::string name = found != std::string::npos ? path.substr(found + 1) : path;
-		found = name.find_last_of('.');
-		name = found != std::string::npos ? name.substr(0, found) : name;
+		std::string path  = shaderSourcePath.string();
+		size_t		found = path.find_last_of("/\\");
+		std::string name  = found != std::string::npos ? path.substr(found + 1) : path;
+		found			  = name.find_last_of('.');
+		name			  = found != std::string::npos ? name.substr(0, found) : name;
 
-		Ref<VulkanShader> shader = Ref<VulkanShader>::Create();
-		shader->m_AssetPath = shaderSourcePath;
-		shader->m_Name = name;
+		Ref<VulkanShader> shader	  = Ref<VulkanShader>::Create();
+		shader->m_AssetPath			  = shaderSourcePath;
+		shader->m_Name				  = name;
 		shader->m_DisableOptimization = disableOptimization;
-		shader->m_RootSignature = rootSignature;
-		shader->m_Hash = Hash::GenerateFNVHash(shader->m_AssetPath.string());
+		shader->m_RootSignature		  = rootSignature;
+		shader->m_Hash				  = Hash::GenerateFNVHash(shader->m_AssetPath.string());
 
 		Ref<VulkanShaderCompiler> compiler = Ref<VulkanShaderCompiler>::Create(shader, shaderSourcePath, disableOptimization);
 		compiler->Reload(forceCompile);
@@ -617,8 +639,8 @@ namespace Beyond {
 
 	bool VulkanShaderCompiler::TryRecompile(Ref<VulkanShader> shader)
 	{
-		Ref<VulkanShaderCompiler> compiler = Ref<VulkanShaderCompiler>::Create(shader, shader->m_AssetPath, shader->m_DisableOptimization);
-		bool compileSucceeded = compiler->Reload(true);
+		Ref<VulkanShaderCompiler> compiler		   = Ref<VulkanShaderCompiler>::Create(shader, shader->m_AssetPath, shader->m_DisableOptimization);
+		bool					  compileSucceeded = compiler->Reload(true);
 		if (!compileSucceeded)
 			return false;
 
@@ -645,14 +667,13 @@ namespace Beyond {
 		return true;
 	}
 
-
 	bool VulkanShaderCompiler::CompileOrGetVulkanBinary(VkShaderStageFlagBits stage, std::vector<uint32_t>& outputBinary, bool debug, VkShaderStageFlagBits changedStages, bool forceCompile)
 	{
 		const std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
 
 		// Compile shader with debug info so we can reflect
 		const auto extension = ShaderUtils::ShaderStageCachedFileExtension(stage, debug);
-		if (!forceCompile && stage & ~changedStages) // Per-stage cache is found and is unchanged 
+		if (!forceCompile && stage & ~changedStages) // Per-stage cache is found and is unchanged
 		{
 			TryGetVulkanCachedBinary(cacheDirectory, extension, outputBinary);
 		}
@@ -663,22 +684,23 @@ namespace Beyond {
 			if (debug)
 			{
 				options.GenerateDebugInfo = true;
-				options.Optimize = false;
+				options.Optimize		  = false;
 			}
 			else
 			{
 				options.GenerateDebugInfo = true;
 				// Disable optimization for compute shaders because of shaderc internal error
-				options.Optimize = !m_DisableOptimization;// && stage != VK_SHADER_STAGE_COMPUTE_BIT;
+				options.Optimize = !m_DisableOptimization; // && stage != VK_SHADER_STAGE_COMPUTE_BIT;
 			}
 
 			if (eastl::string error = Compile(outputBinary, stage, options); error.size())
 			{
-				BEY_CORE_ERROR_TAG("Renderer", "{}", error);
 				TryGetVulkanCachedBinary(cacheDirectory, extension, outputBinary);
 				if (outputBinary.empty())
 				{
 					BEY_CONSOLE_LOG_ERROR("Failed to compile shader and couldn't find a cached version.");
+					BEY_CONSOLE_LOG_ERROR(error);
+					BEY_CORE_VERIFY_MESSAGE_INTERNAL("Shader Compilation Error: {}", error);
 				}
 				else
 				{
@@ -697,7 +719,7 @@ namespace Beyond {
 			}
 			else // Compile success
 			{
-				//#define OPT_SHADERS
+				// #define OPT_SHADERS
 #ifdef OPT_SHADERS
 				if (options.Optimize)
 				{
@@ -710,8 +732,7 @@ namespace Beyond {
 					optimizer.RegisterPass(spvtools::CreateRedundantLineInfoElimPass());
 					std::vector<uint32_t> optimized;
 					optimizer.SetTargetEnv(SPV_ENV_VULKAN_1_3);
-					spvtools::MessageConsumer consumer([](spv_message_level_t /* level */, const char* /* source */,
-						const spv_position_t& /* position */, const char* message)
+					spvtools::MessageConsumer consumer([](spv_message_level_t /* level */, const char* /* source */, const spv_position_t& /* position */, const char* message)
 					{
 						BEY_CORE_ERROR(message);
 						BEY_CORE_ASSERT(false);
@@ -724,9 +745,9 @@ namespace Beyond {
 #endif
 
 				std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-				std::string entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
+				std::string												  entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
 
-				auto path = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + extension);
+				auto		path		   = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + extension);
 				std::string cachedFilePath = path.string();
 
 				FILE* f = fopen(cachedFilePath.c_str(), "wb");
@@ -754,9 +775,9 @@ namespace Beyond {
 	void VulkanShaderCompiler::TryGetVulkanCachedBinary(const std::filesystem::path& cacheDirectory, const std::string& extension, std::vector<uint32_t>& outputBinary) const
 	{
 		std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-		std::string entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
-		const auto path = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + extension);
-		const std::string cachedFilePath = path.string();
+		std::string												  entryPoint	 = converter.to_bytes(m_Shader->m_EntryPoint);
+		const auto												  path			 = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + extension);
+		const std::string										  cachedFilePath = path.string();
 
 		FILE* f = fopen(cachedFilePath.data(), "rb");
 		if (!f)
@@ -774,15 +795,15 @@ namespace Beyond {
 	{
 		struct ReflectionFileHeader
 		{
-			char Header[4] = { 'H','Z','S','R' };
+			char Header[4] = { 'H', 'Z', 'S', 'R' };
 		} header;
 
 		std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-		std::string entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
+		std::string												  entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
 
 		std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
-		const auto path = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + ".cached_vulkan.refl");
-		FileStreamReader serializer(path);
+		const auto			  path			 = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + ".cached_vulkan.refl");
+		FileStreamReader	  serializer(path);
 		if (!serializer)
 			return false;
 
@@ -823,20 +844,20 @@ namespace Beyond {
 	{
 		struct ReflectionFileHeader
 		{
-			char Header[4] = { 'H','Z','S','R' };
+			char Header[4] = { 'H', 'Z', 'S', 'R' };
 		} header;
 
 		std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-		std::string entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
+		std::string												  entryPoint = converter.to_bytes(m_Shader->m_EntryPoint);
 
 		std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
-		const auto path = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + ".cached_vulkan.refl");
-		FileStreamWriter serializer(path);
+		const auto			  path			 = cacheDirectory / (m_ShaderSourcePath.filename().stem().string() + "__" + entryPoint + m_ShaderSourcePath.extension().string() + ".cached_vulkan.refl");
+		FileStreamWriter	  serializer(path);
 		serializer.WriteRaw(header);
 		SerializeReflectionData(&serializer);
 	}
 
-	void VulkanShaderCompiler::SerializeReflectionData(StreamWriter* serializer)
+	void VulkanShaderCompiler::SerializeReflectionData(StreamWriter* serializer) const
 	{
 		serializer->WriteRaw<uint32_t>((uint32_t)m_ReflectionData.ShaderDescriptorSets.size());
 		for (const auto& descriptorSet : m_ReflectionData.ShaderDescriptorSets)
@@ -861,7 +882,7 @@ namespace Beyond {
 	{
 		ClearReflectionData();
 
-		for (auto [stage, data] : shaderData)
+		for (const auto& [stage, data] : shaderData)
 		{
 			Reflect(stage, data);
 		}
@@ -882,7 +903,7 @@ namespace Beyond {
 		fclose(f);
 #endif
 		spirv_cross::Compiler compiler(shaderData);
-		auto resources = compiler.get_shader_resources();
+		auto				  resources = compiler.get_shader_resources();
 
 		if (!resources.uniform_buffers.empty())
 			BEY_CORE_TRACE_TAG("Renderer", "Uniform Buffers:");
@@ -890,17 +911,17 @@ namespace Beyond {
 		{
 			const auto& activeBuffers = compiler.get_active_buffer_ranges(resource.id);
 			// Discard unused buffers from headers
-			if (activeBuffers.size())
+			if (!activeBuffers.empty())
 			{
 				const auto& name = compiler.get_name(resource.id);
 
-				//const auto& name = resource.name;
-				auto& bufferType = compiler.get_type(resource.base_type_id);
-				int memberCount = (uint32_t)bufferType.member_types.size();
-				uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+				// const auto& name = resource.name;
+				auto&	 bufferType	   = compiler.get_type(resource.base_type_id);
+				int		 memberCount   = (uint32_t)bufferType.member_types.size();
+				uint32_t binding	   = compiler.get_decoration(resource.id, spv::DecorationBinding);
 				uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-				uint32_t size = (uint32_t)compiler.get_declared_struct_size(bufferType);
-				uint32_t arraySize = Utils::GetReflectedArraySize(bufferType);
+				uint32_t size		   = (uint32_t)compiler.get_declared_struct_size(bufferType);
+				uint32_t arraySize	   = Utils::GetReflectedArraySize(bufferType);
 				if (arraySize == 0)
 					arraySize = 1;
 				if (descriptorSet >= m_ReflectionData.ShaderDescriptorSets.size())
@@ -910,19 +931,18 @@ namespace Beyond {
 				if (!s_UniformBuffers[descriptorSet].contains(binding))
 				{
 					ShaderResource::UniformBuffer uniformBuffer;
-					uniformBuffer.BindingPoint = binding;
-					uniformBuffer.ArraySize = arraySize;
-					uniformBuffer.Size = size;
-					uniformBuffer.Name = eastl::string(name.c_str(), name.size());
-					uniformBuffer.ShaderStage = (VkShaderStageFlagBits)(uniformBuffer.ShaderStage | shaderStage);
+					uniformBuffer.BindingPoint					= binding;
+					uniformBuffer.ArraySize						= arraySize;
+					uniformBuffer.Size							= size;
+					uniformBuffer.Name							= eastl::string(name.c_str(), name.size());
+					uniformBuffer.ShaderStage					= (VkShaderStageFlagBits)(uniformBuffer.ShaderStage | shaderStage);
 					s_UniformBuffers.at(descriptorSet)[binding] = uniformBuffer;
 				}
 				else
 				{
 					ShaderResource::UniformBuffer& uniformBuffer = s_UniformBuffers.at(descriptorSet).at(binding);
-					if (size > uniformBuffer.Size)
-						uniformBuffer.Size = size;
-					uniformBuffer.ShaderStage = (VkShaderStageFlagBits)(uniformBuffer.ShaderStage | shaderStage);
+					uniformBuffer.Size							 = std::max(size, uniformBuffer.Size);
+					uniformBuffer.ShaderStage					 = (VkShaderStageFlagBits)(uniformBuffer.ShaderStage | shaderStage);
 				}
 				shaderDescriptorSet.UniformBuffers[binding] = s_UniformBuffers.at(descriptorSet).at(binding);
 
@@ -940,15 +960,15 @@ namespace Beyond {
 			auto reflectStorageBuffers = [&]()
 			{
 				{
-					//const auto& name = resource.name;
+					// const auto& name = resource.name;
 					const auto& name = compiler.get_name(resource.id);
 
-					auto& bufferType = compiler.get_type(resource.base_type_id);
-					uint32_t memberCount = (uint32_t)bufferType.member_types.size();
-					uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+					auto&	 bufferType	   = compiler.get_type(resource.base_type_id);
+					uint32_t memberCount   = (uint32_t)bufferType.member_types.size();
+					uint32_t binding	   = compiler.get_decoration(resource.id, spv::DecorationBinding);
 					uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-					uint32_t size = (uint32_t)compiler.get_declared_struct_size(bufferType);
-					uint32_t arraySize = Utils::GetReflectedArraySize(bufferType);
+					uint32_t size		   = (uint32_t)compiler.get_declared_struct_size(bufferType);
+					uint32_t arraySize	   = Utils::GetReflectedArraySize(bufferType);
 					if (arraySize == 0)
 						arraySize = 1;
 
@@ -959,19 +979,18 @@ namespace Beyond {
 					if (!s_StorageBuffers[descriptorSet].contains(binding))
 					{
 						ShaderResource::StorageBuffer storageBuffer;
-						storageBuffer.BindingPoint = binding;
-						storageBuffer.ArraySize = arraySize;
-						storageBuffer.Size = size;
-						storageBuffer.Name = eastl::string(name.c_str(), name.size());
-						storageBuffer.ShaderStage = (VkShaderStageFlagBits)(storageBuffer.ShaderStage | shaderStage);
+						storageBuffer.BindingPoint					= binding;
+						storageBuffer.ArraySize						= arraySize;
+						storageBuffer.Size							= size;
+						storageBuffer.Name							= eastl::string(name.c_str(), name.size());
+						storageBuffer.ShaderStage					= (VkShaderStageFlagBits)(storageBuffer.ShaderStage | shaderStage);
 						s_StorageBuffers.at(descriptorSet)[binding] = storageBuffer;
 					}
 					else
 					{
 						ShaderResource::StorageBuffer& storageBuffer = s_StorageBuffers.at(descriptorSet).at(binding);
-						if (size > storageBuffer.Size)
-							storageBuffer.Size = size;
-						storageBuffer.ShaderStage = (VkShaderStageFlagBits)(storageBuffer.ShaderStage | shaderStage);
+						storageBuffer.Size							 = std::max(size, storageBuffer.Size);
+						storageBuffer.ShaderStage					 = (VkShaderStageFlagBits)(storageBuffer.ShaderStage | shaderStage);
 					}
 
 					shaderDescriptorSet.StorageBuffers[binding] = s_StorageBuffers.at(descriptorSet).at(binding);
@@ -990,22 +1009,21 @@ namespace Beyond {
 			else
 			{
 				const auto& activeBuffers = compiler.get_active_buffer_ranges(resource.id);
-				if (activeBuffers.size())
+				if (!activeBuffers.empty())
 					reflectStorageBuffers();
 			}
-
 		}
 
 		if (!resources.acceleration_structures.empty())
 			BEY_CORE_TRACE_TAG("Renderer", "Accleration Structures:");
 		for (const auto& resource : resources.acceleration_structures)
 		{
-			const auto& name = eastl::string(resource.name.c_str(), resource.name.size());
-			auto& type = compiler.get_type(resource.base_type_id);
-			uint32_t memberCount = (uint32_t)type.member_types.size();
-			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			uint32_t arraySize = Utils::GetReflectedArraySize(type);
+			const auto& name		  = eastl::string(resource.name.c_str(), resource.name.size());
+			auto&		type		  = compiler.get_type(resource.base_type_id);
+			uint32_t	memberCount	  = (uint32_t)type.member_types.size();
+			uint32_t	binding		  = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			uint32_t	descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+			uint32_t	arraySize	  = Utils::GetReflectedArraySize(type);
 			if (arraySize == 0)
 				arraySize = 1;
 			if (descriptorSet >= m_ReflectionData.ShaderDescriptorSets.size())
@@ -1015,17 +1033,17 @@ namespace Beyond {
 			if (!s_AccelerationStructures[descriptorSet].contains(binding))
 			{
 				ShaderResource::AccelerationStructure accelerationStructure;
-				accelerationStructure.BindingPoint = binding;
-				accelerationStructure.DescriptorSet = descriptorSet;
-				accelerationStructure.Name = name;
-				accelerationStructure.ArraySize = arraySize;
-				accelerationStructure.ShaderStage = (VkShaderStageFlagBits)(accelerationStructure.ShaderStage | shaderStage);
+				accelerationStructure.BindingPoint					= binding;
+				accelerationStructure.DescriptorSet					= descriptorSet;
+				accelerationStructure.Name							= name;
+				accelerationStructure.ArraySize						= arraySize;
+				accelerationStructure.ShaderStage					= (VkShaderStageFlagBits)(accelerationStructure.ShaderStage | shaderStage);
 				s_AccelerationStructures.at(descriptorSet)[binding] = accelerationStructure;
 			}
 			else
 			{
 				ShaderResource::AccelerationStructure& accelerationStructure = s_AccelerationStructures.at(descriptorSet).at(binding);
-				accelerationStructure.ShaderStage = (VkShaderStageFlagBits)(accelerationStructure.ShaderStage | shaderStage);
+				accelerationStructure.ShaderStage							 = (VkShaderStageFlagBits)(accelerationStructure.ShaderStage | shaderStage);
 			}
 
 			m_ReflectionData.Resources[name] = ShaderResourceDeclaration(name, RenderPassInputType::AccelerationStructure, descriptorSet, binding, arraySize);
@@ -1033,9 +1051,9 @@ namespace Beyond {
 			shaderDescriptorSet.AccelerationStructures[binding] = s_AccelerationStructures.at(descriptorSet).at(binding);
 
 			BEY_CORE_TRACE_TAG("Renderer", "  {0} ({1}, {2})", name, descriptorSet, binding);
-			//BEY_CORE_TRACE_TAG("Renderer", "  Member Count: {0}", memberCount);
-			//BEY_CORE_TRACE_TAG("Renderer", "  Size: {0}", size);
-			//BEY_CORE_TRACE_TAG("Renderer", "-------------------");
+			// BEY_CORE_TRACE_TAG("Renderer", "  Member Count: {0}", memberCount);
+			// BEY_CORE_TRACE_TAG("Renderer", "  Size: {0}", size);
+			// BEY_CORE_TRACE_TAG("Renderer", "-------------------");
 		}
 
 		auto alignTo16 = [](uint32_t value)
@@ -1047,18 +1065,18 @@ namespace Beyond {
 			BEY_CORE_TRACE_TAG("Renderer", "Push Constant Buffers:");
 		for (const auto& resource : resources.push_constant_buffers)
 		{
-			const auto& bufferName = eastl::string(resource.name.c_str(), resource.name.size());
-			auto& bufferType = compiler.get_type(resource.base_type_id);
-			auto bufferSize = alignTo16((uint32_t)compiler.get_declared_struct_size(bufferType));
-			uint32_t memberCount = uint32_t(bufferType.member_types.size());
-			uint32_t bufferOffset = 0;
-			bool bufferAlreadyReflected = m_ReflectionData.ConstantBuffers.contains(bufferName);
+			const auto& bufferName			   = eastl::string(resource.name.c_str(), resource.name.size());
+			auto&		bufferType			   = compiler.get_type(resource.base_type_id);
+			auto		bufferSize			   = alignTo16((uint32_t)compiler.get_declared_struct_size(bufferType));
+			uint32_t	memberCount			   = uint32_t(bufferType.member_types.size());
+			uint32_t	bufferOffset		   = 0;
+			bool		bufferAlreadyReflected = m_ReflectionData.ConstantBuffers.contains(bufferName);
 			if (!m_ReflectionData.PushConstantRanges.empty() && !bufferAlreadyReflected)
 				bufferOffset = m_ReflectionData.PushConstantRanges.back().Offset + m_ReflectionData.PushConstantRanges.back().Size;
 
 			auto& pushConstantRange = m_ReflectionData.PushConstantRanges.emplace_back();
 			*(uint32_t*)&pushConstantRange.ShaderStage |= shaderStage;
-			pushConstantRange.Size = bufferSize - bufferOffset;
+			pushConstantRange.Size	 = bufferSize - bufferOffset;
 			pushConstantRange.Offset = bufferOffset;
 
 			// Skip empty push constant buffers - these are for the renderer only
@@ -1066,8 +1084,8 @@ namespace Beyond {
 				continue;
 
 			ShaderBuffer& buffer = m_ReflectionData.ConstantBuffers[bufferName];
-			buffer.Name = bufferName;
-			buffer.Size = bufferSize - bufferOffset;
+			buffer.Name			 = bufferName;
+			buffer.Size			 = bufferSize - bufferOffset;
 
 			BEY_CORE_TRACE_TAG("Renderer", "  Name: {0}", bufferName);
 			BEY_CORE_TRACE_TAG("Renderer", "  Size: {0}", buffer.Size);
@@ -1076,31 +1094,29 @@ namespace Beyond {
 
 			for (uint32_t i = 0; i < memberCount; i++)
 			{
-				auto type = compiler.get_type(bufferType.member_types[i]);
+				auto		type	   = compiler.get_type(bufferType.member_types[i]);
 				const auto& memberName = compiler.get_member_name(bufferType.self, i);
-				auto size = (uint32_t)compiler.get_declared_struct_member_size(bufferType, i);
-				auto offset = compiler.type_struct_member_offset(bufferType, i) - bufferOffset;
+				auto		size	   = (uint32_t)compiler.get_declared_struct_member_size(bufferType, i);
+				auto		offset	   = compiler.type_struct_member_offset(bufferType, i) - bufferOffset;
 
-				eastl::string uniformName = fmt::eastl_format("{}.{}", bufferName, memberName);
+				eastl::string uniformName	 = fmt::eastl_format("{}.{}", bufferName, memberName);
 				buffer.Uniforms[uniformName] = ShaderUniform(uniformName, Utils::SPIRTypeToShaderUniformType(type), size, offset);
 				BEY_CORE_TRACE_TAG("Renderer", "    {}", uniformName);
-
 			}
 			BEY_CORE_TRACE_TAG("Renderer", "-------------------");
-
 		}
 
 		if (!resources.sampled_images.empty())
 			BEY_CORE_TRACE_TAG("Renderer", "Sampled Images:");
 		for (const auto& resource : resources.sampled_images)
 		{
-			const auto& name = eastl::string(resource.name.c_str(), resource.name.size());
-			auto& baseType = compiler.get_type(resource.base_type_id);
-			auto& type = compiler.get_type(resource.type_id);
-			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			uint32_t dimension = Utils::NumDims(baseType.image.dim);
-			uint32_t arraySize = Utils::GetReflectedArraySize(type);
+			const auto& name		  = eastl::string(resource.name.c_str(), resource.name.size());
+			auto&		baseType	  = compiler.get_type(resource.base_type_id);
+			auto&		type		  = compiler.get_type(resource.type_id);
+			uint32_t	binding		  = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			uint32_t	descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+			uint32_t	dimension	  = Utils::NumDims(baseType.image.dim);
+			uint32_t	arraySize	  = Utils::GetReflectedArraySize(type);
 
 			if (arraySize == 0)
 				arraySize = 1;
@@ -1108,34 +1124,32 @@ namespace Beyond {
 				m_ReflectionData.ShaderDescriptorSets.resize(descriptorSet + 1);
 
 			ShaderResource::ShaderDescriptorSet& shaderDescriptorSet = m_ReflectionData.ShaderDescriptorSets[descriptorSet];
-			auto& imageSampler = shaderDescriptorSet.ImageSamplers[binding];
-			imageSampler.BindingPoint = binding;
-			imageSampler.DescriptorSet = descriptorSet;
-			imageSampler.Name = name;
-			imageSampler.ShaderStage = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
-			imageSampler.Dimension = dimension;
-			imageSampler.ArraySize = arraySize;
+			auto&								 imageSampler		 = shaderDescriptorSet.ImageSamplers[binding];
+			imageSampler.BindingPoint								 = binding;
+			imageSampler.DescriptorSet								 = descriptorSet;
+			imageSampler.Name										 = name;
+			imageSampler.ShaderStage								 = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
+			imageSampler.Dimension									 = dimension;
+			imageSampler.ArraySize									 = arraySize;
 
-
-			auto imageType = Utils::RenderPassInputTypeFromReflection(dimension, true);
+			auto imageType					 = Utils::RenderPassInputTypeFromReflection(dimension, true);
 			m_ReflectionData.Resources[name] = ShaderResourceDeclaration(name, imageType, descriptorSet, binding, arraySize);
 
-
 			BEY_CORE_TRACE_TAG("Renderer", "  {0} ({1}, {2})", name, descriptorSet, binding);
-			//BEY_CORE_TRACE_TAG("Renderer", "-------------------");
+			// BEY_CORE_TRACE_TAG("Renderer", "-------------------");
 		}
 
 		if (!resources.separate_images.empty())
 			BEY_CORE_TRACE_TAG("Renderer", "Separate Images:");
 		for (const auto& resource : resources.separate_images)
 		{
-			const auto& name = eastl::string(resource.name.c_str(), resource.name.size());
-			auto& baseType = compiler.get_type(resource.base_type_id);
-			auto& type = compiler.get_type(resource.type_id);
-			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			uint32_t dimension = Utils::NumDims(baseType.image.dim);
-			uint32_t arraySize = Utils::GetReflectedArraySize(type);
+			const auto& name		  = eastl::string(resource.name.c_str(), resource.name.size());
+			auto&		baseType	  = compiler.get_type(resource.base_type_id);
+			auto&		type		  = compiler.get_type(resource.type_id);
+			uint32_t	binding		  = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			uint32_t	descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+			uint32_t	dimension	  = Utils::NumDims(baseType.image.dim);
+			uint32_t	arraySize	  = Utils::GetReflectedArraySize(type);
 
 			if (arraySize == 0)
 				arraySize = 1;
@@ -1143,62 +1157,62 @@ namespace Beyond {
 				m_ReflectionData.ShaderDescriptorSets.resize(descriptorSet + 1);
 
 			ShaderResource::ShaderDescriptorSet& shaderDescriptorSet = m_ReflectionData.ShaderDescriptorSets[descriptorSet];
-			auto& imageSampler = shaderDescriptorSet.SeparateTextures[binding];
-			imageSampler.BindingPoint = binding;
-			imageSampler.DescriptorSet = descriptorSet;
-			imageSampler.Name = name;
-			imageSampler.ShaderStage = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
-			imageSampler.Dimension = dimension;
-			imageSampler.ArraySize = arraySize;
+			auto&								 imageSampler		 = shaderDescriptorSet.SeparateTextures[binding];
+			imageSampler.BindingPoint								 = binding;
+			imageSampler.DescriptorSet								 = descriptorSet;
+			imageSampler.Name										 = name;
+			imageSampler.ShaderStage								 = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
+			imageSampler.Dimension									 = dimension;
+			imageSampler.ArraySize									 = arraySize;
 
-			auto imageType = Utils::RenderPassInputTypeFromReflection(dimension, type.image.sampled);
+			auto imageType					 = Utils::RenderPassInputTypeFromReflection(dimension, type.image.sampled);
 			m_ReflectionData.Resources[name] = ShaderResourceDeclaration(name, imageType, descriptorSet, binding, arraySize);
 
 			BEY_CORE_TRACE_TAG("Renderer", "  {0} ({1}, {2})", name, descriptorSet, binding);
-			//BEY_CORE_TRACE_TAG("Renderer", "-------------------");
+			// BEY_CORE_TRACE_TAG("Renderer", "-------------------");
 		}
 
 		if (!resources.separate_samplers.empty())
 			BEY_CORE_TRACE_TAG("Renderer", "Separate Samplers:");
 		for (const auto& resource : resources.separate_samplers)
 		{
-			const auto& name = eastl::string(resource.name.c_str(), resource.name.size());
-			auto& baseType = compiler.get_type(resource.base_type_id);
-			auto& type = compiler.get_type(resource.type_id);
-			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-			uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			uint32_t dimension = Utils::NumDims(baseType.image.dim);
-			uint32_t arraySize = Utils::GetReflectedArraySize(type);
+			const auto& name		  = eastl::string(resource.name.c_str(), resource.name.size());
+			auto&		baseType	  = compiler.get_type(resource.base_type_id);
+			auto&		type		  = compiler.get_type(resource.type_id);
+			uint32_t	binding		  = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			uint32_t	descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+			uint32_t	dimension	  = Utils::NumDims(baseType.image.dim);
+			uint32_t	arraySize	  = Utils::GetReflectedArraySize(type);
 			if (arraySize == 0)
 				arraySize = 1;
 			if (descriptorSet >= m_ReflectionData.ShaderDescriptorSets.size())
 				m_ReflectionData.ShaderDescriptorSets.resize(descriptorSet + 1);
 
 			ShaderResource::ShaderDescriptorSet& shaderDescriptorSet = m_ReflectionData.ShaderDescriptorSets[descriptorSet];
-			auto& imageSampler = shaderDescriptorSet.SeparateSamplers[binding];
-			imageSampler.BindingPoint = binding;
-			imageSampler.DescriptorSet = descriptorSet;
-			imageSampler.Name = name;
-			imageSampler.ShaderStage = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
-			imageSampler.Dimension = dimension;
-			imageSampler.ArraySize = arraySize;
+			auto&								 imageSampler		 = shaderDescriptorSet.SeparateSamplers[binding];
+			imageSampler.BindingPoint								 = binding;
+			imageSampler.DescriptorSet								 = descriptorSet;
+			imageSampler.Name										 = name;
+			imageSampler.ShaderStage								 = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
+			imageSampler.Dimension									 = dimension;
+			imageSampler.ArraySize									 = arraySize;
 
-			auto imageType = Utils::RenderPassInputTypeFromReflection(dimension, type.image.sampled);
+			auto imageType					 = Utils::RenderPassInputTypeFromReflection(dimension, type.image.sampled);
 			m_ReflectionData.Resources[name] = ShaderResourceDeclaration(name, imageType, descriptorSet, binding, arraySize);
 
 			BEY_CORE_TRACE_TAG("Renderer", "  {0} ({1}, {2})", name, descriptorSet, binding);
-			//BEY_CORE_TRACE_TAG("Renderer", "-------------------");
+			// BEY_CORE_TRACE_TAG("Renderer", "-------------------");
 		}
 
 		if (!resources.storage_images.empty())
 			BEY_CORE_TRACE_TAG("Renderer", "Storage Images:");
 		for (const auto& resource : resources.storage_images)
 		{
-			const auto& name = eastl::string(resource.name.c_str(), resource.name.size());
-			const auto& type = compiler.get_type(resource.type_id);
-			const uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			const auto&	   name			 = eastl::string(resource.name.c_str(), resource.name.size());
+			const auto&	   type			 = compiler.get_type(resource.type_id);
+			const uint32_t binding		 = compiler.get_decoration(resource.id, spv::DecorationBinding);
 			const uint32_t descriptorSet = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			const auto& baseType = compiler.get_type(resource.base_type_id);
+			const auto&	   baseType		 = compiler.get_type(resource.base_type_id);
 
 			uint32_t dimension = Utils::NumDims(type.image.dim);
 			uint32_t arraySize = Utils::GetReflectedArraySize(type);
@@ -1209,15 +1223,15 @@ namespace Beyond {
 				m_ReflectionData.ShaderDescriptorSets.resize(descriptorSet + 1);
 
 			ShaderResource::ShaderDescriptorSet& shaderDescriptorSet = m_ReflectionData.ShaderDescriptorSets[descriptorSet];
-			auto& imageSampler = shaderDescriptorSet.StorageImages[binding];
-			imageSampler.BindingPoint = binding;
-			imageSampler.DescriptorSet = descriptorSet;
-			imageSampler.Name = name;
-			imageSampler.Dimension = dimension;
-			imageSampler.ArraySize = arraySize;
-			imageSampler.ShaderStage = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
+			auto&								 imageSampler		 = shaderDescriptorSet.StorageImages[binding];
+			imageSampler.BindingPoint								 = binding;
+			imageSampler.DescriptorSet								 = descriptorSet;
+			imageSampler.Name										 = name;
+			imageSampler.Dimension									 = dimension;
+			imageSampler.ArraySize									 = arraySize;
+			imageSampler.ShaderStage								 = (VkShaderStageFlagBits)(imageSampler.ShaderStage | shaderStage);
 
-			auto imageType = Utils::RenderPassInputTypeFromReflection(dimension, type.image.sampled);
+			auto imageType					 = Utils::RenderPassInputTypeFromReflection(dimension, type.image.sampled);
 			m_ReflectionData.Resources[name] = ShaderResourceDeclaration(name, imageType, descriptorSet, binding, arraySize);
 
 			BEY_CORE_TRACE_TAG("Renderer", "  {0} ({1}, {2})", name, descriptorSet, binding);
@@ -1232,9 +1246,6 @@ namespace Beyond {
 
 		if (!resources.storage_images.empty())
 			BEY_CORE_TRACE_TAG("Renderer", "===========================");
-
-
 	}
 
-
-}
+} // namespace Beyond

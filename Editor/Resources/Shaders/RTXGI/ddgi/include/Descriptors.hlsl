@@ -138,11 +138,6 @@ RWStructuredBuffer<TLASInstance> GetDDGIProbeVisTLASInstances()
     return RWTLASInstances;
 }
 
-RaytracingAccelerationStructure GetAccelerationStructure(uint index)
-{
-    return TLAS;
-}
-
 // ByteAddressBuffer GetSphereIndexBuffer() { return ByteAddrBuffer[SPHERE_INDEX_BUFFER_INDEX]; }
 // ByteAddressBuffer GetSphereVertexBuffer() { return ByteAddrBuffer[SPHERE_VERTEX_BUFFER_INDEX]; }
 

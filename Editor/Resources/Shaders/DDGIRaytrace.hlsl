@@ -105,11 +105,8 @@ void main()
     if (volume.probeClassificationEnabled)
         packedPayload.packed0.x = probeState;
 
-    // Get the acceleration structure
-    RaytracingAccelerationStructure SceneTLAS = GetAccelerationStructure(SCENE_TLAS_INDEX);
-
     // Trace the Probe Ray
-    TraceRay(SceneTLAS, RAY_FLAG_NONE, 0xFF, 0, 0, 0, ray, packedPayload);
+    TraceRay(TLAS, RAY_FLAG_NONE, 0xFF, 0, 0, 0, ray, packedPayload);
 
     // Get the ray data texture array
     RWTexture2DArray<float4> RayData = GetRWTex2DArray(resourceIndices.rayDataUAVIndex);
@@ -153,7 +150,7 @@ void main()
     DDGIPayload rayPayload = UnpackPayload(packedPayload);
     PbrMaterial material = defaultPbrMaterial(rayPayload.albedo, rayPayload.metallic, rayPayload.roughness, rayPayload.shadingNormal, rayPayload.normal);
     material.WorldPosition = payload.worldPosition;
-    float3 diffuse = DirectLighting(asuint(probeRayDirection.x), F0, material, view, 1, SceneTLAS).rgb;
+    float3 diffuse = DirectLighting(asuint(probeRayDirection.x), F0, material, view, 1).rgb;
     diffuse += payload.albedo * payload.opacity; // Emission, not opacity.
 
     // Indirect Lighting (recursive)

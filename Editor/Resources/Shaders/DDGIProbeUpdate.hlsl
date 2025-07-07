@@ -64,7 +64,7 @@ void main(uint3 DispatchThreadID: SV_DispatchThreadID)
     // Get the probe radius
     float probeRadius = pushData.ProbeRadius;
 
-    // Bey_DebugImage[uint2(DispatchThreadID.x, 0)] = probeRadius.xxxx;
+    // Bey_DebugImage[uint2(DispatchThreadID.x, 0)] = probeRadius.xxx;
 
     // Get the instance offset (where one volume's probes end and another begin)
     uint instanceOffset = pushData.InstanceOffset;

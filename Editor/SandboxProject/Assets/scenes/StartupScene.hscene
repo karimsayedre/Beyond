@@ -16,7 +16,7 @@ Entities:
         0: 5717913345001425079
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 6671830371488511177
+      ColliderHandle: 4131619137286219736
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -67,7 +67,7 @@ Entities:
         0: 3067266531766851022
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 14843701302350475077
+      ColliderHandle: 4089066440976680457
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -156,7 +156,7 @@ Entities:
         0: 12387183670818522676
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 13274780153685093357
+      ColliderHandle: 8129008411256651528
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -177,7 +177,7 @@ Entities:
         0: 12387183670818522676
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 15155857469945467526
+      ColliderHandle: 15276024770669483367
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -218,7 +218,7 @@ Entities:
         0: 5717913345001425079
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 2805148014506428861
+      ColliderHandle: 10595370615276946723
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -234,9 +234,9 @@ Entities:
       Rotation: [1.39626336, 0.17453292, 0]
       Scale: [1, 1, 1]
     DirectionalLightComponent:
-      Intensity: 29
+      Intensity: 16.5
       Radiance: [0.920000017, 0.910000026, 0.99000001]
-      SourceSize: 0.75
+      SourceSize: 162.25
       SoftShadows: true
       CastShadows: true
       ShadowAmount: 1
@@ -251,7 +251,7 @@ Entities:
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      AssetID: 11612580344400130767
+      AssetID: 2452831522512915905
       SubmeshIndex: 2
       MaterialTable:
         0: 12694338993765337386
@@ -270,7 +270,7 @@ Entities:
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      AssetID: 1360707880296958509
+      AssetID: 13553527892615726408
       SubmeshIndex: 0
       MaterialTable:
         0: 12694338993765337386
@@ -301,7 +301,7 @@ Entities:
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      AssetID: 10260322233423021614
+      AssetID: 6044691320334507329
       SubmeshIndex: 1
       MaterialTable:
         0: 0
@@ -323,7 +323,7 @@ Entities:
         0: 3067266531766851022
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 4950138994446348133
+      ColliderHandle: 6900213317119652516
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -344,7 +344,7 @@ Entities:
         0: 12387183670818522676
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 11113539541748320468
+      ColliderHandle: 4697920306165639465
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -493,7 +493,7 @@ Entities:
         0: 5717913345001425079
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 11485010326524873714
+      ColliderHandle: 4829751039391472979
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -514,7 +514,7 @@ Entities:
         0: 3067266531766851022
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 6014964607293936175
+      ColliderHandle: 6447892201942394610
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -530,7 +530,7 @@ Entities:
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      AssetID: 4363863248528856946
+      AssetID: 5867281508369848228
       SubmeshIndex: 3
       MaterialTable:
         0: 0
@@ -570,7 +570,7 @@ Entities:
         0: 5717913345001425079
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 4926915027092413846
+      ColliderHandle: 4161928213257614640
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006
@@ -591,7 +591,7 @@ Entities:
         0: 3067266531766851022
       Visible: true
     MeshColliderComponent:
-      ColliderHandle: 2388962777994951912
+      ColliderHandle: 15306380963793683523
       UseSharedShape: false
       Friction: 0.5
       Restitution: 0.150000006

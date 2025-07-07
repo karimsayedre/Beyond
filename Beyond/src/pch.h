@@ -1,8 +1,8 @@
 #pragma once
 
 #ifdef BEY_PLATFORM_WINDOWS
-#define NOMINMAX
-#include <Windows.h>
+#	define NOMINMAX
+#	include <Windows.h>
 #endif
 
 #include <algorithm>
@@ -15,12 +15,11 @@
 #include <random>
 #include <set>
 #include <string>
-//#include <string_view>
-//#include <unordered_map>
+#include <string_view>
+#include <unordered_map>
 #include <vector>
 #include <filesystem>
 #include <ranges>
-
 
 #include <EASTL/string.h>
 #include <EASTL/string_view.h>
@@ -33,7 +32,6 @@
 #include "EASTL/fixed_vector.h"
 #include "EASTL/fixed_hash_map.h"
 #include "EASTL/fixed_map.h"
-
 
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/fmt/bundled/color.h>
@@ -52,7 +50,7 @@ using namespace magic_enum::bitwise_operators;
 
 // Jolt (Safety because this file has to be included before all other Jolt headers, at all times)
 #ifdef BEY_DEBUG // NOTE: This is a bit of a hacky fix for some dark magic that happens in Jolt
-				// 				We'll need to address this in future.
-#define JPH_ENABLE_ASSERTS
+// 				We'll need to address this in future.
+#	define JPH_ENABLE_ASSERTS
 #endif
 #include <Jolt/Jolt.h>

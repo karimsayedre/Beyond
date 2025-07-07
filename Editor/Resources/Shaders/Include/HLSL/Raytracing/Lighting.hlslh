@@ -68,6 +68,11 @@ float3 EnvironmentSample(float3 F0, float3 rayDirection, uint bounceIndex, PbrMa
         return u_EnvRadianceTex.SampleLevel(GetBilinearWrapSampler(), rayDirection, u_SceneData.EnvironmentMapLod).rgb *
                u_SceneData.EnvironmentMapIntensity;
     }
+    else if (params.HitT < 0.0f)
+    {
+        // Fallback or black if material data is invalid
+        return float3(0.0, 0.0, 0.0);
+    }
     else
     {
         return IBL(F0, rayDirection, 0.0, params.baseColor.rgb, params.N, params.roughness.r, params.metallic,
@@ -79,8 +84,7 @@ float3 EnvironmentSample(float3 F0, float3 rayDirection, uint bounceIndex, PbrMa
 /**
  * Computes the visibility factor for a given vector to a light.
  */
-float LightVisibility(uint seed, uint shadowRays, PbrMaterial payload, float3 lightVector, float tmax,
-                      float lightRadius, inout RaytracingAccelerationStructure bvh)
+float LightVisibility(uint seed, uint shadowRays, PbrMaterial payload, float3 lightVector, float tmax, float lightRadius)
 {
     float biasFactor = 1e-4;
     float shadowBias = biasFactor * max(1.0f, payload.HitT);
@@ -125,7 +129,7 @@ float LightVisibility(uint seed, uint shadowRays, PbrMaterial payload, float3 li
         RayQuery<RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH | RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES |
                  RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES> rayQuery;
 
-        rayQuery.TraceRayInline(bvh, RAY_FLAG_NONE, 0xFF, ray);
+        rayQuery.TraceRayInline(TLAS, RAY_FLAG_NONE, 0xFF, ray);
         if (rayQuery.Proceed())
         {
             if (rayQuery.CandidateType() == CANDIDATE_NON_OPAQUE_TRIANGLE)
@@ -147,8 +151,7 @@ float LightVisibility(uint seed, uint shadowRays, PbrMaterial payload, float3 li
  * returns the color of the light reflected off the surface.
  * float4.a = dir light visibility
  */
-float4 DirectLighting(uint seed, float3 F0, PbrMaterial material, float3 view, uint shadowRays,
-                      inout RaytracingAccelerationStructure bvh, float lightSizeMultiplier = 1.0f)
+float4 DirectLighting(uint seed, float3 F0, PbrMaterial material, float3 view, uint shadowRays, float lightSizeMultiplier = 1.0f)
 {
     // float3 brdf = (material.Albedo.rgb / PI);
     float4 lighting = 0.f;
@@ -167,7 +170,7 @@ float4 DirectLighting(uint seed, float3 F0, PbrMaterial material, float3 view, u
             continue;
 
         lighting.a = light.CastsShadows ? LightVisibility(seed, shadowRays, material, light.Direction, 1e27f,
-                                                          light.LightSize * lightSizeMultiplier, bvh)
+                                                          light.LightSize * lightSizeMultiplier)
                                         : 1.0;
 
         // Early out, the light isn't visible from the surface
@@ -215,7 +218,7 @@ float4 DirectLighting(uint seed, float3 F0, PbrMaterial material, float3 view, u
 
         float3 Li = normalize(light.Position - material.WorldPosition);
         float visibility = light.CastsShadows
-                               ? LightVisibility(seed, shadowRays, material, Li, lightDistance, light.SourceSize, bvh)
+                               ? LightVisibility(seed, shadowRays, material, Li, lightDistance, light.SourceSize)
                                : 1.0;
 
         // Early out, the light isn't visible from the surface
@@ -270,7 +273,7 @@ float4 DirectLighting(uint seed, float3 F0, PbrMaterial material, float3 view, u
 
         float visibility = light.CastsShadows
                                ? LightVisibility(seed, shadowRays, material, Li, lightDistance,
-                                                 lerp(0.0f, light.SourceSize, (float)light.SoftShadows), bvh)
+                                                 lerp(0.0f, light.SourceSize, (float)light.SoftShadows))
                                : 1.0;
 
         // Early out, the light isn't visible from the surface

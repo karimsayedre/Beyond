@@ -140,10 +140,7 @@ void main()
     uint2 LaunchIndex = DispatchRaysIndex().xy;
     uint2 LaunchDimensions = DispatchRaysDimensions().xy;
 
-    // RaytracingAccelerationStructure DDGIProbeVisTLAS = TLAS;
-
     // Setup the primary ray
-
     const float2 pixelCenter = float2(LaunchIndex.xy) + float2(0.5, 0.5);
     const float2 inUV = pixelCenter / float2(LaunchDimensions.xy);
 
@@ -173,7 +170,7 @@ void main()
 
         float linearDepth = LinearizeDepth(depth);
 
-        Bey_DebugImage[LaunchIndex.xy] = float4(length(linearDepth.xxx - payload.hitT.xxx).xxx, 1.0);
+        Bey_DebugImage[LaunchIndex.xy] = length(linearDepth.xxx - payload.hitT.xxx).xxx;
         if (linearDepth < 0.0 || payload.hitT <= linearDepth)
         {
             // Get the DDGIVolume index

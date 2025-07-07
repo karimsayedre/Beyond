@@ -34,8 +34,7 @@ namespace Beyond
 
 	static std::vector<std::thread> s_ThreadPool;
 
-	SceneRenderer::SceneRenderer(Ref<Scene> scene, SceneRendererSpecification specification)
-		: m_Scene(scene), m_Specification(specification)
+	SceneRenderer::SceneRenderer(Ref<Scene> scene, SceneRendererSpecification specification) : m_Scene(scene), m_Specification(specification)
 	{
 		Init();
 	}
@@ -93,9 +92,7 @@ namespace Beyond
 			{
 				switch (tiering.AOType)
 				{
-					case Tiering::Renderer::AmbientOcclusionTypeSetting::GTAO:
-						m_Options.EnableGTAO = true;
-						break;
+					case Tiering::Renderer::AmbientOcclusionTypeSetting::GTAO: m_Options.EnableGTAO = true; break;
 				}
 			}
 
@@ -207,12 +204,11 @@ namespace Beyond
 			m_LightCullingPipeline		   = PipelineCompute::Create(lightCullingShader);
 		}
 
-		VertexBufferLayout vertexLayout = {
-			{ShaderDataType::Float3, "a_Position"},
-			{ShaderDataType::Float3, "a_Normal"},
-			{ShaderDataType::Float3, "a_Tangent"},
-			{ShaderDataType::Float3, "a_Binormal"},
-			{ShaderDataType::Float2, "a_TexCoord"}};
+		VertexBufferLayout vertexLayout = { { ShaderDataType::Float3, "a_Position" },
+											{ ShaderDataType::Float3, "a_Normal" },
+											{ ShaderDataType::Float3, "a_Tangent" },
+											{ ShaderDataType::Float3, "a_Binormal" },
+											{ ShaderDataType::Float2, "a_TexCoord" } };
 
 		// VertexBufferLayout instanceLayout = {
 		//	{ ShaderDataType::Float4, "a_MRow0" },
@@ -221,22 +217,16 @@ namespace Beyond
 		// };
 
 		VertexBufferLayout boneInfluenceLayout = {
-			{ShaderDataType::Int4, "a_BoneIDs"},
-			{ShaderDataType::Float4, "a_BoneWeights"},
+			{ ShaderDataType::Int4, "a_BoneIDs" },
+			{ ShaderDataType::Float4, "a_BoneWeights" },
 		};
 
 		uint32_t shadowMapResolution = 4096;
 		switch (m_Specification.Tiering.ShadowResolution)
 		{
-			case Tiering::Renderer::ShadowResolutionSetting::Low:
-				shadowMapResolution = 1024;
-				break;
-			case Tiering::Renderer::ShadowResolutionSetting::Medium:
-				shadowMapResolution = 2048;
-				break;
-			case Tiering::Renderer::ShadowResolutionSetting::High:
-				shadowMapResolution = 4096;
-				break;
+			case Tiering::Renderer::ShadowResolutionSetting::Low: shadowMapResolution = 1024; break;
+			case Tiering::Renderer::ShadowResolutionSetting::Medium: shadowMapResolution = 2048; break;
+			case Tiering::Renderer::ShadowResolutionSetting::High: shadowMapResolution = 4096; break;
 		}
 
 		// Bloom Compute
@@ -306,8 +296,8 @@ namespace Beyond
 			shadowMapFramebufferSpec.DebugName		 = "Dir Shadow Map";
 			shadowMapFramebufferSpec.Width			 = shadowMapResolution;
 			shadowMapFramebufferSpec.Height			 = shadowMapResolution;
-			shadowMapFramebufferSpec.Attachments	 = {ImageFormat::DEPTH32F};
-			shadowMapFramebufferSpec.ClearColor		 = {0.0f, 0.0f, 0.0f, 0.0f};
+			shadowMapFramebufferSpec.Attachments	 = { ImageFormat::DEPTH32F };
+			shadowMapFramebufferSpec.ClearColor		 = { 0.0f, 0.0f, 0.0f, 0.0f };
 			shadowMapFramebufferSpec.DepthClearValue = 1.0f;
 			shadowMapFramebufferSpec.NoResize		 = true;
 			shadowMapFramebufferSpec.ExistingImage	 = cascadedDepthImage;
@@ -371,7 +361,7 @@ namespace Beyond
 			FramebufferSpecification framebufferSpec;
 			framebufferSpec.Width			= shadowMapResolution; // TODO: could probably halve these
 			framebufferSpec.Height			= shadowMapResolution;
-			framebufferSpec.Attachments		= {ImageFormat::DEPTH32F};
+			framebufferSpec.Attachments		= { ImageFormat::DEPTH32F };
 			framebufferSpec.DepthClearValue = 1.0f;
 			framebufferSpec.NoResize		= true;
 			framebufferSpec.DebugName		= "Spot Shadow Map";
@@ -471,9 +461,9 @@ namespace Beyond
 				FramebufferSpecification preDepthFramebufferSpec;
 				preDepthFramebufferSpec.DebugName = "PreDepth-Opaque";
 				// Linear depth, reversed device depth
-				preDepthFramebufferSpec.Attachments = {ImageFormat::RG16F, ImageFormat::DEPTH32F};
+				preDepthFramebufferSpec.Attachments = { ImageFormat::RG16F, ImageFormat::DEPTH32F };
 				// preDepthFramebufferSpec.Attachments.Attachments[1].Storage = true;
-				preDepthFramebufferSpec.ClearColor		= {0.0f, 0.0f, 0.0f, 0.0f};
+				preDepthFramebufferSpec.ClearColor		= { 0.0f, 0.0f, 0.0f, 0.0f };
 				preDepthFramebufferSpec.DepthClearValue = 0.0f;
 				preDepthFramebufferSpec.Transfer		= true;
 
@@ -575,7 +565,7 @@ namespace Beyond
 				m_GeometryPassColorAttachmentImage->Invalidate();*/
 
 				FramebufferSpecification geoFramebufferSpec;
-				geoFramebufferSpec.Attachments		 = {ImageFormat::B10G11R11UFLOAT, ImageFormat::B10G11R11UFLOAT, ImageFormat::RGBA, ImageFormat::RGBA, ImageFormat::DEPTH32F};
+				geoFramebufferSpec.Attachments		 = { ImageFormat::B10G11R11UFLOAT, ImageFormat::B10G11R11UFLOAT, ImageFormat::RGBA, ImageFormat::RGBA, ImageFormat::DEPTH32F };
 				geoFramebufferSpec.ExistingImages[4] = m_PreDepthPass->GetDepthOutput();
 				geoFramebufferSpec.Transfer			 = true;
 
@@ -584,7 +574,7 @@ namespace Beyond
 				// geoFramebufferSpec.Attachments.Attachments[1].LoadOp = AttachmentLoadOp::Load;
 				//  Don't blend with luminance in the alpha channel.
 				geoFramebufferSpec.Attachments.Attachments[1].Blend = false;
-				geoFramebufferSpec.ClearColor						= {0.0f, 0.0f, 0.0f, 1.0f};
+				geoFramebufferSpec.ClearColor						= { 0.0f, 0.0f, 0.0f, 1.0f };
 				geoFramebufferSpec.DebugName						= "Geometry";
 				geoFramebufferSpec.ClearDepthOnLoad					= false;
 				Ref<Framebuffer> clearFramebuffer					= Framebuffer::Create(geoFramebufferSpec);
@@ -634,8 +624,8 @@ namespace Beyond
 			{
 				FramebufferSpecification framebufferSpec;
 				framebufferSpec.DebugName		= "SelectedGeometry";
-				framebufferSpec.Attachments		= {ImageFormat::A2B10R11G11UNorm, ImageFormat::Depth};
-				framebufferSpec.ClearColor		= {0.0f, 0.0f, 0.0f, 0.0f};
+				framebufferSpec.Attachments		= { ImageFormat::A2B10R11G11UNorm, ImageFormat::Depth };
+				framebufferSpec.ClearColor		= { 0.0f, 0.0f, 0.0f, 0.0f };
 				framebufferSpec.DepthClearValue = 1.0f;
 
 				PipelineSpecification pipelineSpecification;
@@ -1038,8 +1028,8 @@ namespace Beyond
 
 			PipelineSpecification pipelineSpecification;
 			pipelineSpecification.Layout = {
-				{ShaderDataType::Float3, "a_Position"},
-				{ShaderDataType::Float2, "a_TexCoord"},
+				{ ShaderDataType::Float3, "a_Position" },
+				{ ShaderDataType::Float2, "a_TexCoord" },
 			};
 			pipelineSpecification.BackfaceCulling = false;
 			pipelineSpecification.DepthTest		  = false;
@@ -1049,7 +1039,7 @@ namespace Beyond
 			pipelineSpecification.Shader		  = shader;
 
 			FramebufferSpecification framebufferSpec;
-			framebufferSpec.ClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+			framebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 			framebufferSpec.Attachments.Attachments.emplace_back(ImageFormat::B10G11R11UFLOAT);
 			framebufferSpec.ExistingImages[0]		= m_GeometryPass->GetOutput(0);
 			framebufferSpec.DebugName				= "SSR-Composite";
@@ -1106,16 +1096,14 @@ namespace Beyond
 		{
 			FramebufferSpecification compFramebufferSpec;
 			compFramebufferSpec.DebugName	= "POST-EdgeDetection";
-			compFramebufferSpec.ClearColor	= {0.5f, 0.1f, 0.1f, 1.0f};
-			compFramebufferSpec.Attachments = {ImageFormat::B10G11R11UFLOAT, ImageFormat::Depth};
+			compFramebufferSpec.ClearColor	= { 0.5f, 0.1f, 0.1f, 1.0f };
+			compFramebufferSpec.Attachments = { ImageFormat::B10G11R11UFLOAT, ImageFormat::Depth };
 			compFramebufferSpec.Transfer	= true;
 
 			Ref<Framebuffer> framebuffer = Framebuffer::Create(compFramebufferSpec);
 
 			PipelineSpecification pipelineSpecification;
-			pipelineSpecification.Layout = {
-				{ShaderDataType::Float3, "a_Position"},
-				{ShaderDataType::Float2, "a_TexCoord"}};
+			pipelineSpecification.Layout			= { { ShaderDataType::Float3, "a_Position" }, { ShaderDataType::Float2, "a_TexCoord" } };
 			pipelineSpecification.BackfaceCulling	= false;
 			pipelineSpecification.Shader			= Renderer::GetShaderLibrary()->Get("EdgeDetection");
 			pipelineSpecification.TargetFramebuffer = framebuffer;
@@ -1137,8 +1125,8 @@ namespace Beyond
 		{
 			FramebufferSpecification compFramebufferSpec;
 			compFramebufferSpec.DebugName		 = "SceneComposite";
-			compFramebufferSpec.ClearColor		 = {0.5f, 0.1f, 0.1f, 1.0f};
-			compFramebufferSpec.Attachments		 = {ImageFormat::B10G11R11UFLOAT, ImageFormat::Depth};
+			compFramebufferSpec.ClearColor		 = { 0.5f, 0.1f, 0.1f, 1.0f };
+			compFramebufferSpec.Attachments		 = { ImageFormat::B10G11R11UFLOAT, ImageFormat::Depth };
 			compFramebufferSpec.Transfer		 = true;
 			compFramebufferSpec.ClearColorOnLoad = false;
 			compFramebufferSpec.ClearDepthOnLoad = false;
@@ -1146,9 +1134,7 @@ namespace Beyond
 			Ref<Framebuffer> framebuffer = Framebuffer::Create(compFramebufferSpec);
 
 			PipelineSpecification pipelineSpecification;
-			pipelineSpecification.Layout = {
-				{ShaderDataType::Float3, "a_Position"},
-				{ShaderDataType::Float2, "a_TexCoord"}};
+			pipelineSpecification.Layout			= { { ShaderDataType::Float3, "a_Position" }, { ShaderDataType::Float2, "a_TexCoord" } };
 			pipelineSpecification.BackfaceCulling	= false;
 			pipelineSpecification.Shader			= Renderer::GetShaderLibrary()->Get("SceneComposite");
 			pipelineSpecification.TargetFramebuffer = framebuffer;
@@ -1180,16 +1166,14 @@ namespace Beyond
 		{
 			FramebufferSpecification compFramebufferSpec;
 			compFramebufferSpec.DebugName	= "POST-DepthOfField";
-			compFramebufferSpec.ClearColor	= {0.5f, 0.1f, 0.1f, 1.0f};
-			compFramebufferSpec.Attachments = {ImageFormat::B10G11R11UFLOAT, ImageFormat::Depth};
+			compFramebufferSpec.ClearColor	= { 0.5f, 0.1f, 0.1f, 1.0f };
+			compFramebufferSpec.Attachments = { ImageFormat::B10G11R11UFLOAT, ImageFormat::Depth };
 			compFramebufferSpec.Transfer	= true;
 
 			Ref<Framebuffer> framebuffer = Framebuffer::Create(compFramebufferSpec);
 
 			PipelineSpecification pipelineSpecification;
-			pipelineSpecification.Layout = {
-				{ShaderDataType::Float3, "a_Position"},
-				{ShaderDataType::Float2, "a_TexCoord"}};
+			pipelineSpecification.Layout			= { { ShaderDataType::Float3, "a_Position" }, { ShaderDataType::Float2, "a_TexCoord" } };
 			pipelineSpecification.BackfaceCulling	= false;
 			pipelineSpecification.Shader			= Renderer::GetShaderLibrary()->Get("DOF");
 			pipelineSpecification.DebugName			= compFramebufferSpec.DebugName;
@@ -1287,8 +1271,8 @@ namespace Beyond
 		// Temporary framebuffers for re-use
 		{
 			FramebufferSpecification framebufferSpec;
-			framebufferSpec.Attachments = {ImageFormat::RGBA};
-			framebufferSpec.ClearColor	= {0.5f, 0.1f, 0.1f, 1.0f};
+			framebufferSpec.Attachments = { ImageFormat::RGBA };
+			framebufferSpec.ClearColor	= { 0.5f, 0.1f, 0.1f, 1.0f };
 			framebufferSpec.BlendMode	= FramebufferBlendMode::OneZero;
 			framebufferSpec.DebugName	= "Temporaries";
 
@@ -1302,10 +1286,8 @@ namespace Beyond
 			pipelineSpecification.DebugName			= "JumpFlood-Init";
 			pipelineSpecification.Shader			= Renderer::GetShaderLibrary()->Get("JumpFlood_Init");
 			pipelineSpecification.TargetFramebuffer = m_TempFramebuffers[0];
-			pipelineSpecification.Layout			= {
-				   {ShaderDataType::Float3, "a_Position"},
-				   {ShaderDataType::Float2, "a_TexCoord"}};
-			m_JumpFloodInitMaterial = Material::Create(pipelineSpecification.Shader, pipelineSpecification.DebugName.c_str());
+			pipelineSpecification.Layout			= { { ShaderDataType::Float3, "a_Position" }, { ShaderDataType::Float2, "a_TexCoord" } };
+			m_JumpFloodInitMaterial					= Material::Create(pipelineSpecification.Shader, pipelineSpecification.DebugName.c_str());
 
 			RenderPassSpecification renderPassSpec;
 			renderPassSpec.DebugName = "JumpFlood-Init";
@@ -1315,7 +1297,7 @@ namespace Beyond
 			BEY_CORE_VERIFY(m_JumpFloodInitPass->Validate());
 			m_JumpFloodInitPass->Bake();
 
-			const char* passName[2] = {"EvenPass", "OddPass"};
+			const char* passName[2] = { "EvenPass", "OddPass" };
 			for (uint32_t i = 0; i < 2; i++)
 			{
 				pipelineSpecification.DebugName			= renderPassSpec.DebugName;
@@ -1336,7 +1318,7 @@ namespace Beyond
 			if (m_Specification.JumpFloodPass)
 			{
 				FramebufferSpecification fbSpec;
-				fbSpec.Attachments						= {ImageFormat::B10G11R11UFLOAT};
+				fbSpec.Attachments						= { ImageFormat::B10G11R11UFLOAT };
 				fbSpec.ExistingImages[0]				= m_CompositePass->GetOutput(0);
 				fbSpec.ClearColorOnLoad					= false;
 				pipelineSpecification.TargetFramebuffer = Framebuffer::Create(fbSpec); // TODO: move this and skybox FB to be central, can use same
@@ -1357,12 +1339,10 @@ namespace Beyond
 		// Grid
 		{
 			PipelineSpecification pipelineSpec;
-			pipelineSpec.DebugName		 = "Grid";
-			pipelineSpec.Shader			 = Renderer::GetShaderLibrary()->Get("Grid");
-			pipelineSpec.BackfaceCulling = false;
-			pipelineSpec.Layout			 = {
-				 {ShaderDataType::Float3, "a_Position"},
-				 {ShaderDataType::Float2, "a_TexCoord"}};
+			pipelineSpec.DebugName		   = "Grid";
+			pipelineSpec.Shader			   = Renderer::GetShaderLibrary()->Get("Grid");
+			pipelineSpec.BackfaceCulling   = false;
+			pipelineSpec.Layout			   = { { ShaderDataType::Float3, "a_Position" }, { ShaderDataType::Float2, "a_TexCoord" } };
 			pipelineSpec.TargetFramebuffer = m_CompositePass->GetTargetFramebuffer();
 
 			RenderPassSpecification renderPassSpec;
@@ -1387,26 +1367,24 @@ namespace Beyond
 		m_ComplexColliderMaterial->Set("u_MaterialUniforms.Color", m_Options.ComplexPhysicsCollidersColor);
 
 		m_WireframeMaterial = Material::Create(Renderer::GetShaderLibrary()->Get("Wireframe"), "Wireframe");
-		m_WireframeMaterial->Set("u_MaterialUniforms.Color", glm::vec4 {1.0f, 0.5f, 0.0f, 1.0f});
+		m_WireframeMaterial->Set("u_MaterialUniforms.Color", glm::vec4 { 1.0f, 0.5f, 0.0f, 1.0f });
 
 		// Skybox
 		{
 			const auto skyboxShader = Renderer::GetShaderLibrary()->Get("Skybox");
 
 			FramebufferSpecification fbSpec;
-			fbSpec.Attachments		  = {ImageFormat::B10G11R11UFLOAT};
+			fbSpec.Attachments		  = { ImageFormat::B10G11R11UFLOAT };
 			fbSpec.ExistingImages[0]  = m_GeometryPass->GetOutput(0);
 			fbSpec.DebugName		  = "Sky box";
 			Ref<Framebuffer> skyboxFB = Framebuffer::Create(fbSpec);
 
 			PipelineSpecification pipelineSpec;
-			pipelineSpec.DebugName	= "Skybox";
-			pipelineSpec.Shader		= skyboxShader;
-			pipelineSpec.DepthWrite = false;
-			pipelineSpec.DepthTest	= false;
-			pipelineSpec.Layout		= {
-				{ShaderDataType::Float3, "a_Position"},
-				{ShaderDataType::Float2, "a_TexCoord"}};
+			pipelineSpec.DebugName		   = "Skybox";
+			pipelineSpec.Shader			   = skyboxShader;
+			pipelineSpec.DepthWrite		   = false;
+			pipelineSpec.DepthTest		   = false;
+			pipelineSpec.Layout			   = { { ShaderDataType::Float3, "a_Position" }, { ShaderDataType::Float2, "a_TexCoord" } };
 			pipelineSpec.TargetFramebuffer = skyboxFB;
 			m_SkyboxPipeline			   = RasterPipeline::Create(pipelineSpec);
 			m_SkyboxMaterial			   = Material::Create(pipelineSpec.Shader, pipelineSpec.DebugName.c_str());
@@ -1432,8 +1410,7 @@ namespace Beyond
 		// TODO: resizeable/flushable
 		m_GPUTransformBuffers.Data = hnew TransformData[TransformBufferCount];
 
-		Renderer::Submit([instance = Ref(this)]() mutable
-		{ instance->m_ResourcesCreatedGPU = true; });
+		Renderer::Submit([instance = Ref(this)]() mutable { instance->m_ResourcesCreatedGPU = true; });
 
 		InitOptions();
 
@@ -1527,7 +1504,7 @@ namespace Beyond
 				aoCompositePipelineSpec.DebugName = "AO-Composite";
 				FramebufferSpecification framebufferSpec;
 				framebufferSpec.DebugName		  = "AO-Composite";
-				framebufferSpec.Attachments		  = {ImageFormat::B10G11R11UFLOAT};
+				framebufferSpec.Attachments		  = { ImageFormat::B10G11R11UFLOAT };
 				framebufferSpec.ExistingImages[0] = m_GeometryPass->GetOutput(0);
 				framebufferSpec.ClearColorOnLoad  = false;
 				framebufferSpec.BlendMode		  = FramebufferBlendMode::Zero_SrcColor;
@@ -1535,9 +1512,9 @@ namespace Beyond
 				aoCompositePipelineSpec.TargetFramebuffer = Framebuffer::Create(framebufferSpec);
 				aoCompositePipelineSpec.DepthTest		  = false;
 				aoCompositePipelineSpec.Layout			  = {
-					   {ShaderDataType::Float3, "a_Position"},
-					   {ShaderDataType::Float2, "a_TexCoord"},
-				   };
+					   { ShaderDataType::Float3, "a_Position" },
+					   { ShaderDataType::Float2, "a_TexCoord" },
+				};
 				aoCompositePipelineSpec.Shader = Renderer::GetShaderLibrary()->Get("AO-Composite");
 
 				// Create RenderPass
@@ -1657,20 +1634,17 @@ namespace Beyond
 #pragma region GPUPerf
 	void SceneRenderer::InsertGPUPerfMarker(Ref<RenderCommandBuffer> renderCommandBuffer, const eastl::string& label, const glm::vec4& markerColor)
 	{
-		Renderer::Submit([=]
-		{ Renderer::RT_InsertGPUPerfMarker(renderCommandBuffer, label, markerColor); });
+		Renderer::Submit([=] { Renderer::RT_InsertGPUPerfMarker(renderCommandBuffer, label, markerColor); });
 	}
 
 	void SceneRenderer::BeginGPUPerfMarker(Ref<RenderCommandBuffer> renderCommandBuffer, const eastl::string& label, const glm::vec4& markerColor)
 	{
-		Renderer::Submit([=]
-		{ Renderer::RT_BeginGPUPerfMarker(renderCommandBuffer, label, markerColor); });
+		Renderer::Submit([=] { Renderer::RT_BeginGPUPerfMarker(renderCommandBuffer, label, markerColor); });
 	}
 
 	void SceneRenderer::EndGPUPerfMarker(Ref<RenderCommandBuffer> renderCommandBuffer)
 	{
-		Renderer::Submit([=]
-		{ Renderer::RT_EndGPUPerfMarker(renderCommandBuffer); });
+		Renderer::Submit([=] { Renderer::RT_EndGPUPerfMarker(renderCommandBuffer); });
 	}
 #pragma endregion
 
@@ -1699,7 +1673,7 @@ namespace Beyond
 	void SceneRenderer::UpdateGTAOData()
 	{
 		CBGTAOData& gtaoData			  = GTAODataCB;
-		gtaoData.NDCToViewMul_x_PixelSize = {CameraDataUB.NDCToViewMul * (gtaoData.HalfRes ? m_ScreenDataUB.InvHalfResolution : m_ScreenDataUB.InvFullResolution)};
+		gtaoData.NDCToViewMul_x_PixelSize = { CameraDataUB.NDCToViewMul * (gtaoData.HalfRes ? m_ScreenDataUB.InvHalfResolution : m_ScreenDataUB.InvFullResolution) };
 		gtaoData.HZBUVFactor			  = m_SSROptions.HZBUvFactor;
 		gtaoData.ShadowTolerance		  = m_Options.AOShadowTolerance;
 	}
@@ -1780,21 +1754,21 @@ namespace Beyond
 				m_InvRenderHeight = 1.0f / (float)m_TargetHeight;
 			}
 
-			const glm::uvec2 renderSize	  = {m_RenderWidth, m_RenderHeight};
-			const glm::uvec2 viewportSize = {m_TargetWidth, m_TargetHeight};
+			const glm::uvec2 renderSize	  = { m_RenderWidth, m_RenderHeight };
+			const glm::uvec2 viewportSize = { m_TargetWidth, m_TargetHeight };
 
 			if (m_DLSSSettings.Enable)
 			{
-				m_DLSSImage->Resize({m_TargetWidth, m_TargetHeight});
+				m_DLSSImage->Resize({ m_TargetWidth, m_TargetHeight });
 				m_DLSS->CreateDLSS(nullptr, m_DLSSSettings);
 			}
 
 			m_ScreenSpaceProjectionMatrix = glm::ortho(0.0f, (float)m_RenderWidth, 0.0f, (float)m_RenderHeight);
 
-			m_ScreenDataUB.FullResolution	 = {m_RenderWidth, m_RenderHeight};
-			m_ScreenDataUB.InvFullResolution = {m_InvRenderWidth, m_InvRenderHeight};
-			m_ScreenDataUB.HalfResolution	 = glm::ivec2 {m_RenderWidth, m_RenderHeight} / 2;
-			m_ScreenDataUB.InvHalfResolution = {m_InvRenderWidth * 2.0f, m_InvRenderHeight * 2.0f};
+			m_ScreenDataUB.FullResolution	 = { m_RenderWidth, m_RenderHeight };
+			m_ScreenDataUB.InvFullResolution = { m_InvRenderWidth, m_InvRenderHeight };
+			m_ScreenDataUB.HalfResolution	 = glm::ivec2 { m_RenderWidth, m_RenderHeight } / 2;
+			m_ScreenDataUB.InvHalfResolution = { m_InvRenderWidth * 2.0f, m_InvRenderHeight * 2.0f };
 
 			// Both Pre-depth and geometry framebuffers need to be resized first.
 			// Note the _Anim variants of these pipelines share the same framebuffer
@@ -1812,17 +1786,17 @@ namespace Beyond
 			// m_GeometryPassColorAttachmentImage->Resize({ m_RenderWidth, m_RenderHeight });
 			if (VulkanContext::GetCurrentDevice()->IsRaytracingSupported())
 			{
-				m_RaytracingImage->Resize({m_RenderWidth, m_RenderHeight});
-				m_RaytracingNormalsImage->Resize({m_RenderWidth, m_RenderHeight});
-				m_PreviousPositionImage->Resize({m_RenderWidth, m_RenderHeight});
-				m_RaytracingMetalnessRoughnessImage->Resize({m_RenderWidth, m_RenderHeight});
-				m_RaytracingPrimaryHitT->Resize({m_RenderWidth, m_RenderHeight});
-				m_ExposureImage->Resize({1, 1});
-				m_AlbedoImage->Resize({m_RenderWidth, m_RenderHeight});
-				m_AccumulationImage->Resize({m_RenderWidth, m_RenderHeight});
-				m_DDGIOutputImage->Resize({m_RenderWidth, m_RenderHeight});
+				m_RaytracingImage->Resize({ m_RenderWidth, m_RenderHeight });
+				m_RaytracingNormalsImage->Resize({ m_RenderWidth, m_RenderHeight });
+				m_PreviousPositionImage->Resize({ m_RenderWidth, m_RenderHeight });
+				m_RaytracingMetalnessRoughnessImage->Resize({ m_RenderWidth, m_RenderHeight });
+				m_RaytracingPrimaryHitT->Resize({ m_RenderWidth, m_RenderHeight });
+				m_ExposureImage->Resize({ 1, 1 });
+				m_AlbedoImage->Resize({ m_RenderWidth, m_RenderHeight });
+				m_AccumulationImage->Resize({ m_RenderWidth, m_RenderHeight });
+				m_DDGIOutputImage->Resize({ m_RenderWidth, m_RenderHeight });
 			}
-			m_DebugImage->Resize({m_RenderWidth, m_RenderHeight});
+			m_DebugImage->Resize({ m_RenderWidth, m_RenderHeight });
 
 			// Dependent on Geometry
 			m_SSRCompositePass->GetTargetFramebuffer()->Resize(m_RenderWidth, m_RenderHeight);
@@ -1840,7 +1814,7 @@ namespace Beyond
 				m_DOFPass->GetTargetFramebuffer()->Resize(m_TargetWidth, m_TargetHeight);
 
 			if (m_ReadBackImage)
-				m_ReadBackImage->Resize({m_RenderWidth, m_RenderHeight});
+				m_ReadBackImage->Resize({ m_RenderWidth, m_RenderHeight });
 
 			// HZB
 			{
@@ -1851,7 +1825,7 @@ namespace Beyond
 				const glm::uvec2 hzbSize = BIT(numMips);
 				m_HierarchicalDepthTexture.Texture->Resize(hzbSize.x, hzbSize.y);
 
-				const glm::vec2 hzbUVFactor = {(glm::vec2)renderSize / (glm::vec2)hzbSize};
+				const glm::vec2 hzbUVFactor = { (glm::vec2)renderSize / (glm::vec2)hzbSize };
 				m_SSROptions.HZBUvFactor	= hzbUVFactor;
 
 				// Image Views (per-mip)
@@ -1891,7 +1865,7 @@ namespace Beyond
 				constexpr uint32_t TILE_SIZE = 16u;
 				glm::uvec2		   size		 = renderSize;
 				size += TILE_SIZE - renderSize % TILE_SIZE;
-				m_LightCullingWorkGroups   = {size / TILE_SIZE, 1};
+				m_LightCullingWorkGroups   = { size / TILE_SIZE, 1 };
 				RendererDataUB.TilesCountX = m_LightCullingWorkGroups.x;
 
 				m_SBSVisiblePointLightIndicesBuffer->Resize(m_LightCullingWorkGroups.x * m_LightCullingWorkGroups.y * 4 * 1024);
@@ -2020,15 +1994,12 @@ namespace Beyond
 		}
 		else
 		{
-			glm::vec2 quadrants[4] = {{-0.25f, -0.25f}, {0.25f, -0.25f}, {-0.25f, 0.25f}, {0.25f, 0.25f}};
+			glm::vec2 quadrants[4] = { { -0.25f, -0.25f }, { 0.25f, -0.25f }, { -0.25f, 0.25f }, { 0.25f, 0.25f } };
 			uint32_t  index		   = m_DLSSSettings.Quadrant < 4 ? m_DLSSSettings.Quadrant : m_AccumulatedFrames;
 			m_CurrentJitter		   = quadrants[index % 4];
 		}
 
-		glm::vec3 translationVec(
-			2.0f * m_CurrentJitter.x / (m_ScreenDataUB.FullResolution.x),
-			2.0f * m_CurrentJitter.y / (m_ScreenDataUB.FullResolution.y),
-			0.0f);
+		glm::vec3		 translationVec(2.0f * m_CurrentJitter.x / (m_ScreenDataUB.FullResolution.x), 2.0f * m_CurrentJitter.y / (m_ScreenDataUB.FullResolution.y), 0.0f);
 		const glm::mat4& projectionMat = glm::translate(glm::mat4(1.0f), translationVec) * sceneCamera.Camera->GetProjectionMatrix();
 
 		const auto		viewProjection	  = projectionMat * sceneCamera.ViewMatrix;
@@ -2053,7 +2024,7 @@ namespace Beyond
 		// correct the handedness issue.
 		if (depthLinearizeMul * depthLinearizeAdd < 0)
 			depthLinearizeAdd = -depthLinearizeAdd;
-		cameraData.DepthUnpackConsts		= {depthLinearizeMul, depthLinearizeAdd};
+		cameraData.DepthUnpackConsts		= { depthLinearizeMul, depthLinearizeAdd };
 		const float*	P					= glm::value_ptr(projectionMat);
 		const glm::vec4 projInfoPerspective = {
 			2.0f / (P[4 * 0 + 0]),				   // (x) * (R - L)/N
@@ -2063,15 +2034,14 @@ namespace Beyond
 		};
 		float tanHalfFOVY			= 1.0f / cameraData.Projection[1][1]; // = tanf( drawContext.Camera.GetYFOV( ) * 0.5f );
 		float tanHalfFOVX			= 1.0f / cameraData.Projection[0][0]; // = tanHalfFOVY * drawContext.Camera.GetAspect( );
-		cameraData.CameraTanHalfFOV = {tanHalfFOVX, tanHalfFOVY};
-		cameraData.NDCToViewMul		= {projInfoPerspective[0], projInfoPerspective[1]};
-		cameraData.NDCToViewAdd		= {projInfoPerspective[2], projInfoPerspective[3]};
+		cameraData.CameraTanHalfFOV = { tanHalfFOVX, tanHalfFOVY };
+		cameraData.NDCToViewMul		= { projInfoPerspective[0], projInfoPerspective[1] };
+		cameraData.NDCToViewAdd		= { projInfoPerspective[2], projInfoPerspective[3] };
 
 		screenData.HZBUVFactor = m_SSROptions.HZBUvFactor;
 
 		Ref<SceneRenderer> instance = this;
-		Renderer::Submit([instance, cameraData]() mutable
-		{ instance->m_UBSCamera->RT_Get()->RT_SetData(&cameraData, sizeof(cameraData)); });
+		Renderer::Submit([instance, cameraData]() mutable { instance->m_UBSCamera->RT_Get()->RT_SetData(&cameraData, sizeof(cameraData)); });
 
 		const auto&					   lightEnvironment = m_SceneData.SceneLightEnvironment;
 		const std::vector<PointLight>& pointLightsVec	= lightEnvironment.PointLights;
@@ -2080,7 +2050,8 @@ namespace Beyond
 		Renderer::Submit([instance, &pointLightData]() mutable
 		{
 			Ref<UniformBuffer> uniformBuffer = instance->m_UBSPointLights->RT_Get();
-			uniformBuffer->RT_SetData(&pointLightData, 16ull + sizeof(PointLight) * pointLightData.Count); });
+			uniformBuffer->RT_SetData(&pointLightData, 16ull + sizeof(PointLight) * pointLightData.Count);
+		});
 
 		const std::vector<SpotLight>& spotLightsVec = lightEnvironment.SpotLights;
 		spotLightData.Count							= int(spotLightsVec.size());
@@ -2088,7 +2059,8 @@ namespace Beyond
 		Renderer::Submit([instance, &spotLightData]() mutable
 		{
 			Ref<UniformBuffer> uniformBuffer = instance->m_UBSSpotLights->RT_Get();
-			uniformBuffer->RT_SetData(&spotLightData, 16ull + sizeof(SpotLight) * spotLightData.Count); });
+			uniformBuffer->RT_SetData(&spotLightData, 16ull + sizeof(SpotLight) * spotLightData.Count);
+		});
 
 		for (size_t i = 0; i < spotLightsVec.size(); ++i)
 		{
@@ -2104,7 +2076,8 @@ namespace Beyond
 		Renderer::Submit([instance, spotShadowData, spotLightsVec]() mutable
 		{
 			Ref<UniformBuffer> uniformBuffer = instance->m_UBSSpotShadowData->RT_Get();
-			uniformBuffer->RT_SetData(&spotShadowData, (uint32_t)(sizeof(glm::mat4) * spotLightsVec.size())); });
+			uniformBuffer->RT_SetData(&spotShadowData, (uint32_t)(sizeof(glm::mat4) * spotLightsVec.size()));
+		});
 
 		const auto& directionalLight = m_SceneData.SceneLightEnvironment.DirectionalLights[0];
 		sceneData.Lights			 = directionalLight;
@@ -2115,14 +2088,12 @@ namespace Beyond
 		// sceneData.CameraPosition = cameraPosition;
 		sceneData.EnvironmentMapLod		  = m_SceneData.SkyboxLod;
 		sceneData.EnvironmentMapIntensity = m_SceneData.SceneEnvironmentIntensity;
-		Renderer::Submit([instance, sceneData]() mutable
-		{ instance->m_UBSScene->RT_Get()->RT_SetData(&sceneData, sizeof(sceneData)); });
+		Renderer::Submit([instance, sceneData]() mutable { instance->m_UBSScene->RT_Get()->RT_SetData(&sceneData, sizeof(sceneData)); });
 
 		if (m_Options.EnableGTAO)
 			UpdateGTAOData();
 
-		Renderer::Submit([instance, screenData]() mutable
-		{ instance->m_UBSScreenData->RT_Get()->RT_SetData(&screenData, sizeof(screenData)); });
+		Renderer::Submit([instance, screenData]() mutable { instance->m_UBSScreenData->RT_Get()->RT_SetData(&screenData, sizeof(screenData)); });
 
 		CascadeData cascades[4];
 		if (m_UseManualCascadeSplits)
@@ -2136,12 +2107,10 @@ namespace Beyond
 			CascadeSplits[i]			 = cascades[i].SplitDepth;
 			shadowData.ViewProjection[i] = cascades[i].ViewProj;
 		}
-		Renderer::Submit([instance, shadowData]() mutable
-		{ instance->m_UBSShadow->RT_Get()->RT_SetData(&shadowData, sizeof(shadowData)); });
+		Renderer::Submit([instance, shadowData]() mutable { instance->m_UBSShadow->RT_Get()->RT_SetData(&shadowData, sizeof(shadowData)); });
 
 		rendererData.CascadeSplits = CascadeSplits;
-		Renderer::Submit([instance, rendererData]() mutable
-		{ instance->m_UBSRendererData->RT_Get()->RT_SetData(&rendererData, sizeof(rendererData)); });
+		Renderer::Submit([instance, rendererData]() mutable { instance->m_UBSRendererData->RT_Get()->RT_SetData(&rendererData, sizeof(rendererData)); });
 	}
 
 	void SceneRenderer::EndScene()
@@ -2151,8 +2120,7 @@ namespace Beyond
 		BEY_CORE_ASSERT(m_Active);
 #if MULTI_THREAD
 		Ref<SceneRenderer> instance = this;
-		s_ThreadPool.emplace_back(([instance]() mutable
-		{ instance->FlushDrawList(); }));
+		s_ThreadPool.emplace_back(([instance]() mutable { instance->FlushDrawList(); }));
 #else
 		FlushDrawList();
 #endif
@@ -2200,14 +2168,14 @@ namespace Beyond
 		AssetHandle				  materialHandle = materialTable->HasMaterial(materialIndex) ? materialTable->GetMaterial(materialIndex) : mesh->GetMaterials()->GetMaterial(materialIndex);
 		const Ref<MaterialAsset>& material		 = AssetManager::GetAsset<MaterialAsset>(materialHandle);
 
-		MeshKey meshKey = {mesh->Handle, materialHandle, submeshIndex, false};
+		MeshKey meshKey = { mesh->Handle, materialHandle, submeshIndex, false };
 
 		TransformMapData& meshTransform	 = m_MeshTransformMap[meshKey];
 		auto&			  finalTransform = meshTransform.Transforms.emplace_back();
 
-		finalTransform[0] = {transform[0][0], transform[1][0], transform[2][0], transform[3][0]};
-		finalTransform[1] = {transform[0][1], transform[1][1], transform[2][1], transform[3][1]};
-		finalTransform[2] = {transform[0][2], transform[1][2], transform[2][2], transform[3][2]};
+		finalTransform[0] = { transform[0][0], transform[1][0], transform[2][0], transform[3][0] };
+		finalTransform[1] = { transform[0][1], transform[1][1], transform[2][1], transform[3][1] };
+		finalTransform[2] = { transform[0][2], transform[1][2], transform[2][2], transform[3][2] };
 
 		if (isRigged)
 		{
@@ -2260,13 +2228,13 @@ namespace Beyond
 			BEY_CORE_VERIFY(materialHandle);
 			Ref<MaterialAsset> material = AssetManager::GetAsset<MaterialAsset>(materialHandle);
 
-			MeshKey			  meshKey		 = {staticMesh->Handle, materialHandle, submeshIndex, false};
+			MeshKey			  meshKey		 = { staticMesh->Handle, materialHandle, submeshIndex, false };
 			TransformMapData& meshTransform	 = m_MeshTransformMap[meshKey];
 			auto&			  finalTransform = meshTransform.Transforms.emplace_back();
 
-			finalTransform[0] = {submeshTransform[0][0], submeshTransform[1][0], submeshTransform[2][0], submeshTransform[3][0]};
-			finalTransform[1] = {submeshTransform[0][1], submeshTransform[1][1], submeshTransform[2][1], submeshTransform[3][1]};
-			finalTransform[2] = {submeshTransform[0][2], submeshTransform[1][2], submeshTransform[2][2], submeshTransform[3][2]};
+			finalTransform[0] = { submeshTransform[0][0], submeshTransform[1][0], submeshTransform[2][0], submeshTransform[3][0] };
+			finalTransform[1] = { submeshTransform[0][1], submeshTransform[1][1], submeshTransform[2][1], submeshTransform[3][1] };
+			finalTransform[2] = { submeshTransform[0][2], submeshTransform[1][2], submeshTransform[2][2], submeshTransform[3][2] };
 
 			// Main geo
 			bool  isTransparent = material->IsBlended();
@@ -2313,13 +2281,13 @@ namespace Beyond
 		BEY_CORE_VERIFY(materialHandle);
 		Ref<MaterialAsset> material = AssetManager::GetAsset<MaterialAsset>(materialHandle);
 
-		MeshKey			  meshKey		 = {mesh->Handle, materialHandle, submeshIndex, true};
+		MeshKey			  meshKey		 = { mesh->Handle, materialHandle, submeshIndex, true };
 		TransformMapData& meshTransform	 = m_MeshTransformMap[meshKey];
 		auto&			  finalTransform = meshTransform.Transforms.emplace_back();
 
-		finalTransform[0] = glm::vec4 {transform[0][0], transform[1][0], transform[2][0], transform[3][0]};
-		finalTransform[1] = glm::vec4 {transform[0][1], transform[1][1], transform[2][1], transform[3][1]};
-		finalTransform[2] = glm::vec4 {transform[0][2], transform[1][2], transform[2][2], transform[3][2]};
+		finalTransform[0] = glm::vec4 { transform[0][0], transform[1][0], transform[2][0], transform[3][0] };
+		finalTransform[1] = glm::vec4 { transform[0][1], transform[1][1], transform[2][1], transform[3][1] };
+		finalTransform[2] = glm::vec4 { transform[0][2], transform[1][2], transform[2][2], transform[3][2] };
 
 		if (isRigged)
 		{
@@ -2388,13 +2356,13 @@ namespace Beyond
 			BEY_CORE_VERIFY(materialHandle);
 			Ref<MaterialAsset> material = AssetManager::GetAsset<MaterialAsset>(materialHandle);
 
-			MeshKey			  meshKey		 = {staticMesh->Handle, materialHandle, submeshIndex, true};
+			MeshKey			  meshKey		 = { staticMesh->Handle, materialHandle, submeshIndex, true };
 			TransformMapData& meshTransform	 = m_MeshTransformMap[meshKey];
 			auto&			  finalTransform = meshTransform.Transforms.emplace_back();
 
-			finalTransform[0] = {submeshTransform[0][0], submeshTransform[1][0], submeshTransform[2][0], submeshTransform[3][0]};
-			finalTransform[1] = {submeshTransform[0][1], submeshTransform[1][1], submeshTransform[2][1], submeshTransform[3][1]};
-			finalTransform[2] = {submeshTransform[0][2], submeshTransform[1][2], submeshTransform[2][2], submeshTransform[3][2]};
+			finalTransform[0] = { submeshTransform[0][0], submeshTransform[1][0], submeshTransform[2][0], submeshTransform[3][0] };
+			finalTransform[1] = { submeshTransform[0][1], submeshTransform[1][1], submeshTransform[2][1], submeshTransform[3][1] };
+			finalTransform[2] = { submeshTransform[0][2], submeshTransform[1][2], submeshTransform[2][2], submeshTransform[3][2] };
 			// Main geo
 			bool  isTransparent = material->IsBlended();
 			auto& destDrawList	= !isTransparent ? m_StaticMeshDrawList : m_TransparentStaticMeshDrawList;
@@ -2441,12 +2409,12 @@ namespace Beyond
 		const auto& submeshData		 = meshSource->GetSubmeshes();
 		glm::mat4	submeshTransform = transform * submeshData[submeshIndex].Transform;
 
-		MeshKey meshKey			 = {mesh->Handle, 5, submeshIndex, false};
+		MeshKey meshKey			 = { mesh->Handle, 5, submeshIndex, false };
 		auto&	transformStorage = m_MeshTransformMap[meshKey].Transforms.emplace_back();
 
-		transformStorage[0] = {transform[0][0], transform[1][0], transform[2][0], transform[3][0]};
-		transformStorage[1] = {transform[0][1], transform[1][1], transform[2][1], transform[3][1]};
-		transformStorage[2] = {transform[0][2], transform[1][2], transform[2][2], transform[3][2]};
+		transformStorage[0] = { transform[0][0], transform[1][0], transform[2][0], transform[3][0] };
+		transformStorage[1] = { transform[0][1], transform[1][1], transform[2][1], transform[3][1] };
+		transformStorage[2] = { transform[0][2], transform[1][2], transform[2][2], transform[3][2] };
 
 		{
 			auto& dc		= m_ColliderDrawList[meshKey];
@@ -2467,12 +2435,12 @@ namespace Beyond
 		{
 			glm::mat4 submeshTransform = transform * submeshData[submeshIndex].Transform;
 
-			MeshKey meshKey			 = {staticMesh->Handle, 5, submeshIndex, false};
+			MeshKey meshKey			 = { staticMesh->Handle, 5, submeshIndex, false };
 			auto&	transformStorage = m_MeshTransformMap[meshKey].Transforms.emplace_back();
 
-			transformStorage[0] = {submeshTransform[0][0], submeshTransform[1][0], submeshTransform[2][0], submeshTransform[3][0]};
-			transformStorage[1] = {submeshTransform[0][1], submeshTransform[1][1], submeshTransform[2][1], submeshTransform[3][1]};
-			transformStorage[2] = {submeshTransform[0][2], submeshTransform[1][2], submeshTransform[2][2], submeshTransform[3][2]};
+			transformStorage[0] = { submeshTransform[0][0], submeshTransform[1][0], submeshTransform[2][0], submeshTransform[3][0] };
+			transformStorage[1] = { submeshTransform[0][1], submeshTransform[1][1], submeshTransform[2][1], submeshTransform[3][1] };
+			transformStorage[2] = { submeshTransform[0][2], submeshTransform[1][2], submeshTransform[2][2], submeshTransform[3][2] };
 
 			{
 				auto& dc			= m_StaticColliderDrawList[meshKey];
@@ -2561,7 +2529,8 @@ namespace Beyond
 					auto storageBuffer = instance->m_SBSMaterialBuffer->Get(frame);
 					storageBuffer->RT_Resize(uint32_t(instance->m_MainRaytracer->GetMaterials().size() * sizeof(data[0])));
 					storageBuffer->RT_SetData(data.data(), uint32_t(instance->m_MainRaytracer->GetMaterials().size() * sizeof(data[0])));
-				} });
+				}
+			});
 		}
 	}
 
@@ -2618,7 +2587,15 @@ namespace Beyond
 					if (dc.IsRigged)
 					{
 						const auto& boneTransformsData = m_MeshBoneTransformsMap.at(mk);
-						Renderer::RenderMeshWithMaterial(m_MainCommandBuffer, m_ShadowPassPipelinesAnim[i], dc.Mesh, dc.SubmeshIndex, boneTransformsData.BoneTransformsBaseIndex, transformData.TransformIndex, dc.InstanceCount, m_ShadowPassMaterial, cascade);
+						Renderer::RenderMeshWithMaterial(m_MainCommandBuffer,
+														 m_ShadowPassPipelinesAnim[i],
+														 dc.Mesh,
+														 dc.SubmeshIndex,
+														 boneTransformsData.BoneTransformsBaseIndex,
+														 transformData.TransformIndex,
+														 dc.InstanceCount,
+														 m_ShadowPassMaterial,
+														 cascade);
 					}
 				}
 				Renderer::EndRenderPass(m_MainCommandBuffer);
@@ -2656,7 +2633,15 @@ namespace Beyond
 					if (dc.IsRigged)
 					{
 						const auto& boneTransformsData = m_MeshBoneTransformsMap.at(mk);
-						Renderer::RenderMeshWithMaterial(m_MainCommandBuffer, m_SpotShadowPassAnimPipeline, dc.Mesh, dc.SubmeshIndex, boneTransformsData.BoneTransformsBaseIndex, transformData.TransformIndex, dc.InstanceCount, m_SpotShadowPassMaterial, lightIndex);
+						Renderer::RenderMeshWithMaterial(m_MainCommandBuffer,
+														 m_SpotShadowPassAnimPipeline,
+														 dc.Mesh,
+														 dc.SubmeshIndex,
+														 boneTransformsData.BoneTransformsBaseIndex,
+														 transformData.TransformIndex,
+														 dc.InstanceCount,
+														 m_SpotShadowPassMaterial,
+														 lightIndex);
 					}
 					else
 					{
@@ -2744,7 +2729,10 @@ namespace Beyond
 		Renderer::BeginGPUPerfMarker(m_MainCommandBuffer, "HZB");
 		Renderer::BeginComputePass(m_MainCommandBuffer, m_HierarchicalDepthPass);
 
-		auto ReduceHZB = [commandBuffer = m_MainCommandBuffer, hierarchicalDepthPass = m_HierarchicalDepthPass, hierarchicalDepthTexture = m_HierarchicalDepthTexture.Texture, hzbMaterials = m_HZBMaterials](const uint32_t startDestMip, const uint32_t parentMip, const glm::vec2& DispatchThreadIdToBufferUV, const glm::vec2& InputViewportMaxBound, const bool isFirstPass)
+		auto ReduceHZB = [commandBuffer			   = m_MainCommandBuffer,
+						  hierarchicalDepthPass	   = m_HierarchicalDepthPass,
+						  hierarchicalDepthTexture = m_HierarchicalDepthTexture.Texture,
+						  hzbMaterials			   = m_HZBMaterials](const uint32_t startDestMip, const uint32_t parentMip, const glm::vec2& DispatchThreadIdToBufferUV, const glm::vec2& InputViewportMaxBound, const bool isFirstPass)
 		{
 			struct HierarchicalZComputePushConstants
 			{
@@ -2753,7 +2741,7 @@ namespace Beyond
 				glm::vec2 InvSize;
 				int		  FirstLod;
 				bool	  IsFirstPass;
-				char	  Padding[3] {0, 0, 0};
+				char	  Padding[3] { 0, 0, 0 };
 			} hierarchicalZComputePushConstants;
 
 			hierarchicalZComputePushConstants.IsFirstPass				 = isFirstPass;
@@ -2763,7 +2751,7 @@ namespace Beyond
 
 			const glm::ivec2 srcSize(Math::DivideAndRoundUp(hierarchicalDepthTexture->GetSize(), 1u << parentMip));
 			const glm::ivec2 dstSize(Math::DivideAndRoundUp(hierarchicalDepthTexture->GetSize(), 1u << startDestMip));
-			hierarchicalZComputePushConstants.InvSize = glm::vec2 {1.0f / (float)srcSize.x, 1.0f / (float)srcSize.y};
+			hierarchicalZComputePushConstants.InvSize = glm::vec2 { 1.0f / (float)srcSize.x, 1.0f / (float)srcSize.y };
 
 			glm::uvec3 workGroups(Math::DivideAndRoundUp(dstSize.x, 8), Math::DivideAndRoundUp(dstSize.y, 8), 1);
 			Renderer::DispatchCompute(commandBuffer, hierarchicalDepthPass, hzbMaterials[startDestMip / 4], workGroups, Buffer(&hierarchicalZComputePushConstants, sizeof(hierarchicalZComputePushConstants)));
@@ -2773,7 +2761,7 @@ namespace Beyond
 
 		// Reduce first 4 mips
 		glm::ivec2 srcSize = m_PreDepthPass->GetDepthOutput()->GetSize();
-		ReduceHZB(0, 0, {1.0f / glm::vec2 {srcSize}}, {(glm::vec2 {srcSize} - 0.5f) / glm::vec2 {srcSize}}, true);
+		ReduceHZB(0, 0, { 1.0f / glm::vec2 { srcSize } }, { (glm::vec2 { srcSize } - 0.5f) / glm::vec2 { srcSize } }, true);
 		Renderer::EndGPUPerfMarker(m_MainCommandBuffer);
 
 		// Reduce the next mips
@@ -2781,7 +2769,7 @@ namespace Beyond
 		{
 			Renderer::BeginGPUPerfMarker(m_MainCommandBuffer, fmt::eastl_format("HZB-Pass-({})", startDestMip));
 			srcSize = Math::DivideAndRoundUp(m_HierarchicalDepthTexture.Texture->GetSize(), 1u << uint32_t(startDestMip - 1));
-			ReduceHZB(startDestMip, startDestMip - 1, {2.0f / glm::vec2 {srcSize}}, glm::vec2 {1.0f}, false);
+			ReduceHZB(startDestMip, startDestMip - 1, { 2.0f / glm::vec2 { srcSize } }, glm::vec2 { 1.0f }, false);
 			Renderer::EndGPUPerfMarker(m_MainCommandBuffer);
 		}
 
@@ -2805,7 +2793,7 @@ namespace Beyond
 			float Exposure;
 		} exposurePushConst;
 		exposurePushConst.Exposure = m_SceneData.SceneCamera.Camera->GetExposure();
-		Renderer::DispatchCompute(m_MainCommandBuffer, m_ExposurePass, nullptr, {1, 1, 1}, Buffer(&exposurePushConst, sizeof(ExposurePushConst)));
+		Renderer::DispatchCompute(m_MainCommandBuffer, m_ExposurePass, nullptr, { 1, 1, 1 }, Buffer(&exposurePushConst, sizeof(ExposurePushConst)));
 
 		Renderer::EndComputePass(m_MainCommandBuffer, m_ExposurePass);
 		m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.MotionVectorsQuery);
@@ -2819,11 +2807,11 @@ namespace Beyond
 			return;
 
 		m_GPUTimeQueries.PreIntegrationQuery = m_MainCommandBuffer->BeginTimestampQuery();
-		glm::vec2 projectionParams			 = {m_SceneData.SceneCamera.Far, m_SceneData.SceneCamera.Near}; // Reversed
+		glm::vec2 projectionParams			 = { m_SceneData.SceneCamera.Far, m_SceneData.SceneCamera.Near }; // Reversed
 
 		Ref<Texture2D> visibilityTexture = m_PreIntegrationVisibilityTexture.Texture;
 
-		ImageClearValue		  clearValue = {glm::vec4(1.0f)};
+		ImageClearValue		  clearValue = { glm::vec4(1.0f) };
 		ImageSubresourceRange subresourceRange {};
 		subresourceRange.BaseMip  = 0;
 		subresourceRange.MipCount = 1;
@@ -2845,10 +2833,10 @@ namespace Beyond
 		{
 			Renderer::BeginGPUPerfMarker(m_MainCommandBuffer, fmt::eastl_format("PreIntegration-Pass({})", mip));
 			auto [mipWidth, mipHeight] = visibilityTexture->GetMipSize(mip);
-			glm::uvec3 workGroups	   = {(uint32_t)glm::ceil((float)mipWidth / 8.0f), (uint32_t)glm::ceil((float)mipHeight / 8.0f), 1};
+			glm::uvec3 workGroups	   = { (uint32_t)glm::ceil((float)mipWidth / 8.0f), (uint32_t)glm::ceil((float)mipHeight / 8.0f), 1 };
 
 			auto [width, height]								= visibilityTexture->GetMipSize(mip);
-			glm::vec2 resFactor									= 1.0f / glm::vec2 {width, height};
+			glm::vec2 resFactor									= 1.0f / glm::vec2 { width, height };
 			preIntegrationComputePushConstants.HZBResFactor		= resFactor * m_SSROptions.HZBUvFactor;
 			preIntegrationComputePushConstants.ResFactor		= resFactor;
 			preIntegrationComputePushConstants.ProjectionParams = projectionParams;
@@ -2871,7 +2859,7 @@ namespace Beyond
 			return;
 
 		m_GPUTimeQueries.LightCullingPassQuery = m_MainCommandBuffer->BeginTimestampQuery();
-		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "LightCulling", {0.75f, 0.24f, 1.0f, 1.0f});
+		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "LightCulling", { 0.75f, 0.24f, 1.0f, 1.0f });
 
 		Renderer::BeginComputePass(m_MainCommandBuffer, m_LightCullingPass);
 		Renderer::DispatchCompute(m_MainCommandBuffer, m_LightCullingPass, nullptr, m_LightCullingWorkGroups);
@@ -2879,8 +2867,18 @@ namespace Beyond
 
 		// NOTE: ideally this would be done automatically by RenderPass/ComputePass system
 		Ref<PipelineCompute> pipeline = m_LightCullingPass->GetPipeline();
-		pipeline->BufferMemoryBarrier(m_MainCommandBuffer, m_SBSVisiblePointLightIndicesBuffer->Get(), PipelineStage::ComputeShader, ResourceAccessFlags::ShaderWrite, (PipelineStage)((int)PipelineStage::FragmentShader | (int)PipelineStage::RaytracingShader), ResourceAccessFlags::ShaderRead);
-		pipeline->BufferMemoryBarrier(m_MainCommandBuffer, m_SBSVisibleSpotLightIndicesBuffer->Get(), PipelineStage::ComputeShader, ResourceAccessFlags::ShaderWrite, (PipelineStage)((int)PipelineStage::FragmentShader | (int)PipelineStage::RaytracingShader), ResourceAccessFlags::ShaderRead);
+		pipeline->BufferMemoryBarrier(m_MainCommandBuffer,
+									  m_SBSVisiblePointLightIndicesBuffer->Get(),
+									  PipelineStage::ComputeShader,
+									  ResourceAccessFlags::ShaderWrite,
+									  (PipelineStage)((int)PipelineStage::FragmentShader | (int)PipelineStage::RaytracingShader),
+									  ResourceAccessFlags::ShaderRead);
+		pipeline->BufferMemoryBarrier(m_MainCommandBuffer,
+									  m_SBSVisibleSpotLightIndicesBuffer->Get(),
+									  PipelineStage::ComputeShader,
+									  ResourceAccessFlags::ShaderWrite,
+									  (PipelineStage)((int)PipelineStage::FragmentShader | (int)PipelineStage::RaytracingShader),
+									  ResourceAccessFlags::ShaderRead);
 
 		SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
 		m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.LightCullingPassQuery);
@@ -2901,7 +2899,7 @@ namespace Beyond
 		const Ref<TextureCube> radianceMap = m_SceneData.SceneEnvironment ? m_SceneData.SceneEnvironment->RadianceMap : Renderer::GetBlackCubeTexture();
 		m_SkyboxMaterial->Set("u_Texture", radianceMap);
 
-		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "Skybox", {0.3f, 0.0f, 1.0f, 1.0f});
+		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "Skybox", { 0.3f, 0.0f, 1.0f, 1.0f });
 		Renderer::SubmitFullscreenQuad(m_MainCommandBuffer, m_SkyboxPipeline, m_SkyboxMaterial);
 		SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
 		Renderer::EndRenderPass(m_MainCommandBuffer);
@@ -2936,7 +2934,14 @@ namespace Beyond
 			if (dc.IsRigged)
 			{
 				const auto& boneTransformsData = m_MeshBoneTransformsMap.at(mk);
-				Renderer::RenderMeshWithMaterial(m_MainCommandBuffer, m_SelectedGeometryAnimPass->GetPipeline(), dc.Mesh, dc.SubmeshIndex, boneTransformsData.BoneTransformsBaseIndex + dc.InstanceOffset, transformData.TransformIndex, dc.InstanceCount, m_SelectedGeometryMaterial);
+				Renderer::RenderMeshWithMaterial(m_MainCommandBuffer,
+												 m_SelectedGeometryAnimPass->GetPipeline(),
+												 dc.Mesh,
+												 dc.SubmeshIndex,
+												 boneTransformsData.BoneTransformsBaseIndex + dc.InstanceOffset,
+												 transformData.TransformIndex,
+												 dc.InstanceCount,
+												 m_SelectedGeometryMaterial);
 			}
 		}
 		Renderer::EndRenderPass(m_MainCommandBuffer);
@@ -2971,7 +2976,13 @@ namespace Beyond
 				for (auto& [mk, dc] : m_TransparentStaticMeshDrawList)
 				{
 					const auto& transformData = m_MeshTransformMap.at(mk);
-					Renderer::RenderStaticMesh(m_MainCommandBuffer, m_TransparentGeometryPipeline, dc.StaticMesh, dc.SubmeshIndex, dc.MaterialTable ? dc.MaterialTable : dc.StaticMesh->GetMaterials(), transformData.TransformIndex, dc.InstanceCount);
+					Renderer::RenderStaticMesh(m_MainCommandBuffer,
+											   m_TransparentGeometryPipeline,
+											   dc.StaticMesh,
+											   dc.SubmeshIndex,
+											   dc.MaterialTable ? dc.MaterialTable : dc.StaticMesh->GetMaterials(),
+											   transformData.TransformIndex,
+											   dc.InstanceCount);
 				}
 				SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
 
@@ -2981,7 +2992,14 @@ namespace Beyond
 				{
 					const auto& transformData = m_MeshTransformMap.at(mk);
 					// Renderer::RenderSubmesh(m_MainCommandBuffer, m_GeometryPipeline, m_UniformBufferSet, m_StorageBufferSet, dc.Mesh, dc.SubmeshIndex, dc.MaterialTable ? dc.MaterialTable : dc.Mesh->GetMaterials(), dc.Transform);
-					Renderer::RenderSubmeshInstanced(m_MainCommandBuffer, m_TransparentGeometryPipeline, dc.Mesh, dc.SubmeshIndex, dc.MaterialTable ? dc.MaterialTable : dc.Mesh->GetMaterials(), 0, transformData.TransformIndex, dc.InstanceCount);
+					Renderer::RenderSubmeshInstanced(m_MainCommandBuffer,
+													 m_TransparentGeometryPipeline,
+													 dc.Mesh,
+													 dc.SubmeshIndex,
+													 dc.MaterialTable ? dc.MaterialTable : dc.Mesh->GetMaterials(),
+													 0,
+													 transformData.TransformIndex,
+													 dc.InstanceCount);
 				}
 				SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
 			}
@@ -2998,7 +3016,14 @@ namespace Beyond
 				if (dc.IsRigged)
 				{
 					const auto& boneTransformsData = m_MeshBoneTransformsMap.at(mk);
-					Renderer::RenderSubmeshInstanced(m_MainCommandBuffer, m_GeometryPipelineAnim, dc.Mesh, dc.SubmeshIndex, dc.MaterialTable ? dc.MaterialTable : dc.Mesh->GetMaterials(), boneTransformsData.BoneTransformsBaseIndex, transformData.TransformIndex, dc.InstanceCount);
+					Renderer::RenderSubmeshInstanced(m_MainCommandBuffer,
+													 m_GeometryPipelineAnim,
+													 dc.Mesh,
+													 dc.SubmeshIndex,
+													 dc.MaterialTable ? dc.MaterialTable : dc.Mesh->GetMaterials(),
+													 boneTransformsData.BoneTransformsBaseIndex,
+													 transformData.TransformIndex,
+													 dc.InstanceCount);
 				}
 			}
 
@@ -3074,8 +3099,7 @@ namespace Beyond
 			// Renderer::CopyImage(m_MainCommandBuffer, m_RaytracingMetalnessRoughnessImage, m_GeometryPass->GetOutput(2));
 		}
 
-		Renderer::Submit([instance = Ref(this)]() mutable
-		{ instance->m_MainRaytracer->Clear(); });
+		Renderer::Submit([instance = Ref(this)]() mutable { instance->m_MainRaytracer->Clear(); });
 	}
 
 	void SceneRenderer::DDGIRaytracing()
@@ -3110,7 +3134,7 @@ namespace Beyond
 			{
 				uint32_t width, height, depth;
 				volume->GetRayDispatchDimensions(width, height, depth);
-				Renderer::SetPushConstant(m_DDGIRayTracingRenderPass, {&pushConstant, sizeof(pushConstant)}, ShaderStage::RayGen);
+				Renderer::SetPushConstant(m_DDGIRayTracingRenderPass, { &pushConstant, sizeof(pushConstant) }, ShaderStage::RayGen);
 				Renderer::DispatchRays(m_MainCommandBuffer, m_DDGIRayTracingRenderPass, nullptr, width, height, depth);
 			}
 			Renderer::EndRaytracingPass(m_MainCommandBuffer, m_DDGIRayTracingRenderPass);
@@ -3142,7 +3166,8 @@ namespace Beyond
 					{
 						const uint32_t size = glm::max(uint(numProbes * sizeof(VkAccelerationStructureInstanceKHR)), 8u);
 						inst->m_SBSDDGIProbeInstances->RT_Get()->RT_Resize(size);
-						inst->m_SBSDDGIProbeInstances->RT_Get()->RT_SetData(inst->m_DDGIVisRaytracer->GetVulkanInstances().data(), size); });
+						inst->m_SBSDDGIProbeInstances->RT_Get()->RT_SetData(inst->m_DDGIVisRaytracer->GetVulkanInstances().data(), size);
+					});
 				}
 
 				for (const auto& volume : volumes)
@@ -3164,7 +3189,7 @@ namespace Beyond
 					glm::uvec3	   workGroups((uint32_t)ceil((float)numProbes / groupSize), 1, 1);
 
 					Renderer::BeginComputePass(m_MainCommandBuffer, m_DDGIProbeUpdatePass);
-					Renderer::DispatchCompute(m_MainCommandBuffer, m_DDGIProbeUpdatePass, nullptr, workGroups, {&pushConstant, sizeof(pushConstant)});
+					Renderer::DispatchCompute(m_MainCommandBuffer, m_DDGIProbeUpdatePass, nullptr, workGroups, { &pushConstant, sizeof(pushConstant) });
 					Renderer::EndComputePass(m_MainCommandBuffer, m_DDGIProbeUpdatePass);
 				}
 
@@ -3186,8 +3211,7 @@ namespace Beyond
 				Renderer::CopyImage(m_MainCommandBuffer, m_GeometryPass->GetOutput(0), m_RaytracingImage);
 			}
 		}
-		Renderer::Submit([instance = Ref(this)]() mutable
-		{ instance->m_DDGIVisRaytracer->Clear(); });
+		Renderer::Submit([instance = Ref(this)]() mutable { instance->m_DDGIVisRaytracer->Clear(); });
 	}
 
 	void SceneRenderer::DDGIIrradiance()
@@ -3217,13 +3241,13 @@ namespace Beyond
 			uint32_t groupsY = DivRoundUp(m_RenderHeight, 4);
 
 			Renderer::BeginComputePass(m_MainCommandBuffer, m_DDGIIrradiancePass);
-			Renderer::DispatchCompute(m_MainCommandBuffer, m_DDGIIrradiancePass, nullptr, glm::uvec3(groupsX, groupsY, 1), {&HZBUVFactor, sizeof(HZBUVFactor)});
+			Renderer::DispatchCompute(m_MainCommandBuffer, m_DDGIIrradiancePass, nullptr, glm::uvec3(groupsX, groupsY, 1), { &HZBUVFactor, sizeof(HZBUVFactor) });
 			Renderer::EndComputePass(m_MainCommandBuffer, m_DDGIIrradiancePass);
 
 			if (m_DDGISettings.TextureVis)
 			{
 				Renderer::BeginComputePass(m_MainCommandBuffer, m_DDGITexVisPass);
-				Renderer::DispatchCompute(m_MainCommandBuffer, m_DDGITexVisPass, nullptr, glm::uvec3(groupsX, groupsY, 1), {&m_DDGITextureVisSettings, sizeof(m_DDGITextureVisSettings)});
+				Renderer::DispatchCompute(m_MainCommandBuffer, m_DDGITexVisPass, nullptr, glm::uvec3(groupsX, groupsY, 1), { &m_DDGITextureVisSettings, sizeof(m_DDGITextureVisSettings) });
 				Renderer::EndComputePass(m_MainCommandBuffer, m_DDGITexVisPass);
 			}
 
@@ -3256,7 +3280,7 @@ namespace Beyond
 		Renderer::BeginComputePass(m_MainCommandBuffer, m_PreConvolutionComputePass);
 
 		auto inputImage = m_GeometryPass->GetOutput(0);
-		workGroups		= {(uint32_t)glm::ceil((float)inputImage->GetWidth() / 16.0f), (uint32_t)glm::ceil((float)inputImage->GetHeight() / 16.0f), 1};
+		workGroups		= { (uint32_t)glm::ceil((float)inputImage->GetWidth() / 16.0f), (uint32_t)glm::ceil((float)inputImage->GetHeight() / 16.0f), 1 };
 		Renderer::DispatchCompute(m_MainCommandBuffer, m_PreConvolutionComputePass, m_PreConvolutionMaterials[0], workGroups, Buffer(&preConvolutionComputePushConstants, sizeof(preConvolutionComputePushConstants)));
 
 		const uint32_t mipCount = m_PreConvolutedTexture.Texture->GetMipLevelCount();
@@ -3265,7 +3289,7 @@ namespace Beyond
 			Renderer::BeginGPUPerfMarker(m_MainCommandBuffer, fmt::eastl_format("Pre-Convolution-Mip({})", mip));
 
 			auto [mipWidth, mipHeight]				   = m_PreConvolutedTexture.Texture->GetMipSize(mip);
-			workGroups								   = {(uint32_t)glm::ceil((float)mipWidth / 16.0f), (uint32_t)glm::ceil((float)mipHeight / 16.0f), 1};
+			workGroups								   = { (uint32_t)glm::ceil((float)mipWidth / 16.0f), (uint32_t)glm::ceil((float)mipHeight / 16.0f), 1 };
 			preConvolutionComputePushConstants.PrevLod = (int)mip - 1;
 
 			auto blur = [&](const uint32_t mip, const int mode)
@@ -3288,10 +3312,22 @@ namespace Beyond
 	void SceneRenderer::DLSSPass()
 	{
 		m_GPUTimeQueries.DLSSPassQuery = m_MainCommandBuffer->BeginTimestampQuery();
-		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "DLSS-Evaluate", {0.0f, 1.0f, 0.1f, 1.0f});
+		SceneRenderer::BeginGPUPerfMarker(m_MainCommandBuffer, "DLSS-Evaluate", { 0.0f, 1.0f, 0.1f, 1.0f });
 		Ref<Image2D> hitTImage = m_RaytracingSettings.Mode != RaytracingMode::None ? m_RaytracingPrimaryHitT : nullptr;
 		if (m_DLSSSettings.Enable)
-			m_DLSS->Evaluate(m_MainCommandBuffer, m_AccumulatedFrames, m_CurrentJitter, m_TimeStep, m_DLSSImage, m_GeometryPass->GetOutput(0), hitTImage, m_ExposureImage, m_PreDepthPass->GetOutput(0), m_PreDepthPass->GetDepthOutput(), m_AlbedoImage, m_RaytracingMetalnessRoughnessImage, m_RaytracingNormalsImage);
+			m_DLSS->Evaluate(m_MainCommandBuffer,
+							 m_AccumulatedFrames,
+							 m_CurrentJitter,
+							 m_TimeStep,
+							 m_DLSSImage,
+							 m_GeometryPass->GetOutput(0),
+							 hitTImage,
+							 m_ExposureImage,
+							 m_PreDepthPass->GetOutput(0),
+							 m_PreDepthPass->GetDepthOutput(),
+							 m_AlbedoImage,
+							 m_RaytracingMetalnessRoughnessImage,
+							 m_RaytracingNormalsImage);
 		SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
 		m_MainCommandBuffer->EndTimestampQuery(m_GPUTimeQueries.DLSSPassQuery);
 	}
@@ -3348,7 +3384,7 @@ namespace Beyond
 		int				 index = 0;
 		Buffer			 vertexOverrides;
 		Ref<Framebuffer> passFB	   = m_JumpFloodPass[0]->GetTargetFramebuffer();
-		glm::vec2		 texelSize = {1.0f / (float)passFB->GetWidth(), 1.0f / (float)passFB->GetHeight()};
+		glm::vec2		 texelSize = { 1.0f / (float)passFB->GetWidth(), 1.0f / (float)passFB->GetHeight() };
 		vertexOverrides.Allocate(sizeof(glm::vec2) + sizeof(int));
 		vertexOverrides.Write(glm::value_ptr(texelSize), sizeof(glm::vec2));
 		while (step != 0)
@@ -3403,7 +3439,7 @@ namespace Beyond
 			float	  LOD  = 0.0f;
 			int		  Mode = 0; // 0 = prefilter, 1 = downsample, 2 = firstUpsample, 3 = upsample
 		} bloomComputePushConstants;
-		bloomComputePushConstants.Params = {m_BloomSettings.Threshold, m_BloomSettings.Threshold - m_BloomSettings.Knee, m_BloomSettings.Knee * 2.0f, 0.25f / m_BloomSettings.Knee};
+		bloomComputePushConstants.Params = { m_BloomSettings.Threshold, m_BloomSettings.Threshold - m_BloomSettings.Knee, m_BloomSettings.Knee * 2.0f, 0.25f / m_BloomSettings.Knee };
 		bloomComputePushConstants.Mode	 = 0;
 
 		m_GPUTimeQueries.BloomComputePassQuery = m_MainCommandBuffer->BeginTimestampQuery();
@@ -3415,7 +3451,7 @@ namespace Beyond
 		// ===================
 		Renderer::BeginGPUPerfMarker(m_MainCommandBuffer, "Bloom-Prefilter");
 		{
-			workGroups = {m_BloomComputeTextures[0].Texture->GetWidth() / m_BloomComputeWorkgroupSize, m_BloomComputeTextures[0].Texture->GetHeight() / m_BloomComputeWorkgroupSize, 1};
+			workGroups = { m_BloomComputeTextures[0].Texture->GetWidth() / m_BloomComputeWorkgroupSize, m_BloomComputeTextures[0].Texture->GetHeight() / m_BloomComputeWorkgroupSize, 1 };
 			Renderer::DispatchCompute(m_MainCommandBuffer, m_BloomComputePass, m_BloomComputeMaterials.PrefilterMaterial, workGroups, Buffer(&bloomComputePushConstants, sizeof(bloomComputePushConstants)));
 			m_BloomComputePipeline->ImageMemoryBarrier(m_MainCommandBuffer, m_BloomComputeTextures[0].Texture->GetImage(), ResourceAccessFlags::ShaderWrite, ResourceAccessFlags::ShaderRead);
 		}
@@ -3431,7 +3467,7 @@ namespace Beyond
 			for (uint32_t i = 1; i < mips; i++)
 			{
 				auto [mipWidth, mipHeight] = m_BloomComputeTextures[0].Texture->GetMipSize(i);
-				workGroups				   = {(uint32_t)glm::ceil((float)mipWidth / (float)m_BloomComputeWorkgroupSize), (uint32_t)glm::ceil((float)mipHeight / (float)m_BloomComputeWorkgroupSize), 1};
+				workGroups				   = { (uint32_t)glm::ceil((float)mipWidth / (float)m_BloomComputeWorkgroupSize), (uint32_t)glm::ceil((float)mipHeight / (float)m_BloomComputeWorkgroupSize), 1 };
 
 				bloomComputePushConstants.LOD = i - 1.0f;
 				Renderer::DispatchCompute(m_MainCommandBuffer, m_BloomComputePass, m_BloomComputeMaterials.DownsampleAMaterials[i], workGroups, Buffer(&bloomComputePushConstants, sizeof(bloomComputePushConstants)));
@@ -3630,7 +3666,14 @@ namespace Beyond
 				if (dc.IsRigged)
 				{
 					const auto& boneTransformsData = m_MeshBoneTransformsMap.at(mk);
-					Renderer::RenderMeshWithMaterial(m_MainCommandBuffer, m_GeometryWireframeAnimPass->GetPipeline(), dc.Mesh, dc.SubmeshIndex, boneTransformsData.BoneTransformsBaseIndex + dc.InstanceOffset, transformData.TransformIndex, dc.InstanceCount, m_WireframeMaterial);
+					Renderer::RenderMeshWithMaterial(m_MainCommandBuffer,
+													 m_GeometryWireframeAnimPass->GetPipeline(),
+													 dc.Mesh,
+													 dc.SubmeshIndex,
+													 boneTransformsData.BoneTransformsBaseIndex + dc.InstanceOffset,
+													 transformData.TransformIndex,
+													 dc.InstanceCount,
+													 m_WireframeMaterial);
 				}
 			}
 			SceneRenderer::EndGPUPerfMarker(m_MainCommandBuffer);
@@ -3672,7 +3715,14 @@ namespace Beyond
 				if (dc.IsRigged)
 				{
 					const auto& boneTransformsData = m_MeshBoneTransformsMap.at(mk);
-					Renderer::RenderMeshWithMaterial(m_MainCommandBuffer, animPass->GetPipeline(), dc.Mesh, dc.SubmeshIndex, boneTransformsData.BoneTransformsBaseIndex, transformData.TransformIndex, dc.InstanceCount, m_SimpleColliderMaterial);
+					Renderer::RenderMeshWithMaterial(m_MainCommandBuffer,
+													 animPass->GetPipeline(),
+													 dc.Mesh,
+													 dc.SubmeshIndex,
+													 boneTransformsData.BoneTransformsBaseIndex,
+													 transformData.TransformIndex,
+													 dc.InstanceCount,
+													 m_SimpleColliderMaterial);
 				}
 				else
 				{
@@ -4016,17 +4066,10 @@ namespace Beyond
 		{
 			float splitDist = cascadeSplits[i];
 
-			glm::vec3 frustumCorners[8] =
-				{
-					glm::vec3(-1.0f, 1.0f, -1.0f),
-					glm::vec3(1.0f, 1.0f, -1.0f),
-					glm::vec3(1.0f, -1.0f, -1.0f),
-					glm::vec3(-1.0f, -1.0f, -1.0f),
-					glm::vec3(-1.0f, 1.0f, 1.0f),
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					glm::vec3(1.0f, -1.0f, 1.0f),
-					glm::vec3(-1.0f, -1.0f, 1.0f),
-				};
+			glm::vec3 frustumCorners[8] = {
+				glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, -1.0f, -1.0f),
+				glm::vec3(-1.0f, 1.0f, 1.0f),  glm::vec3(1.0f, 1.0f, 1.0f),	 glm::vec3(1.0f, -1.0f, 1.0f),	glm::vec3(-1.0f, -1.0f, 1.0f),
+			};
 
 			// Project frustum corners into world space
 			glm::mat4 invCam = glm::inverse(viewProjection);
@@ -4120,17 +4163,10 @@ namespace Beyond
 			float splitDist = m_ShadowCascadeSplits[0];
 			lastSplitDist	= 0.0;
 
-			glm::vec3 frustumCorners[8] =
-				{
-					glm::vec3(-1.0f, 1.0f, -1.0f),
-					glm::vec3(1.0f, 1.0f, -1.0f),
-					glm::vec3(1.0f, -1.0f, -1.0f),
-					glm::vec3(-1.0f, -1.0f, -1.0f),
-					glm::vec3(-1.0f, 1.0f, 1.0f),
-					glm::vec3(1.0f, 1.0f, 1.0f),
-					glm::vec3(1.0f, -1.0f, 1.0f),
-					glm::vec3(-1.0f, -1.0f, 1.0f),
-				};
+			glm::vec3 frustumCorners[8] = {
+				glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, -1.0f, -1.0f),
+				glm::vec3(-1.0f, 1.0f, 1.0f),  glm::vec3(1.0f, 1.0f, 1.0f),	 glm::vec3(1.0f, -1.0f, 1.0f),	glm::vec3(-1.0f, -1.0f, 1.0f),
+			};
 
 			// Project frustum corners into world space
 			glm::mat4 invCam = glm::inverse(viewProjection);
@@ -4247,8 +4283,7 @@ namespace Beyond
 			m_GeometryWireframeOnTopAnimPass->GetPipeline()->GetSpecification().LineWidth = width;
 	}
 #pragma endregion
-	SceneRenderer::RaytracingSettings::RaytracingSettings()
-		: Mode(RaytracingMode::Pathtracing), MaxFrames(500000), EnableRussianRoulette(true)
+	SceneRenderer::RaytracingSettings::RaytracingSettings() : Mode(RaytracingMode::Pathtracing), MaxFrames(500000), EnableRussianRoulette(true)
 	{
 	}
 

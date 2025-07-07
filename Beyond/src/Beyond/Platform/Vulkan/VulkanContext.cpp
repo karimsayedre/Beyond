@@ -10,11 +10,11 @@
 #include <spdlog/fmt/bundled/color.h>
 
 #ifdef BEY_PLATFORM_WINDOWS
-#include <Windows.h>
+#	include <Windows.h>
 #endif
 
 #ifndef VK_API_VERSION_1_3
-#error Wrong Vulkan SDK! Please run scripts/Setup.bat
+#	error Wrong Vulkan SDK! Please run scripts/Setup.bat
 #endif
 
 namespace Beyond
@@ -40,18 +40,6 @@ namespace Beyond
 		}
 	}
 
-	const char* VkDebugUtilsMessageSeverity(const VkDebugUtilsMessageSeverityFlagBitsEXT severity)
-	{
-		switch (severity)
-		{
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT: return "error";
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT: return "warning";
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT: return "info";
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT: return "verbose";
-			default: return "unknown";
-		}
-	}
-
 	void wrap(std::string const& input, size_t width, std::ostream& os, size_t indent = 4)
 	{
 		std::istringstream in(input);
@@ -64,8 +52,7 @@ namespace Beyond
 		{
 			if (current + word.size() > width)
 			{
-				os << "\n"
-				   << std::string(indent, ' ');
+				os << "\n" << std::string(indent, ' ');
 				current = indent;
 			}
 			os << word << ' ';
@@ -82,7 +69,10 @@ namespace Beyond
 		return output;
 	}
 
-	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, const VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+																			const VkDebugUtilsMessageTypeFlagsEXT		 messageType,
+																			const VkDebugUtilsMessengerCallbackDataEXT*	 pCallbackData,
+																			void*										 pUserData)
 	{
 		(void)pUserData; // Unused argument
 
@@ -104,9 +94,9 @@ namespace Beyond
 				const auto& label = pCallbackData->pCmdBufLabels[i];
 				fmt::rgb	color;
 				if (label.color[0] == 0.0f && label.color[1] == 0.0f && label.color[2] == 0.0f && label.color[3] == 0.0f)
-					color = fmt::rgb {COL32(255, 255, 255, 255)};
+					color = fmt::rgb { COL32(255, 255, 255, 255) };
 				else
-					color = fmt::rgb {COL32(label.color[0] * 255, label.color[1] * 255, label.color[2] * 255, label.color[3] * 255)};
+					color = fmt::rgb { COL32(label.color[0] * 255, label.color[1] * 255, label.color[2] * 255, label.color[3] * 255) };
 				labels.append(fmt::format(fmt::fg(fmt::rgb(color)), "\t\t- Command Buffer Label[{0}]: name: {1}\n", i, label.pLabelName ? label.pLabelName : "NULL"));
 			}
 		}
@@ -144,18 +134,10 @@ namespace Beyond
 
 		switch (messageSeverity)
 		{
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-				BEY_CORE_TRACE("{} message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects);
-				break;
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-				BEY_CORE_INFO("{} message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects);
-				break;
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-				BEY_CORE_WARN("{} message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects);
-				break;
-			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-				BEY_CORE_ERROR("{} message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects);
-				break;
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT: BEY_CORE_TRACE("{} verbose message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects); break;
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT: BEY_CORE_INFO("{} info message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects); break;
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT: BEY_CORE_WARN("{} warning message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects); break;
+			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT: BEY_CORE_ERROR("{} error message: \n{}\n {} {}", VkDebugUtilsMessageType(messageType), os.str(), labels, objects); break;
 		}
 		//[[maybe_unused]] const auto& imageRefs = VulkanImage2D::GetImageRefs();
 		return VK_FALSE;
@@ -178,9 +160,7 @@ namespace Beyond
 		return true;
 	}
 
-	VulkanContext::VulkanContext()
-	{
-	}
+	VulkanContext::VulkanContext() = default;
 
 	VulkanContext::~VulkanContext()
 	{
@@ -223,22 +203,20 @@ namespace Beyond
 		//		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// TODO: GLFW can handle this for us
 #ifdef BEY_PLATFORM_WINDOWS
-#define VK_KHR_WIN32_SURFACE_EXTENSION_NAME "VK_KHR_win32_surface"
+#	define VK_KHR_WIN32_SURFACE_EXTENSION_NAME "VK_KHR_win32_surface"
 #elif defined(BEY_PLATFORM_LINUX)
-#define VK_KHR_WIN32_SURFACE_EXTENSION_NAME "VK_KHR_xcb_surface"
+#	define VK_KHR_WIN32_SURFACE_EXTENSION_NAME "VK_KHR_xcb_surface"
 #endif
-		std::vector<const char*> instanceExtensions = {VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME};
+		std::vector<const char*> instanceExtensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME, VK_EXT_SURFACE_MAINTENANCE_1_EXTENSION_NAME };
 
 		// if (s_Validation)
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME); // Very little performance hit, can be used in Release.
 
-		VkValidationFeatureEnableEXT enables[] =
-			{
-				VK_VALIDATION_FEATURE_ENABLE_BEST_PRACTICES_EXT,
-				VK_VALIDATION_FEATURE_ENABLE_DEBUG_PRINTF_EXT,
-				VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT, // Gives false positives?
-				VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT};
-		VkValidationFeaturesEXT features	   = {};
+		VkValidationFeatureEnableEXT enables[] = { VK_VALIDATION_FEATURE_ENABLE_BEST_PRACTICES_EXT,
+												   VK_VALIDATION_FEATURE_ENABLE_DEBUG_PRINTF_EXT,
+												   VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT, // Gives false positives?
+												   VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT };
+		VkValidationFeaturesEXT		 features  = {};
 		features.sType						   = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT;
 		features.enabledValidationFeatureCount = sizeof(enables) / sizeof(VkValidationFeatureEnableEXT);
 		features.pEnabledValidationFeatures	   = enables;
@@ -300,6 +278,23 @@ namespace Beyond
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Instance and Surface Creation
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		uint32_t supportedExtensionCount = 0;
+		vkEnumerateInstanceExtensionProperties(nullptr, &supportedExtensionCount, nullptr);
+		std::vector<VkExtensionProperties> supportedExtensions(supportedExtensionCount);
+		vkEnumerateInstanceExtensionProperties(nullptr, &supportedExtensionCount, supportedExtensions.data());
+
+		BEY_CORE_TRACE_TAG("Renderer", "Supported Vulkan Instance Extensions:");
+		for (const auto& ext : supportedExtensions)
+			BEY_CORE_TRACE_TAG("Renderer", "  {0}", ext.extensionName);
+
+		for (const char* requested : instanceExtensions)
+		{
+			bool found = std::ranges::any_of(supportedExtensions, [&](const VkExtensionProperties& ext) { return strcmp(ext.extensionName, requested) == 0; });
+			if (!found)
+				BEY_CORE_ERROR_TAG("Renderer", "Missing instance extension: {0}", requested);
+		}
+
 		VK_CHECK_RESULT(vkCreateInstance(&instanceCreateInfo, nullptr, &s_VulkanInstance));
 		volkLoadInstanceOnly(s_VulkanInstance);
 
@@ -308,8 +303,9 @@ namespace Beyond
 		if (s_Validation)
 		{
 			VkDebugUtilsMessengerCreateInfoEXT debugUtilsCreateInfo {};
-			debugUtilsCreateInfo.sType			 = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-			debugUtilsCreateInfo.messageType	 = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
+			debugUtilsCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+			debugUtilsCreateInfo.messageType =
+				VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
 			debugUtilsCreateInfo.pfnUserCallback = VulkanDebugUtilsMessengerCallback;
 			debugUtilsCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT /*  | VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
 				| VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT*/

@@ -383,6 +383,9 @@ Assets:
   - Handle: 5111186335767076432
     FilePath: Meshes/Sponza.hsmesh
     Type: StaticMesh
+  - Handle: 5116344758667554913
+    FilePath: Meshes/BistroInterior_Wine.hsmesh
+    Type: StaticMesh
   - Handle: 5186669951354466325
     FilePath: Scripts/Source/Testing.cs
     Type: ScriptFile
@@ -782,6 +785,9 @@ Assets:
   - Handle: 10223713372208164300
     FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_01_Roughness.png
     Type: Texture
+  - Handle: 10356988040371196303
+    FilePath: Meshes/BistroExterior.hsmesh
+    Type: StaticMesh
   - Handle: 10389384897805031984
     FilePath: Meshes/Source/SunTemple/Textures/JPEG/M_BottomTrim_Inst_UTile4_0_Specular.jpg
     Type: Texture
@@ -884,6 +890,9 @@ Assets:
   - Handle: 11459312161448472869
     FilePath: Meshes/Source/CubeScene.gltf
     Type: MeshSource
+  - Handle: 11479076002550790330
+    FilePath: Meshes/BistroInterior_Wine.hsmesh
+    Type: StaticMesh
   - Handle: 11594728648022077683
     FilePath: Meshes/Source/Intel Sponza/textures/stone_trims_02_Roughnessstone_trims_02_Metalness.png
     Type: Texture

@@ -30,7 +30,7 @@
 #include "Beyond/Debug/Profiler.h"
 
 #if BEY_HAS_SHADER_COMPILER
-#include "ShaderCompiler/VulkanShaderCompiler.h"
+#	include "ShaderCompiler/VulkanShaderCompiler.h"
 #endif
 
 #include <memory_resource>
@@ -57,10 +57,10 @@ namespace Beyond
 	struct VulkanRendererData
 	{
 		BindlessDescriptorSetManager		BindlessDescriptorSetManager;
-		std::vector<std::byte>				m_BufferResource {1024 * 1024 * 2};
-		std::pmr::monotonic_buffer_resource m_Res {m_BufferResource.data(), m_BufferResource.size()};
+		std::vector<std::byte>				m_BufferResource { 1024 * 1024 * 2 };
+		std::pmr::monotonic_buffer_resource m_Res { m_BufferResource.data(), m_BufferResource.size() };
 
-		std::pmr::vector<RenderPassInput> BindlessDescriptorUpdateQueue {&m_Res};
+		std::pmr::vector<RenderPassInput> BindlessDescriptorUpdateQueue { &m_Res };
 
 		RendererCapabilities RenderCaps;
 
@@ -127,39 +127,39 @@ namespace Beyond
 			std::vector<VkDescriptorPoolSize> poolSizes;
 
 			// Add descriptor types based on the support
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_SAMPLER, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 5000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000});
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000});
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 5000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 });
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 });
 
 			if (VulkanContext::GetCurrentDevice()->GetPhysicalDevice()->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME))
 			{
-				poolSizes.push_back({VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1000});
+				poolSizes.push_back({ .type = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, .descriptorCount = 1000 });
 			}
-			VkDescriptorPoolCreateInfo pool_info = {};
-			pool_info.sType						 = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-			pool_info.flags						 = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-			pool_info.maxSets					 = 100000;
-			pool_info.poolSizeCount				 = (uint32_t)poolSizes.size();
-			pool_info.pPoolSizes				 = poolSizes.data();
-			VkDevice device						 = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
-			uint32_t framesInFlight				 = Renderer::GetConfig().FramesInFlight;
+			VkDescriptorPoolCreateInfo poolInfo = {};
+			poolInfo.sType						= VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+			poolInfo.flags						= VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+			poolInfo.maxSets					= 100000;
+			poolInfo.poolSizeCount				= (uint32_t)poolSizes.size();
+			poolInfo.pPoolSizes					= poolSizes.data();
+			VkDevice device						= VulkanContext::GetCurrentDevice()->GetVulkanDevice();
+			uint32_t framesInFlight				= Renderer::GetConfig().FramesInFlight;
 			for (uint32_t i = 0; i < framesInFlight; i++)
 			{
-				VK_CHECK_RESULT(vkCreateDescriptorPool(device, &pool_info, nullptr, &s_VulkanRendererData->DescriptorPools[i]));
+				VK_CHECK_RESULT(vkCreateDescriptorPool(device, &poolInfo, nullptr, &s_VulkanRendererData->DescriptorPools[i]));
 				// s_VulkanRendererData->DescriptorPoolAllocationCount[i] = 0;
 				VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_POOL, fmt::eastl_format("Vulkan Renderer Descriptor Pool, frame: {}", i), s_VulkanRendererData->DescriptorPools[i]);
 			}
-			VK_CHECK_RESULT(vkCreateDescriptorPool(device, &pool_info, nullptr, &s_VulkanRendererData->MaterialDescriptorPool));
+			VK_CHECK_RESULT(vkCreateDescriptorPool(device, &poolInfo, nullptr, &s_VulkanRendererData->MaterialDescriptorPool));
 			VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Vulkan Renderer Material Descriptor Pool", s_VulkanRendererData->MaterialDescriptorPool);
 
-			VK_CHECK_RESULT(vkCreateDescriptorPool(device, &pool_info, nullptr, &s_VulkanRendererData->DDGIDescriptorPool));
+			VK_CHECK_RESULT(vkCreateDescriptorPool(device, &poolInfo, nullptr, &s_VulkanRendererData->DDGIDescriptorPool));
 			VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Vulkan Renderer DDGI Descriptor Pool", s_VulkanRendererData->DDGIDescriptorPool);
 
 			const auto& probeBlendingDistance	= Renderer::GetShaderLibrary()->Get("ProbeBlendingDistanceCS").As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
@@ -179,11 +179,11 @@ namespace Beyond
 			ddgi.managed.device					   = device;
 			ddgi.managed.physicalDevice			   = VulkanContext::GetCurrentDevice()->GetPhysicalDevice()->GetVulkanPhysicalDevice();
 			ddgi.managed.descriptorPool			   = s_VulkanRendererData->DDGIDescriptorPool;
-			ddgi.managed.probeBlendingIrradianceCS = {probeBlendingIrradiance.data(), probeBlendingIrradiance.size() * sizeof(uint32_t)};
-			ddgi.managed.probeBlendingDistanceCS   = {probeBlendingDistance.data(), probeBlendingDistance.size() * sizeof(uint32_t)};
-			ddgi.managed.probeRelocation		   = {{probeRelocationUpdate.data(), probeRelocationUpdate.size() * sizeof(uint32_t)}, {probeRelocationReset.data(), probeRelocationReset.size() * sizeof(uint32_t)}};
-			ddgi.managed.probeClassification	   = {{probeClassificationUpdate.data(), probeClassificationUpdate.size() * sizeof(uint32_t)}, {probeClassificationReset.data(), probeClassificationReset.size() * sizeof(uint32_t)}};
-			ddgi.managed.probeVariability		   = {{probeReductionUpdate.data(), probeReductionUpdate.size() * sizeof(uint32_t)}, {probeReductionReset.data(), probeReductionReset.size() * sizeof(uint32_t)}};
+			ddgi.managed.probeBlendingIrradianceCS = { probeBlendingIrradiance.data(), probeBlendingIrradiance.size() * sizeof(uint32_t) };
+			ddgi.managed.probeBlendingDistanceCS   = { probeBlendingDistance.data(), probeBlendingDistance.size() * sizeof(uint32_t) };
+			ddgi.managed.probeRelocation		   = { { probeRelocationUpdate.data(), probeRelocationUpdate.size() * sizeof(uint32_t) }, { probeRelocationReset.data(), probeRelocationReset.size() * sizeof(uint32_t) } };
+			ddgi.managed.probeClassification	   = { { probeClassificationUpdate.data(), probeClassificationUpdate.size() * sizeof(uint32_t) }, { probeClassificationReset.data(), probeClassificationReset.size() * sizeof(uint32_t) } };
+			ddgi.managed.probeVariability		   = { { probeReductionUpdate.data(), probeReductionUpdate.size() * sizeof(uint32_t) }, { probeReductionReset.data(), probeReductionReset.size() * sizeof(uint32_t) } };
 		});
 
 		// Create fullscreen quad
@@ -218,7 +218,7 @@ namespace Beyond
 			   2,
 			   3,
 			   0,
-		   };
+		};
 		s_VulkanRendererData->QuadIndexBuffer = IndexBuffer::Create(indices, "VulkanRenderer fullscreen quad", 6 * sizeof(uint32_t));
 
 		s_VulkanRendererData->BRDFLut = Renderer::GetBRDFLutTexture();
@@ -232,7 +232,7 @@ namespace Beyond
 		bindlessSpec.DebugName			   = "Bindless";
 		bindlessSpec.Set				   = (uint32_t)DescriptorSetAlias::Bindless;
 		bindlessSpec.DynamicSet			   = (uint32_t)DescriptorSetAlias::DynamicBindless;
-		s_VulkanRendererData			   = hnew VulkanRendererData {.BindlessDescriptorSetManager = bindlessSpec};
+		s_VulkanRendererData			   = hnew VulkanRendererData { .BindlessDescriptorSetManager = bindlessSpec };
 		const auto&					config = Renderer::GetConfig();
 		s_VulkanRendererData->DescriptorPools.resize(config.FramesInFlight);
 		s_VulkanRendererData->DescriptorPoolAllocationCount.resize(config.FramesInFlight);
@@ -373,7 +373,7 @@ namespace Beyond
 			Ref<MeshSource>			meshSource	 = mesh->GetMeshSource();
 			Ref<VulkanVertexBuffer> vulkanMeshVB = meshSource->GetVertexBuffer().As<VulkanVertexBuffer>();
 			VkBuffer				vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
-			VkDeviceSize			offsets[1]	 = {0};
+			VkDeviceSize			offsets[1]	 = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, offsets);
 
 			auto	 vulkanMeshIB = Ref<VulkanIndexBuffer>(meshSource->GetIndexBuffer());
@@ -440,7 +440,7 @@ namespace Beyond
 			Ref<MeshSource>			meshSource		 = mesh->GetMeshSource();
 			Ref<VulkanVertexBuffer> vulkanMeshVB	 = meshSource->GetVertexBuffer().As<VulkanVertexBuffer>();
 			VkBuffer				vbMeshBuffer	 = vulkanMeshVB->GetVulkanBuffer();
-			VkDeviceSize			vertexOffsets[1] = {0};
+			VkDeviceSize			vertexOffsets[1] = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, vertexOffsets);
 
 			auto	 vulkanMeshIB = Ref<VulkanIndexBuffer>(meshSource->GetIndexBuffer());
@@ -539,7 +539,7 @@ namespace Beyond
 
 			Ref<MeshSource> meshSource		 = mesh->GetMeshSource();
 			VkBuffer		meshVB			 = meshSource->GetVertexBuffer().As<VulkanVertexBuffer>()->GetVulkanBuffer();
-			VkDeviceSize	vertexOffsets[1] = {0};
+			VkDeviceSize	vertexOffsets[1] = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &meshVB, vertexOffsets);
 
 			VkBuffer meshIB = meshSource->GetIndexBuffer().As<VulkanIndexBuffer>()->GetVulkanBuffer();
@@ -612,7 +612,7 @@ namespace Beyond
 			Ref<MeshSource> meshSource		 = staticMesh->GetMeshSource();
 			auto			vulkanMeshVB	 = meshSource->GetVertexBuffer().As<VulkanVertexBuffer>();
 			VkBuffer		vbMeshBuffer	 = vulkanMeshVB->GetVulkanBuffer();
-			VkDeviceSize	vertexOffsets[1] = {0};
+			VkDeviceSize	vertexOffsets[1] = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, vertexOffsets);
 
 			auto	 vulkanMeshIB = Ref<VulkanIndexBuffer>(meshSource->GetIndexBuffer());
@@ -668,7 +668,7 @@ namespace Beyond
 
 			auto		 vulkanMeshVB = s_VulkanRendererData->QuadVertexBuffer.As<VulkanVertexBuffer>();
 			VkBuffer	 vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
-			VkDeviceSize offsets[1]	  = {0};
+			VkDeviceSize offsets[1]	  = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, offsets);
 
 			auto	 vulkanMeshIB = s_VulkanRendererData->QuadIndexBuffer.As<VulkanIndexBuffer>();
@@ -703,7 +703,7 @@ namespace Beyond
 
 			auto		 vulkanMeshVB = vertexBuffer.As<VulkanVertexBuffer>();
 			VkBuffer	 vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
-			VkDeviceSize offsets[1]	  = {0};
+			VkDeviceSize offsets[1]	  = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, offsets);
 
 			auto	 vulkanMeshIB = indexBuffer.As<VulkanIndexBuffer>();
@@ -789,9 +789,9 @@ namespace Beyond
 			glm::uvec2 dstSize	= dst->GetSize();
 
 			VkImageCopy region;
-			region.srcOffset					 = {0, 0, 0};
-			region.dstOffset					 = {0, 0, 0};
-			region.extent						 = {srcSize.x, srcSize.y, 1};
+			region.srcOffset					 = { 0, 0, 0 };
+			region.dstOffset					 = { 0, 0, 0 };
+			region.extent						 = { srcSize.x, srcSize.y, 1 };
 			region.srcSubresource.aspectMask	 = VK_IMAGE_ASPECT_COLOR_BIT;
 			region.srcSubresource.baseArrayLayer = 0;
 			region.srcSubresource.mipLevel		 = 0;
@@ -890,7 +890,7 @@ namespace Beyond
 			glm::uvec2 srcSize	= src->GetSize();
 			glm::uvec2 dstSize	= dst->GetSize();
 
-			VkImageBlit region {.srcSubresource = {}, .srcOffsets = {}, .dstSubresource = {}, .dstOffsets = {}};
+			VkImageBlit region { .srcSubresource = {}, .srcOffsets = {}, .dstSubresource = {}, .dstOffsets = {} };
 			region.srcSubresource.aspectMask	 = VK_IMAGE_ASPECT_DEPTH_BIT;
 			region.srcSubresource.baseArrayLayer = 0;
 			region.srcSubresource.mipLevel		 = 0;
@@ -901,12 +901,12 @@ namespace Beyond
 			region.dstSubresource = region.srcSubresource;
 
 			// Set the source offsets
-			region.srcOffsets[0] = {0, 0, 0};
-			region.srcOffsets[1] = {static_cast<int32_t>(srcSize.x), static_cast<int32_t>(srcSize.y), 1};
+			region.srcOffsets[0] = { 0, 0, 0 };
+			region.srcOffsets[1] = { static_cast<int32_t>(srcSize.x), static_cast<int32_t>(srcSize.y), 1 };
 
 			// Set the destination offsets
-			region.dstOffsets[0] = {0, 0, 0};
-			region.dstOffsets[1] = {static_cast<int32_t>(dstSize.x), static_cast<int32_t>(dstSize.y), 1};
+			region.dstOffsets[0] = { 0, 0, 0 };
+			region.dstOffsets[1] = { static_cast<int32_t>(dstSize.x), static_cast<int32_t>(dstSize.y), 1 };
 
 			VkImageLayout srcImageLayout = src->GetVulkanDescriptorInfo().imageLayout;
 			VkImageLayout dstImageLayout = dst->GetVulkanDescriptorInfo().imageLayout;
@@ -1066,7 +1066,7 @@ namespace Beyond
 
 			auto		 vulkanMeshVB = s_VulkanRendererData->QuadVertexBuffer.As<VulkanVertexBuffer>();
 			VkBuffer	 vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
-			VkDeviceSize offsets[1]	  = {0};
+			VkDeviceSize offsets[1]	  = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, offsets);
 
 			auto	 vulkanMeshIB = s_VulkanRendererData->QuadIndexBuffer.As<VulkanIndexBuffer>();
@@ -1118,7 +1118,7 @@ namespace Beyond
 
 			auto		 vulkanMeshVB = s_VulkanRendererData->QuadVertexBuffer.As<VulkanVertexBuffer>();
 			VkBuffer	 vbMeshBuffer = vulkanMeshVB->GetVulkanBuffer();
-			VkDeviceSize offsets[1]	  = {0};
+			VkDeviceSize offsets[1]	  = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbMeshBuffer, offsets);
 
 			auto	 vulkanMeshIB = s_VulkanRendererData->QuadIndexBuffer.As<VulkanIndexBuffer>();
@@ -1332,8 +1332,8 @@ namespace Beyond
 					attachments[i].colorAttachment = i;
 					attachments[i].clearValue	   = clearValues[i];
 
-					clearRects[i].rect.offset	 = {(int32_t)0, (int32_t)0};
-					clearRects[i].rect.extent	 = {width, height};
+					clearRects[i].rect.offset	 = { (int32_t)0, (int32_t)0 };
+					clearRects[i].rect.extent	 = { width, height };
 					clearRects[i].baseArrayLayer = 0;
 					clearRects[i].layerCount	 = 1;
 				}
@@ -1342,8 +1342,8 @@ namespace Beyond
 				{
 					attachments[colorAttachmentCount].aspectMask	= VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 					attachments[colorAttachmentCount].clearValue	= clearValues[colorAttachmentCount];
-					clearRects[colorAttachmentCount].rect.offset	= {(int32_t)0, (int32_t)0};
-					clearRects[colorAttachmentCount].rect.extent	= {width, height};
+					clearRects[colorAttachmentCount].rect.offset	= { (int32_t)0, (int32_t)0 };
+					clearRects[colorAttachmentCount].rect.extent	= { width, height };
 					clearRects[colorAttachmentCount].baseArrayLayer = 0;
 					clearRects[colorAttachmentCount].layerCount		= 1;
 				}
@@ -1458,8 +1458,8 @@ namespace Beyond
 					attachments[i].colorAttachment = i;
 					attachments[i].clearValue	   = clearValues[i];
 
-					clearRects[i].rect.offset	 = {(int32_t)0, (int32_t)0};
-					clearRects[i].rect.extent	 = {width, height};
+					clearRects[i].rect.offset	 = { (int32_t)0, (int32_t)0 };
+					clearRects[i].rect.extent	 = { width, height };
 					clearRects[i].baseArrayLayer = 0;
 					clearRects[i].layerCount	 = 1;
 				}
@@ -1468,8 +1468,8 @@ namespace Beyond
 				{
 					attachments[colorAttachmentCount].aspectMask	= VK_IMAGE_ASPECT_DEPTH_BIT /*| VK_IMAGE_ASPECT_STENCIL_BIT*/;
 					attachments[colorAttachmentCount].clearValue	= clearValues[colorAttachmentCount];
-					clearRects[colorAttachmentCount].rect.offset	= {(int32_t)0, (int32_t)0};
-					clearRects[colorAttachmentCount].rect.extent	= {width, height};
+					clearRects[colorAttachmentCount].rect.offset	= { (int32_t)0, (int32_t)0 };
+					clearRects[colorAttachmentCount].rect.extent	= { width, height };
 					clearRects[colorAttachmentCount].baseArrayLayer = 0;
 					clearRects[colorAttachmentCount].layerCount		= 1;
 				}
@@ -1631,12 +1631,12 @@ namespace Beyond
 			for (auto& volume : volumes)
 			{
 				// Add the DDGIVolume texture arrays
-				rwTex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeRayDataView(), VK_IMAGE_LAYOUT_GENERAL}, volume->GetProbeRayData(), "ProbeRayData"});
-				rwTex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeIrradianceView(), VK_IMAGE_LAYOUT_GENERAL}, volume->GetProbeIrradiance(), "ProbeIrradiance"});
-				rwTex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeDistanceView(), VK_IMAGE_LAYOUT_GENERAL}, volume->GetProbeDistance(), "ProbeDistance"});
-				rwTex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeDataView(), VK_IMAGE_LAYOUT_GENERAL}, volume->GetProbeData(), "ProbeData"});
-				rwTex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeVariabilityView(), VK_IMAGE_LAYOUT_GENERAL}, volume->GetProbeVariability(), "ProbeVariability"});
-				rwTex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeVariabilityAverageView(), VK_IMAGE_LAYOUT_GENERAL}, volume->GetProbeVariabilityAverage(), "ProbeVariabilityAverage"});
+				rwTex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeRayDataView(), VK_IMAGE_LAYOUT_GENERAL }, volume->GetProbeRayData(), "ProbeRayData" });
+				rwTex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeIrradianceView(), VK_IMAGE_LAYOUT_GENERAL }, volume->GetProbeIrradiance(), "ProbeIrradiance" });
+				rwTex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeDistanceView(), VK_IMAGE_LAYOUT_GENERAL }, volume->GetProbeDistance(), "ProbeDistance" });
+				rwTex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeDataView(), VK_IMAGE_LAYOUT_GENERAL }, volume->GetProbeData(), "ProbeData" });
+				rwTex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeVariabilityView(), VK_IMAGE_LAYOUT_GENERAL }, volume->GetProbeVariability(), "ProbeVariability" });
+				rwTex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeVariabilityAverageView(), VK_IMAGE_LAYOUT_GENERAL }, volume->GetProbeVariabilityAverage(), "ProbeVariabilityAverage" });
 			}
 
 			ImageViewSpecification spec {};
@@ -1663,12 +1663,12 @@ namespace Beyond
 			for (auto& volume : volumes)
 			{
 				// Add the DDGIVolume texture arrays
-				tex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeRayDataView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL}, volume->GetProbeRayData(), "ProbeRayData"});
-				tex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeIrradianceView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL}, volume->GetProbeIrradiance(), "ProbeIrradiance"});
-				tex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeDistanceView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL}, volume->GetProbeDistance(), "ProbeDistance"});
-				tex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeDataView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL}, volume->GetProbeData(), "ProbeData"});
-				tex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeVariabilityView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL}, volume->GetProbeVariability(), "ProbeVariability"});
-				tex2DArray.push_back({{VK_NULL_HANDLE, volume->GetProbeVariabilityAverageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL}, volume->GetProbeVariabilityAverage(), "ProbeVariabilityAverage"});
+				tex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeRayDataView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL }, volume->GetProbeRayData(), "ProbeRayData" });
+				tex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeIrradianceView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL }, volume->GetProbeIrradiance(), "ProbeIrradiance" });
+				tex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeDistanceView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL }, volume->GetProbeDistance(), "ProbeDistance" });
+				tex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeDataView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL }, volume->GetProbeData(), "ProbeData" });
+				tex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeVariabilityView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL }, volume->GetProbeVariability(), "ProbeVariability" });
+				tex2DArray.push_back({ { VK_NULL_HANDLE, volume->GetProbeVariabilityAverageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL }, volume->GetProbeVariabilityAverage(), "ProbeVariabilityAverage" });
 			}
 
 			ImageViewSpecification spec {};
@@ -1825,11 +1825,11 @@ namespace Beyond
 							const auto& probeReductionReset	 = Renderer::GetShaderLibrary()->Get("ReductionCS", 1).As<VulkanShader>()->GetSpirvData().at(VK_SHADER_STAGE_COMPUTE_BIT);
 
 							auto& ddgi							   = s_VulkanRendererData->DDGIResources;
-							ddgi.managed.probeBlendingIrradianceCS = {probeBlendingIrradiance.data(), probeBlendingIrradiance.size() * sizeof(uint32_t)};
-							ddgi.managed.probeBlendingDistanceCS   = {probeBlendingDistance.data(), probeBlendingDistance.size() * sizeof(uint32_t)};
-							ddgi.managed.probeRelocation		   = {{probeRelocationUpdate.data(), probeRelocationUpdate.size() * sizeof(uint32_t)}, {probeRelocationReset.data(), probeRelocationReset.size() * sizeof(uint32_t)}};
-							ddgi.managed.probeClassification	   = {{probeClassificationUpdate.data(), probeClassificationUpdate.size() * sizeof(uint32_t)}, {probeClassificationReset.data(), probeClassificationReset.size() * sizeof(uint32_t)}};
-							ddgi.managed.probeVariability		   = {{probeReductionUpdate.data(), probeReductionUpdate.size() * sizeof(uint32_t)}, {probeReductionReset.data(), probeReductionReset.size() * sizeof(uint32_t)}};
+							ddgi.managed.probeBlendingIrradianceCS = { probeBlendingIrradiance.data(), probeBlendingIrradiance.size() * sizeof(uint32_t) };
+							ddgi.managed.probeBlendingDistanceCS   = { probeBlendingDistance.data(), probeBlendingDistance.size() * sizeof(uint32_t) };
+							ddgi.managed.probeRelocation		   = { { probeRelocationUpdate.data(), probeRelocationUpdate.size() * sizeof(uint32_t) }, { probeRelocationReset.data(), probeRelocationReset.size() * sizeof(uint32_t) } };
+							ddgi.managed.probeClassification	   = { { probeClassificationUpdate.data(), probeClassificationUpdate.size() * sizeof(uint32_t) }, { probeClassificationReset.data(), probeClassificationReset.size() * sizeof(uint32_t) } };
+							ddgi.managed.probeVariability		   = { { probeReductionUpdate.data(), probeReductionUpdate.size() * sizeof(uint32_t) }, { probeReductionReset.data(), probeReductionReset.size() * sizeof(uint32_t) } };
 						}
 						status = volumes[i]->Create(vkCommandBuffer, updatedShaders, desc, s_VulkanRendererData->DDGIResources);
 						BEY_CORE_VERIFY(status == rtxgi::OK);
@@ -1994,7 +1994,7 @@ namespace Beyond
 	std::pair<Ref<TextureCube>, Ref<TextureCube>> VulkanRenderer::CreateEnvironmentMap(const std::string& filepath)
 	{
 		if (!Renderer::GetConfig().ComputeEnvironmentMaps)
-			return {Renderer::GetBlackCubeTexture(), Renderer::GetBlackCubeTexture()};
+			return { Renderer::GetBlackCubeTexture(), Renderer::GetBlackCubeTexture() };
 
 		const uint32_t cubemapSize		 = Renderer::GetConfig().EnvironmentMapResolution;
 		const uint32_t irradianceMapSize = 32;
@@ -2105,8 +2105,8 @@ namespace Beyond
 				float	 roughness = i * deltaRoughness;
 				// roughness = glm::max(roughness, 0.05f);  // not needed, since roughness is always > 0.0f
 				vkCmdBindDescriptorSets(environmentMipFilterPipeline->GetActiveCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, environmentMipFilterPipeline->GetLayout(), 0, 1, &descriptorSet.DescriptorSets[i], 0, nullptr);
-				environmentMipFilterPipeline->SetPushConstants(Buffer {&roughness, sizeof(float)});
-				environmentMipFilterPipeline->Dispatch({numGroups, numGroups, 6});
+				environmentMipFilterPipeline->SetPushConstants(Buffer { &roughness, sizeof(float) });
+				environmentMipFilterPipeline->Dispatch({ numGroups, numGroups, 6 });
 			}
 			environmentMipFilterPipeline->End();
 		});
@@ -2140,13 +2140,13 @@ namespace Beyond
 			environmentIrradiancePipeline->RT_Begin();
 			vkCmdBindDescriptorSets(environmentIrradiancePipeline->GetActiveCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, environmentIrradiancePipeline->GetLayout(), 0, 1, &descriptorSet.DescriptorSets[0], 0, nullptr);
 			environmentIrradiancePipeline->SetPushConstants(Buffer(&Renderer::GetConfig().IrradianceMapComputeSamples, sizeof(uint32_t)));
-			environmentIrradiancePipeline->Dispatch({irradianceMap->GetWidth() / 32, irradianceMap->GetHeight() / 32, 6});
+			environmentIrradiancePipeline->Dispatch({ irradianceMap->GetWidth() / 32, irradianceMap->GetHeight() / 32, 6 });
 			environmentIrradiancePipeline->End();
 
 			irradianceCubemap->GenerateMips();
 		});
 
-		return {envFiltered, irradianceMap};
+		return { envFiltered, irradianceMap };
 	}
 
 	Ref<TextureCube> VulkanRenderer::CreatePreethamSky(float turbidity, float azimuth, float inclination)
@@ -2164,7 +2164,7 @@ namespace Beyond
 		Ref<Shader>				   preethamSkyShader		  = Renderer::GetShaderLibrary()->Get("PreethamSky");
 		Ref<VulkanComputePipeline> preethamSkyComputePipeline = Ref<VulkanComputePipeline>::Create(preethamSkyShader);
 
-		glm::vec3 params = {turbidity, azimuth, inclination};
+		glm::vec3 params = { turbidity, azimuth, inclination };
 		Renderer::Submit([preethamSkyComputePipeline, environmentMap, cubemapSize, params]() mutable
 		{
 			VkDevice		  device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
@@ -2183,7 +2183,7 @@ namespace Beyond
 			preethamSkyComputePipeline->RT_Begin();
 			vkCmdBindDescriptorSets(preethamSkyComputePipeline->GetActiveCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, preethamSkyComputePipeline->GetLayout(), 0, 1, &descriptorSet.DescriptorSets[0], 0, nullptr);
 			preethamSkyComputePipeline->SetPushConstants(Buffer(&params, sizeof(glm::vec3)));
-			preethamSkyComputePipeline->Dispatch({cubemapSize / 32, cubemapSize / 32, 6});
+			preethamSkyComputePipeline->Dispatch({ cubemapSize / 32, cubemapSize / 32, 6 });
 			preethamSkyComputePipeline->End();
 
 			envUnfilteredCubemap->GenerateMips(true);

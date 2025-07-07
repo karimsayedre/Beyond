@@ -6,12 +6,12 @@ workspace "Beyond"
 	configurations { "Debug", "Debug-AS", "Release", "Dist" }
 	targetdir "build"
 	startproject "Editor"
-    conformancemode "On"
+	conformancemode "On"
 	
 	language "C++"
 	cppdialect "C++latest"
 	staticruntime "Off"
-
+	  
 	solution_items { ".editorconfig" }
 
 	externalwarnings "Off"
@@ -29,9 +29,9 @@ workspace "Beyond"
 		"GLM_FORCE_XYZW_ONLY"
 	}
 
-    filter "action:vs*"
-        linkoptions { "/ignore:4099" } -- NOTE: Disable no PDB found warning
-        disablewarnings { "4068" } -- Disable "Unknown #pragma mark warning"
+	filter "action:vs*"
+		linkoptions { "/ignore:4099" } -- NOTE: Disable no PDB found warning
+		disablewarnings { "4068" } -- Disable "Unknown #pragma mark warning"
 
 	filter "language:C++ or language:C"
 		architecture "x86_64"

@@ -299,7 +299,7 @@ namespace Beyond
 				// }
 
 				for (uint32_t frameIndex = 0; frameIndex < framesInFlight; frameIndex++)
-					WriteDescriptorMap[frameIndex][set][binding] = {wd, std::vector<const void*>(wd.descriptorCount)};
+					WriteDescriptorMap[frameIndex][set][binding] = { wd, std::vector<const void*>(wd.descriptorCount) };
 
 				if (shaderDescriptor.ImageSamplers.contains(binding))
 				{
@@ -352,7 +352,7 @@ namespace Beyond
 	void DescriptorSetManager::Invalidate()
 	{
 		Renderer::Submit([instance = Ref(this)]() mutable
-						 { instance->RT_Invalidate(); });
+		{ instance->RT_Invalidate(); });
 	}
 
 	void DescriptorSetManager::RT_Invalidate()
@@ -367,7 +367,7 @@ namespace Beyond
 		if (!perFrameInFlight)
 			descriptorSetCount = 1;
 
-		if (m_DescriptorSets.size() < 1)
+		if (m_DescriptorSets.empty())
 		{
 			for (uint32_t i = 0; i < descriptorSetCount; i++)
 				m_DescriptorSets.emplace_back();
@@ -402,7 +402,7 @@ namespace Beyond
 				inputDecl.Count						  = wd.descriptorCount;
 
 				for (uint32_t frameIndex = 0; frameIndex < framesInFlight; frameIndex++)
-					WriteDescriptorMap[frameIndex][set][binding] = {wd, std::vector<const void*>(wd.descriptorCount)};
+					WriteDescriptorMap[frameIndex][set][binding] = { wd, std::vector<const void*>(wd.descriptorCount) };
 
 				if (shaderDescriptor.ImageSamplers.contains(binding))
 				{
@@ -592,7 +592,7 @@ namespace Beyond
 
 		for (const auto& [set, resources] : InputResources)
 		{
-			for (const auto& [binding, input] : resources)
+			for (const auto& input : resources | std::views::values)
 			{
 				if (input.Type == RenderPassResourceType::UniformBufferSet || input.Type == RenderPassResourceType::StorageBufferSet)
 				{
@@ -657,7 +657,7 @@ namespace Beyond
 					}
 					else
 					{
-						for (auto input : resource.Input | std::views::values)
+						for (const auto& input : resource.Input | std::views::values)
 						{
 							if (input == nullptr)
 							{
@@ -677,7 +677,7 @@ namespace Beyond
 	void DescriptorSetManager::Release()
 	{
 		Renderer::SubmitResourceFree([pool = m_DescriptorPool]()
-									 { vkDestroyDescriptorPool(VulkanContext::GetCurrentDevice()->GetVulkanDevice(), pool, nullptr); });
+		{ vkDestroyDescriptorPool(VulkanContext::GetCurrentDevice()->GetVulkanDevice(), pool, nullptr); });
 		InputDeclarations.clear();
 		m_DescriptorSets.clear();
 		WriteDescriptorMap.clear();
@@ -700,27 +700,27 @@ namespace Beyond
 		std::vector<VkDescriptorPoolSize> poolSizes;
 
 		// Add descriptor types based on the support
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_SAMPLER, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 5000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000});
-		poolSizes.push_back({VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000});
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 5000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 });
 
 		if (VulkanContext::GetCurrentDevice()->GetPhysicalDevice()->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME))
 		{
-			poolSizes.push_back({VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1000});
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1000 });
 		}
 
 		VkDescriptorPoolCreateInfo poolInfo {};
 		poolInfo.sType		   = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.flags		   = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 		poolInfo.maxSets	   = 10 * 3; // frames in flight should partially determine this
-		poolInfo.poolSizeCount = 10;
+		poolInfo.poolSizeCount = (uint32_t)poolSizes.size();
 		poolInfo.pPoolSizes	   = poolSizes.data();
 
 		VK_CHECK_RESULT(vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool));

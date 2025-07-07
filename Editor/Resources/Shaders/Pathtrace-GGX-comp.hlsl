@@ -21,7 +21,7 @@ static const float Fdielectric = 0.04f;
 static const int MAX_BOUNCES = 15;
 static const float MIN_THROUGHPUT = 0.005f;
 
-PbrMaterial TraceRay(RaytracingAccelerationStructure TLAS, RayDesc ray, uint bounceIndex, inout uint seed)
+PbrMaterial TraceRay(RayDesc ray, uint bounceIndex, inout uint seed)
 {
     RayQuery<RAY_FLAG_SKIP_PROCEDURAL_PRIMITIVES> rayQuery;
     rayQuery.TraceRayInline(TLAS, RAY_FLAG_NONE, 0xFF, ray);
@@ -56,12 +56,11 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
     float3 throughput = 1.xxx;
     float3 color = 0.0.xxx;
 
-    [loop]
     for (int bounceIndex = 0; bounceIndex < MAX_BOUNCES; ++bounceIndex)
     {
         seed += bounceIndex;
 
-        PbrMaterial material = TraceRay(TLAS, ray, bounceIndex, seed);
+        PbrMaterial material = TraceRay(ray, bounceIndex, seed);
 
         const float3 view = -ray.Direction;
 
@@ -72,7 +71,7 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
         {
             o_ViewNormalsLuminance[launchIndex] = float4(mul((float3x3)(u_Camera.ViewMatrix), normalize(material.N)) * 0.5 + 0.5, 1.0);
             o_MetalnessRoughness[launchIndex] = float4(material.metallic, material.roughness.r, 0.0, 1.0);
-            o_AlbedoColor[launchIndex] = float4(material.baseColor, material.opacity);
+            o_AlbedoColor[launchIndex] = material.baseColor;
         }
         o_PrimaryHitT[launchIndex] = float4(material.HitT, 0.0, 0.0, 0.0);
 
@@ -97,7 +96,8 @@ float3 TracePath(inout RayDesc ray, inout uint seed)
         }
 
         color += material.emissive * throughput;
-        color += DirectLighting(seed, F0, material, view, 1, TLAS).rgb * throughput;
+        color += DirectLighting(seed, F0, material, view, 1).rgb * throughput;
+
 
         // Sample BSDF
         {
@@ -159,13 +159,13 @@ void main(uint3 dispatchThreadID: SV_DispatchThreadID)
 
 
     o_ViewNormalsLuminance[launchIndex] = 0.0.xxxx;
-    Bey_DebugImage[launchIndex] = 0.0.xxxx;
+    Bey_DebugImage[launchIndex] = 0.0.xxx;
     float3 color = 0.0.xxx;
 
-    [unroll]
-    for (int smpl = 1; smpl <= NBSAMPLES; smpl++)
+    // [unroll]
+    // for (int smpl = 1; smpl <= NBSAMPLES; smpl++)
     {
-        uint seed = tea(launchIndex.y * launchDimensions.x + launchIndex.x, pushConst.FrameIndex * smpl);
+        uint seed = tea(launchIndex.y * launchDimensions.x + launchIndex.x, pushConst.FrameIndex);
 
         float2 pixelCenter = float2(launchIndex);
         float2 inUV = pixelCenter / float2(launchDimensions);

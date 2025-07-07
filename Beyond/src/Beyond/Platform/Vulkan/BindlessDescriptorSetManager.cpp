@@ -22,9 +22,11 @@
 #include "Beyond/Renderer/RendererAPI.h"
 #include "Beyond/Platform/Vulkan/VulkanShader.h"
 
-namespace Beyond {
+namespace Beyond
+{
 
-	namespace Utils {
+	namespace Utils
+	{
 
 		inline RenderPassResourceType GetDefaultResourceType(VkDescriptorType descriptorType)
 		{
@@ -48,7 +50,7 @@ namespace Beyond {
 			BEY_CORE_ASSERT(false);
 			return RenderPassResourceType::None;
 		}
-	}
+	} // namespace Utils
 
 	// returns true if resource is not ready
 	template<class ResourceType, typename DescriptorInfoType, RenderPassResourceType resourceType>
@@ -64,35 +66,35 @@ namespace Beyond {
 			const DescriptorInfoType* info;
 			if constexpr (resourceType == RenderPassResourceType::UniformBufferSet)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo();
+				info				   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo();
 				resourceHandles[index] = info->buffer;
 				if (info->buffer == nullptr)
 					invalidated = true;
 			}
 			else if constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo();
+				info				   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo();
 				resourceHandles[index] = info->buffer;
 				if (info->buffer == nullptr)
 					invalidated = true;
 			}
 			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).As<VulkanTLAS>()->GetVulkanDescriptorInfo();
+				info				   = (const DescriptorInfoType*)&vulkanResource->Get(frameIndex).As<VulkanTLAS>()->GetVulkanDescriptorInfo();
 				resourceHandles[index] = info->pAccelerationStructures[0];
 				if (info->pAccelerationStructures == nullptr)
 					invalidated = true;
 			}
 			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructure)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
+				info				   = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
 				resourceHandles[index] = info->pAccelerationStructures[0];
 				if (info->pAccelerationStructures == nullptr)
 					invalidated = true;
 			}
 			else if constexpr (resourceType == RenderPassResourceType::UniformBuffer || resourceType == RenderPassResourceType::StorageBuffer)
 			{
-				info = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
+				info				   = (const DescriptorInfoType*)&vulkanResource->GetVulkanDescriptorInfo();
 				resourceHandles[index] = info->buffer;
 				if (info->buffer == nullptr)
 					invalidated = true;
@@ -121,7 +123,7 @@ namespace Beyond {
 				}
 				else if constexpr (resourceType == RenderPassResourceType::IndexBuffer || resourceType == RenderPassResourceType::VertexBuffer)
 				{
-					info = (const DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
+					info				   = (const DescriptorInfoType*)vulkanResource->GetDescriptorInfo();
 					resourceHandles[index] = info->buffer;
 					if (info->buffer == nullptr)
 						invalidated = true;
@@ -145,7 +147,7 @@ namespace Beyond {
 
 		descriptor.dstArrayElement = input.Input.begin()->first;
 		descriptor.descriptorCount = (uint32_t)input.Input.size();
-		descriptor.descriptorType = descriptorType;
+		descriptor.descriptorType  = descriptorType;
 
 		return invalidated;
 	}
@@ -157,9 +159,8 @@ namespace Beyond {
 		for (auto [index, resource] : input.Input)
 		{
 			ResourceDesID key(frameIndex, set, binding);
-			//TODO: invalidation should be per input not resource?
-			if (!writeDescriptorMap.Contains(key) ||
-				writeDescriptorMap.Get(key).ResourceHandles.size() != input.Input.size())
+			// TODO: invalidation should be per input not resource?
+			if (!writeDescriptorMap.Contains(key) || writeDescriptorMap.Get(key).ResourceHandles.size() != input.Input.size())
 			{
 				invalidated = true;
 				break;
@@ -173,12 +174,12 @@ namespace Beyond {
 				if (vulkanResource->Get(frameIndex).As<VulkanUniformBuffer>()->GetVulkanDescriptorInfo().buffer != resourceHandle)
 					invalidated = true;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
+			else if constexpr (resourceType == RenderPassResourceType::StorageBufferSet)
 			{
 				if (vulkanResource->Get(frameIndex).As<VulkanStorageBuffer>()->GetVulkanDescriptorInfo().buffer != resourceHandle)
 					invalidated = true;
 			}
-			else if  constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
+			else if constexpr (resourceType == RenderPassResourceType::AccelerationStructureSet)
 			{
 				if (vulkanResource->Get(frameIndex).As<VulkanTLAS>()->GetVulkanDescriptorInfo().pAccelerationStructures[0] != resourceHandle)
 					invalidated = true;
@@ -244,13 +245,13 @@ namespace Beyond {
 
 	bool BindlessDescriptorSetManager::SetBindlessInput(const RenderPassInput& input)
 	{
-		bool alreadySet = true;
-		const RenderPassInputDeclaration* decl = GetInputDeclaration(input.Name);
+		bool							  alreadySet = true;
+		const RenderPassInputDeclaration* decl		 = GetInputDeclaration(input.Name);
 		if (decl)
 		{
 			auto& inputs = InputResources[ResourceDesID(0, decl->Set, decl->Binding)];
-			inputs.Type = input.Type;
-			inputs.Name = input.Name;
+			inputs.Type	 = input.Type;
+			inputs.Name	 = input.Name;
 
 			for (const auto& [index, resource] : input.Input)
 			{
@@ -258,7 +259,6 @@ namespace Beyond {
 					alreadySet = false;
 				inputs.Input[index] = resource;
 			}
-
 		}
 		else
 			BEY_CORE_ERROR_TAG("Renderer", "[Bindless Manager] Input resource {} not found", input.Name);
@@ -284,21 +284,21 @@ namespace Beyond {
 				{
 					// NOTE: This is a hack to fix a bad input decl name
 					//				Coming from somewhere.
-					const char* broken = strrchr(bname.c_str(), '.');
-					eastl::string name = broken ? broken + 1 : bname;
+					const char*	  broken = strrchr(bname.c_str(), '.');
+					eastl::string name	 = broken ? broken + 1 : bname;
 
 					uint32_t binding = wd.dstBinding;
 					if (instance->InputDeclarations.contains(name))
 					{
 						const auto& decl = instance->InputDeclarations.at(name);
-						BEY_CORE_VERIFY(decl.Binding == binding && decl.Set == set && decl.Name == name/* && decl.Count == wd.descriptorCount*/, "Can't have different bindless resources in different shaders with the same name.");
+						BEY_CORE_VERIFY(decl.Binding == binding && decl.Set == set && decl.Name == name /* && decl.Count == wd.descriptorCount*/, "Can't have different bindless resources in different shaders with the same name.");
 					}
 					RenderPassInputDeclaration& inputDecl = instance->InputDeclarations[name];
-					inputDecl.Type = RenderPassInputTypeFromVulkanDescriptorType(wd.descriptorType);
-					inputDecl.Set = set;
-					inputDecl.Binding = binding;
-					inputDecl.Name = name;
-					inputDecl.Count = wd.descriptorCount;
+					inputDecl.Type						  = RenderPassInputTypeFromVulkanDescriptorType(wd.descriptorType);
+					inputDecl.Set						  = set;
+					inputDecl.Binding					  = binding;
+					inputDecl.Name						  = name;
+					inputDecl.Count						  = wd.descriptorCount;
 				}
 			};
 
@@ -306,7 +306,6 @@ namespace Beyond {
 				addDeclarations(shader->GetShaderDescriptorSets()[instance->m_Specification.Set], instance->m_Specification.Set);
 			if (shader->GetShaderDescriptorSets().size() > instance->m_Specification.DynamicSet)
 				addDeclarations(shader->GetShaderDescriptorSets()[instance->m_Specification.DynamicSet], instance->m_Specification.DynamicSet);
-
 
 			Renderer::RegisterShaderDependency(shader, instance);
 		});
@@ -320,7 +319,8 @@ namespace Beyond {
 	void BindlessDescriptorSetManager::Init()
 	{
 		Release();
-		uint32_t maxResources = m_Specification.MaxResources;
+		const uint32_t framesInFlight = Renderer::GetConfig().FramesInFlight;
+		uint32_t	   maxResources	  = m_Specification.MaxResources * framesInFlight;
 
 		// Create Descriptor Pool
 		std::vector<VkDescriptorPoolSize> poolSizes;
@@ -328,7 +328,7 @@ namespace Beyond {
 		// Add descriptor types based on the support
 		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLER, maxResources });
 		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, maxResources });
-		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 5000 });
+		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 10000 * framesInFlight * 2 });
 		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, maxResources });
 		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, maxResources });
 		poolSizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, maxResources });
@@ -342,17 +342,17 @@ namespace Beyond {
 			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, maxResources });
 		}
 
-		VkDescriptorPoolCreateInfo poolInfo{};
-		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT | VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT;
-		poolInfo.maxSets = (uint32_t)poolSizes.size() * maxResources * Renderer::GetConfig().FramesInFlight; // frames in flight should partially determine this
+		VkDescriptorPoolCreateInfo poolInfo {};
+		poolInfo.sType		   = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		poolInfo.flags		   = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT | VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT;
+		poolInfo.maxSets	   = (uint32_t)poolSizes.size() * maxResources * Renderer::GetConfig().FramesInFlight; // frames in flight should partially determine this
 		poolInfo.poolSizeCount = (uint32_t)poolSizes.size();
-		poolInfo.pPoolSizes = poolSizes.data();
+		poolInfo.pPoolSizes	   = poolSizes.data();
 
 		VkDevice device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
 
 		VK_CHECK_RESULT(vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool));
-		VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_POOL, fmt::eastl_format("Vulkan Renderer Descriptor Pool"), m_DescriptorPool);
+		VKUtils::SetDebugUtilsObjectName(device, VK_OBJECT_TYPE_DESCRIPTOR_POOL, fmt::eastl_format("Vulkan Bindless Descriptor Pool"), m_DescriptorPool);
 	}
 
 	bool BindlessDescriptorSetManager::Validate()
@@ -360,11 +360,10 @@ namespace Beyond {
 		// Go through pipeline requirements to make sure we have all required resource
 		for (const auto shader : m_Specification.Shaders)
 		{
-
 			const auto& shaderDescriptorSets = shader->GetShaderDescriptorSets();
 
 			// Nothing to validate, pipeline only contains material inputs
-			//if (shaderDescriptorSets.size() < 2)
+			// if (shaderDescriptorSets.size() < 2)
 			//	return true;
 
 			for (uint32_t set : { m_Specification.Set, m_Specification.DynamicSet })
@@ -382,10 +381,10 @@ namespace Beyond {
 					uint32_t binding = wd.dstBinding;
 					if (!InputResources.Contains(0, set, binding))
 					{
-						//BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] No input resource for {}.{}", m_Specification.DebugName, set, binding);
-						//BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] Required resource is {} ({})", m_Specification.DebugName, name, wd.descriptorType);
+						// BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] No input resource for {}.{}", m_Specification.DebugName, set, binding);
+						// BEY_CORE_ERROR_TAG("Renderer", "[RenderPass ({})] Required resource is {} ({})", m_Specification.DebugName, name, wd.descriptorType);
 						continue;
-						//return false;
+						// return false;
 					}
 
 					const auto& resource = InputResources.Get(0, set, binding);
@@ -429,29 +428,29 @@ namespace Beyond {
 		BEY_PROFILE_FUNC();
 		BEY_SCOPE_PERF("BindlessDescriptorSetManager::AllocateDescriptorSets");
 
-		VkDevice device = VulkanContext::GetCurrentDevice()->GetVulkanDevice();
-		uint32_t maxResources = m_Specification.MaxResources;
-		const uint32_t frameCount = Renderer::GetConfig().FramesInFlight;
+		VkDevice	   device		= VulkanContext::GetCurrentDevice()->GetVulkanDevice();
+		uint32_t	   maxResources = m_Specification.MaxResources;
+		const uint32_t frameCount	= Renderer::GetConfig().FramesInFlight;
 
 		for (const auto& [rootSignature, layouts] : VulkanShader::GetBindlessLayouts())
 		{
-			for (const auto& [set, descriptorSet] :layouts)
+			for (const auto& [set, descriptorSet] : layouts)
 			{
 				if (m_DescriptorSets.contains(rootSignature) && m_DescriptorSets.at(rootSignature).contains(set))
 					continue;
 
-				VkDescriptorSetLayout dsl = descriptorSet.Layout;
-				VkDescriptorSetLayout frameLayouts[3] = { dsl, dsl, dsl };
+				VkDescriptorSetLayout		dsl					   = descriptorSet.Layout;
+				VkDescriptorSetLayout		frameLayouts[3]		   = { dsl, dsl, dsl };
 				VkDescriptorSetAllocateInfo descriptorSetAllocInfo = Vulkan::DescriptorSetAllocInfo(frameLayouts, frameCount, m_DescriptorPool);
 
 				auto& descriptorSets = m_DescriptorSets[rootSignature][set];
 				descriptorSets.resize(frameCount);
 
-				uint32_t maxBinding = maxResources - 1;
-				uint32_t maxBindings[3] = { maxBinding, maxBinding, maxBinding };
-				VkDescriptorSetVariableDescriptorCountAllocateInfo countInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO };
+				uint32_t										   maxBinding	  = maxResources - 1;
+				uint32_t										   maxBindings[3] = { maxBinding, maxBinding, maxBinding };
+				VkDescriptorSetVariableDescriptorCountAllocateInfo countInfo { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO };
 				countInfo.descriptorSetCount = frameCount;
-				countInfo.pDescriptorCounts = maxBindings;
+				countInfo.pDescriptorCounts	 = maxBindings;
 				descriptorSetAllocInfo.pNext = &countInfo;
 				VK_CHECK_RESULT(vkAllocateDescriptorSets(device, &descriptorSetAllocInfo, descriptorSets.data()));
 
@@ -491,7 +490,7 @@ namespace Beyond {
 		// Check for invalidated resources
 		for (const auto& [key, input] : InputResources.GetRangeForFrame(0))
 		{
-			uint32_t set = key.GetSet();
+			uint32_t set	 = key.GetSet();
 			uint32_t binding = key.GetBinding();
 
 			bool invalidated = false;
@@ -560,10 +559,10 @@ namespace Beyond {
 				UpdatedInputResources[ResourceDesID(frameIndex, set, binding)].clear();
 		}
 
-		const auto& bindlessLayouts = VulkanShader::GetBindlessLayouts();
+		const auto&						  bindlessLayouts = VulkanShader::GetBindlessLayouts();
 		std::vector<VkWriteDescriptorSet> writeDescriptorsToUpdate;
-		std::vector<Buffer> imageInfoStorage;
-		uint32_t imageInfoStorageIndex = 0;
+		std::vector<Buffer>				  imageInfoStorage;
+		uint32_t						  imageInfoStorageIndex = 0;
 		for (const auto& [rootSignature, layoutSets] : bindlessLayouts)
 		{
 			bool isHLSL = IsRootSignatureHLSL(rootSignature);
@@ -577,8 +576,8 @@ namespace Beyond {
 
 				auto textureDescType = isHLSL ? VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE : VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 
-				const auto descriptorSet = m_DescriptorSets.at(rootSignature).at(set).at(frameIndex);
-				const uint32_t binding = frameKey.GetBinding();
+				const auto	   descriptorSet = m_DescriptorSets.at(rootSignature).at(set).at(frameIndex);
+				const uint32_t binding		 = frameKey.GetBinding();
 				// Means already updated or not in descriptor set
 				if ((UpdatedInputResources.Contains(frameKey) && UpdatedInputResources.Get(frameKey).contains(rootSignature)) || !layoutSets.at(set).ShaderDescriptorSet.Bindings.contains(binding))
 					continue;
@@ -588,9 +587,9 @@ namespace Beyond {
 				resourceHandles.resize(input.Input.size());
 				imageInfoStorage.resize(imageInfoStorageIndex + 1);
 
-				VkWriteDescriptorSet writeDescriptor{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-				writeDescriptor.dstSet = descriptorSet;
-				writeDescriptor.dstBinding = binding;
+				VkWriteDescriptorSet writeDescriptor { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+				writeDescriptor.dstSet			= descriptorSet;
+				writeDescriptor.dstBinding		= binding;
 				writeDescriptor.descriptorCount = 1;
 				writeDescriptor.dstArrayElement = 0;
 
@@ -635,7 +634,6 @@ namespace Beyond {
 					}
 					case RenderPassResourceType::Texture2D:
 					{
-
 						invalidated = SubmitDescriptor<RendererResource, VkDescriptorImageInfo, RenderPassResourceType::Texture2D>(input, frameIndex, writeDescriptor, textureDescType, imageInfoStorage[imageInfoStorageIndex], resourceHandles);
 						break;
 					}
@@ -661,7 +659,7 @@ namespace Beyond {
 					UpdatedInputResources[frameKey].emplace(rootSignature);
 
 				writeDescriptorsToUpdate.emplace_back(writeDescriptor);
-				WriteDescriptorMap[frameKey] = WriteDescriptor{ writeDescriptor, resourceHandles };
+				WriteDescriptorMap[frameKey] = WriteDescriptor { writeDescriptor, resourceHandles };
 				imageInfoStorageIndex++;
 
 				BEY_CORE_INFO_TAG("Renderer", "BindlessDescriptorSetManager::InvalidateAndUpdate ({}) - updating {} descriptors in set {} (frameIndex={})", m_Specification.DebugName, writeDescriptorsToUpdate.size(), set, frameIndex);
@@ -689,8 +687,8 @@ namespace Beyond {
 		std::vector<VkDescriptorSet> sets;
 		sets.reserve(shaderSets.size());
 
-		std::ranges::transform(shaderSets, std::back_inserter(sets),
-			[frameIndex](const auto& pair) { return pair.second[frameIndex]; });
+		std::ranges::transform(shaderSets, std::back_inserter(sets), [frameIndex](const auto& pair)
+		{ return pair.second[frameIndex]; });
 
 		return sets;
 	}
@@ -701,5 +699,4 @@ namespace Beyond {
 		BakeAll();
 	}
 
-
-}
+} // namespace Beyond
